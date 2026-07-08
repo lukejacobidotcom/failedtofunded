@@ -30,10 +30,23 @@
       -> error statuses mapped to friendly copy:
          400/401 bad OTP · 409 already claimed · else generic
 
-  COUPON ISSUANCE: portal backend does NOT mint codes. On approval:
-    POST mffu-backend /internal/coupons/switch  { email, submissionId }
-      -> { code, expiresAt }  (single-use, first month only, Flex
-         excluded, no affiliate attribution)
+  COUPON ISSUANCE (updated 2026-07-06): codes come from a pre-generated
+  1:1 pool (switch_codes table, 1,000 codes supplied by Luke). On
+  approval the backend atomically assigns the next unused code, then
+  notifies RallyLH which triggers the Braze email:
+    POST https://mffu-rally.onrender.com/integrations/failedtofunded/approved-builder-coupon
+    GET  https://mffu-rally.onrender.com/integrations/failedtofunded/health
+    Authorization: Bearer <FAILED_TO_FUNDED_WEBHOOK_SECRET>
+      (env var on the portal backend — NEVER commit the secret)
+    Kill switch env (RallyLH side): FAILED_TO_FUNDED_SEND_ENABLED
+    body: { "event_id": "fft_approved_<submissionId>", "email",
+            "coupon_code", "approval_status": "approved",
+            "proof_type", "competitor", "approved_at" }
+    (idempotent on event_id · retry w/ backoff on 5xx ·
+     proof_type enum per RallyLH, e.g. failed_competitor_evaluation)
+  VALIDATION additions: new-user check vs MFFU customer DB (verified
+  email; re-checked at checkout) + AI-generated-image screening
+  (suspected AI never instant-approves; routes to human queue).
   DEPLOY CHECK: verify deployed byte length matches source — a
   truncated inline script kills the page silently.
   NOTE: until the backend ships, "Send code" will fail on https
@@ -83,6 +96,12 @@
   .logo-sub{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);font-weight:600}
   .nav .cta-mini{background:var(--grad);color:var(--accent-text);font-weight:700;padding:10px 20px;border-radius:var(--radius);font-size:14px;transition:box-shadow .2s,transform .15s}
   .nav .cta-mini:hover{box-shadow:0 0 24px rgba(216,174,94,.35);transform:translateY(-1px)}
+  .hnav{display:flex;gap:20px;font-size:13.5px}
+  .hnav a{color:var(--text-dim);transition:color .15s}
+  .hnav a:hover{color:var(--text)}
+  @media(max-width:760px){.hnav{display:none}}
+  .linklike{background:none;border:none;color:var(--text-dim);text-decoration:underline;cursor:pointer;font-family:var(--font);font-size:12.5px;margin-top:10px}
+  .linklike:hover{color:var(--text)}
 
   /* Hero */
   .hero{padding:34px 0 8px;text-align:center;position:relative}
@@ -167,6 +186,8 @@
   .rp-sub{font-size:12.5px;color:var(--text-dim);margin-bottom:10px}
   .rp-sub b{color:var(--green)}
   #redactCanvas{width:100%;border:1px solid var(--border);border-radius:10px;cursor:crosshair;touch-action:none;display:block;background:#000}
+  .rp-status{font-size:12px;color:var(--text-dim);margin-top:8px}
+  .rp-warn{font-size:12.5px;color:#E8B54A;margin-top:8px;font-weight:600}
   .rp-tools{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
   .rp-tools .btn{padding:11px 18px;font-size:13.5px}
 
@@ -275,6 +296,7 @@
 <header>
   <div class="wrap nav">
     <a class="logo" href="https://myfundedfutures.com"><img src="https://res.cloudinary.com/myfundedfutures/image/upload/v1731010648/Main%20website%20dev/mffu_logo_white_6494f127a4.svg" alt="MyFundedFutures"><span class="logo-sub">Trader Comeback Program</span></a>
+    <nav class="hnav"><a href="#how">How it works</a><a href="#qualify">Who qualifies</a><a href="#faq">FAQ</a><a href="https://myfundedfutures.com/challenge">All plans</a></nav>
     <a class="cta-mini" href="#portal">Claim 70% Off</a>
   </div>
 </header>
@@ -283,13 +305,13 @@
   <div class="badge">Failed to Funded · <b>&nbsp;One trader. One comeback code.</b></div>
   <h1><em>70% off</em> when you switch.</h1>
   <p class="sub">Your last firm failed you. Bring the receipt. <b>We'll give you a fresh start at 70% off.</b></p>
-  <p class="urgency">Codes are <b>single-use</b> and expire <b>7 days</b> after approval.</p>
+  <p class="urgency" id="urgencyLine">Codes are <b>single-use</b> and expire <b>7 days</b> after approval.</p>
   <div class="goldline"></div>
 
   <!-- CLAIM CARD -->
   <div class="portal" id="portal">
     <div id="formArea">
-      <div class="p-head">Claim your 70% switch code</div>
+      <div class="p-head">Claim your 70% Builder code</div>
       <div class="p-helper">Upload proof that you've had a bad time at another futures prop firm and we'll verify it automatically.</div>
       <div class="p-fast">Claiming takes under 60 seconds.</div>
 
@@ -303,9 +325,9 @@
             <label class="rcard"><input type="radio" name="proofType" value="blown_funded">
               <svg class="ric" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 5.5 5.5 4-4L21 18"/><path d="M21 13v5h-5"/></svg>
               <b>Lost funded account</b><span>Breached or eliminated</span><i class="tick">✓</i></label>
-            <label class="rcard"><input type="radio" name="proofType" value="payout">
-              <svg class="ric" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="7" width="18" height="10" rx="2"/><circle cx="12" cy="12" r="2.6"/></svg>
-              <b>Got a payout</b><span>Paid out by another firm</span><i class="tick">✓</i></label>
+            <label class="rcard"><input type="radio" name="proofType" value="receipt">
+              <svg class="ric" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10a1 1 0 0 1 1 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1z"/><path d="M9 9h6M9 13h6"/></svg>
+              <b>Receipt</b><span>Purchase receipt from another firm</span><i class="tick">✓</i></label>
           </div>
 
           <label for="firm">Which firm?</label>
@@ -328,21 +350,23 @@
           <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload your proof image">
             <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
             <p>Drop your proof here</p>
-            <div class="d2">Screenshot, receipt, failed eval, breach, or payout confirmation</div>
+            <div class="d2">Failed eval screenshot, blown funded account, or a purchase receipt</div>
             <small>JPG, PNG, or WebP · Max 10MB · Most codes verified in under 60 seconds</small>
             <input type="file" id="file" accept=".jpg,.jpeg,.png,.webp" hidden>
           </div>
           <p class="err" id="errTop"></p>
           <div class="reassure">Your screenshot is only used to verify eligibility — you'll black out anything private before it uploads.</div>
-          <div class="proofneeds"><span>the firm's platform or receipt</span><span>a visible date (last 90 days)</span><span>the status: failed / eliminated / payout</span></div>
+          <div class="proofneeds"><span>the firm's platform or receipt</span><span>a visible date (last 90 days)</span><span>the status: failed / eliminated / purchase</span><span>your email visible on the page</span></div>
         </div>
       </div>
 
       <!-- On-device PII redaction: original file never leaves the browser -->
       <div class="redact-panel" id="redactPanel">
         <div class="rp-head">Black out anything personal</div>
-        <div class="rp-sub">Drag boxes over account numbers, balances, addresses — anything private. Keep the <b>firm</b>, <b>date</b>, and <b>status</b> visible. Redaction happens <b>on your device</b>: we receive only this censored copy, never your original file or its metadata. <b>Nothing sensitive to hide? Just hit Done.</b></div>
+        <div class="rp-sub">We auto-black-out phone numbers, addresses, and account numbers — and <b>keep your email visible</b> (we need to read it to confirm the account is yours). Keep the <b>firm</b>, <b>date</b>, and <b>status</b> visible too. Review the boxes and drag more over anything we missed. Redaction happens <b>on your device</b>: the only personal info that leaves it is your email.</div>
         <canvas id="redactCanvas"></canvas>
+        <div class="rp-status" id="ocrStatus"></div>
+        <div class="rp-warn" id="emailWarn" style="display:none">⚠ We couldn't spot your email on this image. Include the part of the page or receipt showing your email address — claims without a visible email go to manual review instead of instant approval.</div>
         <div class="rp-tools">
           <button class="btn btn-ghost" onclick="undoRect()">Undo box</button>
           <button class="btn btn-ghost" onclick="clearRects()">Clear boxes</button>
@@ -360,31 +384,22 @@
 
       <!-- Contact — revealed once proof is uploaded -->
       <div id="contactWrap">
-        <label for="name">Full name</label>
-        <input type="text" id="name" autocomplete="name" placeholder="Your name">
-        <div class="verify-box">
-          <div class="vb-head"><span class="vb-num">✉</span> Verify your email</div>
-          <div class="vb-sub">Your 70% code is delivered to this inbox — verify it to continue.</div>
-          <div class="otp-row">
-            <div><input type="email" id="email" autocomplete="email" placeholder="you@email.com"></div>
-            <button class="btn btn-primary" id="otpBtn" onclick="sendOtp()">Send code</button>
-          </div>
-          <div class="sent-note" id="sentNote"></div>
-          <div id="otpWrap" style="display:none">
-            <label for="otp">Enter the 6-digit code</label>
-            <input type="text" id="otp" inputmode="numeric" maxlength="6" placeholder="••••••">
-          </div>
+        <div class="row">
+          <div><label for="name">Full name</label><input type="text" id="name" autocomplete="name" placeholder="Your name"></div>
+          <div><label for="email">Email</label><input type="email" id="email" autocomplete="email" placeholder="you@email.com"></div>
         </div>
+        <div class="vb-sub" style="margin-top:8px">We send your 70% code to the email shown on your proof. Add your email here too so we can reach you if anything needs a second look.</div>
         <input type="text" class="hp" id="hp" name="website" tabindex="-1" autocomplete="off">
         <div class="checks">
-          <label><input type="checkbox" id="cTerms"> <span>I agree to the <a href="#terms">program terms</a> and certify I'm using this offer to restart my trading with MyFundedFutures. This proof is real, unedited, and mine — fake proof voids the discount, account, and any pending payouts.</span></label>
-          <label><input type="checkbox" id="cPrivacy"> <span>I consent to processing of my redacted upload per the <a href="#terms">privacy notice</a>. Redaction happens on my device — only my name and email are collected, and images are deleted within 90 days of a decision.</span></label>
+          <label><input type="checkbox" id="cTerms"> <span>I agree to the <a href="#terms">program terms</a> and certify I'm a new MyFundedFutures customer using this offer to start trading with MFFU. This proof is real, unedited, and mine — fake proof voids the discount, account, and any pending payouts.</span></label>
+          <label><input type="checkbox" id="cPrivacy"> <span>I consent to processing of my redacted upload per the <a href="#terms">privacy notice</a>. Redaction happens on my device — the only personal information that leaves it is my email address. Images are deleted within 90 days of a decision.</span></label>
           <label><input type="checkbox" id="cMkt"> <span>(Optional) Send me trading updates and offers from MyFundedFutures.</span></label>
         </div>
         <p class="err" id="err"></p>
         <div class="submitrow">
           <button class="btn btn-primary" id="submitBtn" onclick="submitForm()" disabled>Claim My 70% Code</button>
           <span class="micro">Switch with proof. Claim your code. · One per trader · Most codes issued instantly</span>
+          <button type="button" class="linklike" onclick="startOver()">← Start over with different choices</button>
         </div>
       </div>
     </div>
@@ -393,21 +408,27 @@
     <div class="result" id="resApproved">
       <div class="icon">🎉</div>
       <h3>Standard raised. Welcome to the other side.</h3>
-      <p>Here's your personal single-use code — <b>70% off your first month</b>, valid for <b>7 days</b>, any plan except Flex.</p>
-      <div class="codebox" id="codeBox" onclick="copyCode()" title="Click to copy"><span id="codeVal">F2F-XXXX-XXXX</span><small id="codeExp">Click to copy · expires soon</small></div>
+      <p>You're approved. Your personal single-use code — <b>70% off your first month on the Builder plan</b> — is on its way to <b id="apprEmail">your inbox</b>. It's valid for <b>7 days</b>, so don't sit on it.</p>
+      <p style="margin-top:10px;font-size:12.5px;color:var(--text-dim)">We send to the email visible on your proof. No email within a few minutes? Check spam, or search "MyFundedFutures".</p>
       <a class="cta" href="https://myfundedfutures.com/challenge">Choose Your Plan →</a>
-      <p style="margin-top:14px;font-size:12.5px">We also emailed it to you.</p>
     </div>
     <div class="result" id="resPending">
       <div class="icon">⏳</div>
       <h3>You're in — final check in progress.</h3>
       <p>Your submission needs a quick human look. You'll get your 70% off code by email within <b>24 hours</b>. No action needed.</p>
+      <p style="margin-top:14px"><a href="#faq">Questions while you wait? →</a></p>
     </div>
     <div class="result" id="resDeclined">
       <div class="icon">🤔</div>
       <h3>We couldn't verify that one.</h3>
       <p id="declineMsg">The proof didn't pass verification. You can resubmit once with a clearer, full-window screenshot showing the firm, date, and account status.</p>
       <button class="btn btn-primary" style="margin-top:20px" onclick="resetForm()">Try Again</button>
+    </div>
+    <div class="result" id="resClosed">
+      <div class="icon">⏰</div>
+      <h3>This round is closed.</h3>
+      <p>Failed to Funded was a limited-time program and this window has ended. Follow MyFundedFutures for the next one — or see what's live right now.</p>
+      <a class="cta" href="https://myfundedfutures.com/challenge">See Current Offers →</a>
     </div>
   </div>
 
@@ -419,21 +440,21 @@
 </section>
 
 <section class="wrap">
-  <div class="steps">
-    <div class="step"><div class="n">1</div><h3>Upload proof</h3><p>Show us the fail, breach, or payout from another firm. Screenshots are enough if the date and firm are visible.</p></div>
+  <div class="steps" id="how">
+    <div class="step"><div class="n">1</div><h3>Upload proof</h3><p>Show us the fail, breach, or receipt from another firm. Screenshots are enough if the date and firm are visible.</p></div>
     <div class="step"><div class="n">2</div><h3>We verify it</h3><p>Most traders get checked instantly. Manual reviews are usually handled within 24 hours.</p></div>
-    <div class="step payoff"><div class="n">3</div><h3>Unlock 70% off</h3><p>Get a personal code for your first month on any eligible plan.</p></div>
+    <div class="step payoff"><div class="n">3</div><h3>Unlock 70% off</h3><p>Get a personal code for 70% off your first month on a Builder plan.</p></div>
   </div>
 
-  <div class="elig">
+  <div class="elig" id="qualify">
     <h2>Who qualifies</h2>
     <div class="grid2">
       <div>
         <h3>You qualify if</h3>
         <ul class="quals">
-          <li>You have proof from another futures prop firm</li>
+          <li>You have proof from another futures prop firm — a failed eval, blown funded account, or purchase receipt</li>
           <li>The event happened in the <b>last 90 days</b></li>
-          <li><b>No MFFU purchases in the last 180 days</b></li>
+          <li><b>New to MyFundedFutures</b> — this offer is for your first MFFU account</li>
           <li>You're 18+ and in a supported country</li>
         </ul>
       </div>
@@ -442,28 +463,29 @@
         <ul class="rules">
           <li><b>One redemption</b> per trader, ever</li>
           <li><b>First month only</b></li>
+          <li><b>Builder plan only</b></li>
           <li>Not stackable with other promos</li>
-          <li>Excludes Flex</li>
+          <li>Limited-time program — ends when the window closes or codes run out</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<section class="wrap faq">
+<section class="wrap faq" id="faq">
   <h2>Questions before you claim?</h2>
   <p class="faq-sub">Here's what traders usually ask before switching.</p>
-  <details><summary>What counts as valid proof?</summary><p>A screenshot or receipt from another futures prop firm showing one of three things: a failed evaluation, a breached/eliminated sim-funded account, or a payout confirmation — with a visible date within the last 90 days and the firm identifiable.</p></details>
+  <details><summary>What counts as valid proof?</summary><p>A screenshot or receipt from another futures prop firm showing one of three things: a failed evaluation, a breached/eliminated sim-funded account, or a purchase receipt — with a visible date within the last 90 days and the firm identifiable.</p></details>
   <details><summary>How fast do I get my code?</summary><p>Most submissions verify automatically in under a minute. A small share get a human review and are answered by email within 24 hours.</p></details>
-  <details><summary>Which plans can I use it on?</summary><p>Any MyFundedFutures plan except Flex. The code is single-use, applies to your first month only, expires 7 days after it's issued, and can't be combined with other promotions.</p></details>
-  <details><summary>I got a payout at another firm — why would I switch?</summary><p>If you're good enough to get paid, you deserve to compare rules, payout speed, and costs. The 70% makes trying us nearly free. That's the whole pitch.</p></details>
+  <details><summary>Which plans can I use it on?</summary><p>The code applies to the <b>Builder plan</b> — 70% off your first month. It's single-use, expires 7 days after it's issued, and can't be combined with other promotions.</p></details>
+  <details><summary>Will a plain purchase receipt really work?</summary><p>Yes. A receipt from another futures prop firm proves you've been paying someone else to trade — that's all we need to know. Upload it, black out anything private, and claim your code.</p></details>
   <details><summary>What happens to my screenshot?</summary><p>Before anything uploads, you black out whatever you want hidden — account numbers, balances, anything private — right in your browser. We receive only that censored copy, re-created on your device with all metadata (location, device info) stripped. The only personal data we collect is your name and email. Redacted images are deleted within 90 days of a decision; we keep a non-reversible fingerprint to prevent duplicate claims.</p></details>
   <details><summary>Can I claim this more than once?</summary><p>No — one redemption per trader, ever. Codes are personalized and single-use.</p></details>
 </section>
 
 <footer>
   <div class="wrap fine" id="terms">
-    <b>Failed to Funded program terms (summary):</b> Offer available to eligible traders with verifiable proof of a failed evaluation, eliminated sim-funded account, or payout from another futures proprietary trading firm dated within 90 days of submission. Limit one redemption per person, lifetime. Not available to customers with a MyFundedFutures purchase in the prior 180 days. Code is personalized, single-use, applies to the first billing cycle (first month) only, expires 7 days after issuance, excludes the Flex plan, and cannot be combined with other offers. This offer is not available through affiliates and carries no affiliate commission. Submitting altered, fabricated, or third-party proof voids the offer and may result in account termination and forfeiture of pending payouts. MyFundedFutures may modify or end this program at any time. Verification decisions are at MyFundedFutures' sole discretion.
+    <b>Failed to Funded program terms (summary):</b> Offer available to eligible traders with verifiable proof of a failed evaluation, eliminated sim-funded account, or purchase receipt from another futures proprietary trading firm dated within 90 days of submission. Limit one redemption per person, lifetime. Available to new MyFundedFutures customers only — not available to anyone with an existing or prior MyFundedFutures account. Code is personalized, single-use, applies to the first billing cycle (first month) of the Builder plan only, expires 7 days after issuance, and cannot be combined with other offers. This is a limited-time program: MyFundedFutures may close the submission window at any time, including when the code inventory is exhausted. This offer is not available through affiliates and carries no affiliate commission. Submitting altered, fabricated, or third-party proof voids the offer and may result in account termination and forfeiture of pending payouts. MyFundedFutures may modify or end this program at any time. Verification decisions are at MyFundedFutures' sole discretion.
     <br><br>
     <b>Risk disclosure:</b> Trading futures involves substantial risk of loss and is not suitable for everyone. Evaluations are simulated trading environments; passing an evaluation is not a guarantee of profits or funding outcomes. Nothing on this page is financial advice. All company and product names are trademarks of their respective owners and are used for identification only; no affiliation or endorsement is implied.
     <br><br>© 2026 MyFundedFutures. All rights reserved.
@@ -476,13 +498,28 @@
 <script>
 /* ================= CONFIG ================= */
 const CONFIG = {
-  API_BASE: '/api/switch',        // <- point at real backend
+  API_BASE: 'https://failedtofunded-api.onrender.com/api/switch',  // <- the Render service (see service/README_DEPLOY.md)
+  OFFER_END: '2026-07-31T23:59:59-04:00',  // <- LIMITED-TIME WINDOW: set real end (ET). Server must also reject submissions after this.
   MAX_FILE_MB: 10,
   MIN_W: 500, MIN_H: 300,         // reject images too small to verify
   ALLOWED: ['image/jpeg','image/png','image/webp'],
   // DEMO auto-enables when opened as a local file (no backend).
   DEMO: location.protocol === 'file:'
 };
+/* Limited-time gate: countdown while open, closed state after */
+document.addEventListener('DOMContentLoaded',()=>{
+  const end=new Date(CONFIG.OFFER_END);
+  if(Date.now()>end.getTime()){
+    document.getElementById('formArea').style.display='none';
+    document.getElementById('resClosed').classList.add('show');
+  }else{
+    const days=Math.max(0,Math.ceil((end.getTime()-Date.now())/864e5));
+    const u=document.getElementById('urgencyLine');
+    if(u) u.innerHTML='Limited run — ends <b>'+end.toLocaleDateString(undefined,{month:'long',day:'numeric'})+'</b>'
+      +(days<=10?' · <b>'+days+' day'+(days===1?'':'s')+' left</b>':'')
+      +'. Codes are <b>single-use</b> and expire <b>7 days</b> after approval.';
+  }
+});
 if(CONFIG.DEMO){
   const r=document.createElement('div');
   r.style.cssText='position:fixed;bottom:14px;right:14px;z-index:99;background:#3A82F7;color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:8px;opacity:.9;pointer-events:none;max-width:46vw';
@@ -491,7 +528,7 @@ if(CONFIG.DEMO){
 }
 /* =========================================== */
 
-let fileObj = null, fileHash = null, otpSent = false;
+let fileObj = null, fileHash = null;
 
 function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.classList.add('show');}
 function hideErr(id){document.getElementById(id).classList.remove('show');}
@@ -505,14 +542,13 @@ function checkForm(){
     && !!fileObj
     && document.getElementById('name').value.trim().length>=2
     && emailOk(document.getElementById('email').value.trim())
-    && otpSent && /^\d{6}$/.test(document.getElementById('otp').value.trim())
     && document.getElementById('cTerms').checked
     && document.getElementById('cPrivacy').checked;
   document.getElementById('submitBtn').disabled=!ok;
   document.getElementById('mStickyBtn').disabled=!ok;
   return ok;
 }
-['name','firmOther'].forEach(id=>document.getElementById(id).addEventListener('input',checkForm));
+['name','firmOther','email'].forEach(id=>document.getElementById(id).addEventListener('input',checkForm));
 ['cTerms','cPrivacy','cMkt'].forEach(id=>document.getElementById(id).addEventListener('change',checkForm));
 
 /* ---- what happened / firm ---- */
@@ -554,11 +590,13 @@ function handleFile(f){
     const maxW=1600, k=Math.min(1, maxW/rawImg.naturalWidth);
     canvas.width=Math.round(rawImg.naturalWidth*k);
     canvas.height=Math.round(rawImg.naturalHeight*k);
-    rects=[]; curRect=null;
+    rects=[]; curRect=null; emailBoxes=[]; emailFound=false;
     drawRedact();
     drop.style.display='none';
     document.getElementById('preview').classList.remove('show');
     document.getElementById('redactPanel').classList.add('show');
+    autoRedact();
+    pushStep('redact');
   };
   rawImg.onerror=()=>{URL.revokeObjectURL(url);dropErr('Could not read that image. Try a JPG or PNG.');};
   rawImg.src=url;
@@ -570,6 +608,8 @@ function drawRedact(){
   ctx.drawImage(rawImg,0,0,canvas.width,canvas.height);
   ctx.fillStyle='#000';
   rects.forEach(r=>ctx.fillRect(r.x,r.y,r.w,r.h));
+  ctx.strokeStyle='#2ED47A';ctx.lineWidth=2;
+  emailBoxes.forEach(r=>ctx.strokeRect(r.x,r.y,r.w,r.h)); /* green = kept visible for verification */
   if(curRect){
     const r=normRect(curRect);
     ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(r.x,r.y,r.w,r.h);
@@ -649,61 +689,52 @@ async function sha256(file){
   return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-/* ---- OTP ---- */
-const emailEl=document.getElementById('email'), otpEl=document.getElementById('otp');
-emailEl.addEventListener('input',()=>{
-  if(otpSent){ /* changed email invalidates the sent code */
-    otpSent=false;otpEl.value='';
-    document.getElementById('otpWrap').style.display='none';
-    document.getElementById('sentNote').classList.remove('show');
-    const b=document.getElementById('otpBtn');b.disabled=false;b.textContent='Send code';
-  }
-  checkForm();
-});
-otpEl.addEventListener('input',()=>{
-  otpEl.value=otpEl.value.replace(/\D/g,'');
-  checkForm();
-});
-otpEl.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&!document.getElementById('submitBtn').disabled) submitForm();
-});
-
-async function sendOtp(){
-  const email=emailEl.value.trim();
-  if(!emailOk(email)) return showErr('err','Enter a valid email first.');
-  hideErr('err');
-  const btn=document.getElementById('otpBtn');
-  btn.disabled=true;btn.textContent='Sending…';
-  if(CONFIG.DEMO){
-    setTimeout(()=>{
-      otpSent=true;
-      const n=document.getElementById('sentNote');
-      n.textContent='✓ DEMO — no real email is sent locally. Enter any 6 digits below.';
-      n.classList.add('show');
-      document.getElementById('otpWrap').style.display='block';
-      otpEl.focus();
-      btn.textContent='Sent (demo)';
-      checkForm();
-    },500);
-    return;
-  }
+/* ---- automatic PII redaction (client-side OCR) ----
+   Phones, addresses, and long account numbers are auto-boxed.
+   Emails are detected and KEPT VISIBLE (green outline) — the
+   verifier must read the email to confirm the account is the
+   applicant's. OCR failure degrades gracefully to manual boxes. */
+let emailBoxes=[], emailFound=false;
+function setOcrStatus(msg){const el=document.getElementById('ocrStatus');if(el)el.textContent=msg;}
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
+async function autoRedact(){
+  document.getElementById('emailWarn').style.display='none';
+  setOcrStatus('Scanning for personal info to auto-redact…');
   try{
-    const r=await fetch(CONFIG.API_BASE+'/otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
-    if(!r.ok) throw 0;
-    otpSent=true;
-    const n=document.getElementById('sentNote');
-    n.textContent='✓ Code sent to '+email+' — check your inbox (and spam).';
-    n.classList.add('show');
-    document.getElementById('otpWrap').style.display='block';
-    otpEl.focus();
-    btn.textContent='Resend';
-    setTimeout(()=>{btn.disabled=false;},30000);
-    checkForm();
+    if(!window.Tesseract) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js');
+    const res=await Tesseract.recognize(canvas,'eng');
+    if(!rawImg) return; /* user cancelled mid-scan */
+    const EMAIL=/[\w.+-]+@[\w-]+\.[\w.-]{2,}/;
+    const ADDR=/\b\d{1,6}\s+\S+.*\b(street|st|avenue|ave|road|rd|drive|dr|boulevard|blvd|lane|ln|court|ct|suite|ste|apt|unit)\b/i;
+    const LONGNUM=/\b[\d -]{12,23}\d\b/;
+    const PHONE=/(\+?\d[\d().\s-]{7,}\d)/;
+    let auto=0;
+    (res.data.lines||[]).forEach(line=>{
+      const t=line.text||'', b=line.bbox;
+      if(!b) return;
+      if(EMAIL.test(t)){
+        emailFound=true;
+        emailBoxes.push({x:b.x0-4,y:b.y0-4,w:(b.x1-b.x0)+8,h:(b.y1-b.y0)+8});
+        return;
+      }
+      const digits=(t.match(/\d/g)||[]).length;
+      if(ADDR.test(t)||LONGNUM.test(t)||(PHONE.test(t)&&digits>=10)){
+        rects.push({x:b.x0-4,y:b.y0-4,w:(b.x1-b.x0)+8,h:(b.y1-b.y0)+8});
+        auto++;
+      }
+    });
+    drawRedact();
+    setOcrStatus(auto
+      ? 'Auto-redacted '+auto+' item'+(auto===1?'':'s')+' (phones, addresses, account numbers). Your email stays visible (green). Add boxes for anything we missed.'
+      : 'No phones, addresses, or account numbers detected. Add boxes for anything personal we missed — your email stays visible.');
+    if(!emailFound) document.getElementById('emailWarn').style.display='block';
   }catch(e){
-    btn.disabled=false;btn.textContent='Send code';
-    showErr('err','Could not send the code. Check the email address and try again.');
+    setOcrStatus('Auto-redaction unavailable — draw boxes over anything personal, but keep your email visible.');
   }
 }
+
+/* ---- email (no verification step) ---- */
+const emailEl=document.getElementById('email');
 
 /* ---- submit ---- */
 async function submitForm(){
@@ -713,14 +744,12 @@ async function submitForm(){
   const fo=document.getElementById('firmOther').value.trim();
   const name=document.getElementById('name').value.trim();
   const email=emailEl.value.trim();
-  const otp=otpEl.value.trim();
   /* backstop validation (button should already be gated) */
   if(!pt) return showErr('err','Select what happened at the top of the form.');
   if(!firmSel || (firmSel==='other' && !fo)) return showErr('err','Select or enter the firm.');
   if(!fileObj) return showErr('err','Upload your proof to continue.');
   if(name.length<2) return showErr('err','Enter your full name.');
   if(!emailOk(email)) return showErr('err','Enter a valid email.');
-  if(!otpSent||!/^\d{6}$/.test(otp)) return showErr('err','Verify your email with the 6-digit code.');
   if(!document.getElementById('cTerms').checked||!document.getElementById('cPrivacy').checked)
     return showErr('err','Accept the terms and privacy consent to continue.');
   if(document.getElementById('hp').value) return; // honeypot
@@ -732,13 +761,13 @@ async function submitForm(){
     setTimeout(()=>{
       if(location.hash.includes('pending')) showResult({status:'pending_review'});
       else if(location.hash.includes('declined')) showResult({status:'declined'});
-      else showResult({status:'approved',code:'F2F-7X2K-9QRD',expiresAt:new Date(Date.now()+7*864e5).toISOString()});
+      else showResult({status:'approved'});
     },1400);
     return;
   }
 
   const fd=new FormData();
-  fd.append('name',name); fd.append('email',email); fd.append('otp',otp);
+  fd.append('name',name); fd.append('email',email);
   fd.append('firm',firmSel);
   if(firmSel==='other') fd.append('firmOther',fo);
   fd.append('proofType',pt.value);
@@ -751,8 +780,8 @@ async function submitForm(){
     const r=await fetch(CONFIG.API_BASE+'/submissions',{method:'POST',body:fd});
     let data={}; try{data=await r.json();}catch(_){}
     if(!r.ok){
-      if(r.status===400||r.status===401) throw new Error('That code didn’t match — re-check the 6 digits from your email, or hit Resend.');
-      if(r.status===409) throw new Error('Looks like this offer was already claimed for this email. One code per trader, ever.');
+      if(r.status===409) throw new Error('Looks like this offer was already claimed. One code per trader, ever.');
+      if(r.status===410) throw new Error('This offer window has closed.');
       throw new Error('Something went wrong on our side. Give it a minute and try again.');
     }
     showResult(data);
@@ -767,11 +796,7 @@ function showResult(data){
   document.getElementById('formArea').style.display='none';
   document.getElementById('mSticky').classList.remove('show');
   if(data.status==='approved'){
-    document.getElementById('codeVal').textContent=data.code;
-    if(data.expiresAt){
-      const d=new Date(data.expiresAt);
-      document.getElementById('codeExp').textContent='Click to copy · expires '+d.toLocaleDateString(undefined,{month:'short',day:'numeric'});
-    }
+    document.getElementById('apprEmail').textContent=data.sentTo||emailEl.value.trim()||'your inbox';
     document.getElementById('resApproved').classList.add('show');
   }else if(data.status==='pending_review'){
     document.getElementById('resPending').classList.add('show');
@@ -780,27 +805,44 @@ function showResult(data){
     document.getElementById('resDeclined').classList.add('show');
   }
   document.getElementById('portal').scrollIntoView({behavior:'smooth'});
-}
-function copyCode(){
-  navigator.clipboard.writeText(document.getElementById('codeVal').textContent)
-    .then(()=>{document.getElementById('codeExp').textContent='Copied!';})
-    .catch(()=>{document.getElementById('codeExp').textContent='Select and copy the code above.';});
+  pushStep('result');
 }
 function resetForm(){
   document.querySelectorAll('.result').forEach(r=>r.classList.remove('show'));
   document.getElementById('formArea').style.display='block';
   const btn=document.getElementById('submitBtn'), mbtn=document.getElementById('mStickyBtn');
   btn.textContent='Claim My 70% Code';mbtn.textContent='Claim My 70% Code';
-  /* fresh proof + fresh OTP required on retry */
-  otpSent=false;otpEl.value='';
-  document.getElementById('otpWrap').style.display='none';
-  document.getElementById('sentNote').classList.remove('show');
-  const ob=document.getElementById('otpBtn');ob.disabled=false;ob.textContent='Send code';
+  /* fresh proof required on retry */
   clearFile();
   document.getElementById('mSticky').classList.add('show');
   checkForm();
   document.getElementById('portal').scrollIntoView({behavior:'smooth'});
 }
+
+/* ---- go back / reconsider: full flow reset ---- */
+function startOver(){
+  clearFile();
+  cancelRedact();
+  document.querySelectorAll('input[name=proofType]').forEach(i=>i.checked=false);
+  document.querySelectorAll('.rcard').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('firm').value='';
+  const fo=document.getElementById('firmOther');fo.value='';fo.style.display='none';
+  document.getElementById('name').value='';
+  emailEl.value='';
+  ['cTerms','cPrivacy','cMkt'].forEach(id=>document.getElementById(id).checked=false);
+  document.getElementById('contactWrap').classList.remove('show');
+  document.getElementById('mSticky').classList.remove('show');
+  hideErr('err');hideErr('errTop');
+  checkForm();
+  document.getElementById('portal').scrollIntoView({behavior:'smooth'});
+}
+
+/* ---- browser Back steps back through the flow, not out of the site ---- */
+function pushStep(step){try{history.pushState({fftStep:step},'');}catch(e){}}
+window.addEventListener('popstate',()=>{
+  if(document.querySelector('.result.show')){resetForm();return;}
+  if(document.getElementById('redactPanel').classList.contains('show')){cancelRedact();}
+});
 </script>
 </body>
 </html>
