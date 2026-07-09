@@ -159,17 +159,25 @@
   .rcard.sel .tick{display:inline-flex}
 
   /* Upload zone */
-  .drop{background:#F4F6FA;border:2px dashed #97A3B8;border-radius:var(--radius);padding:38px 20px;text-align:center;cursor:pointer;transition:border-color .2s,box-shadow .2s;color:#1C1C1C}
-  .drop:hover,.drop.over,.drop:focus-visible{border-color:var(--accent-2);box-shadow:0 0 0 4px rgba(58,130,247,.16);outline:none}
+  .drop{position:relative;background:linear-gradient(180deg,#FBFCFE,#EEF2F8);border:2px dashed #A9B6CC;border-radius:14px;padding:52px 22px;text-align:center;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .15s,background .2s;color:#1C1C1C;min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .drop:hover,.drop.over,.drop:focus-visible{border-color:var(--accent-2);background:linear-gradient(180deg,#FBFCFE,#E9F0FC);box-shadow:0 0 0 4px rgba(58,130,247,.16);transform:translateY(-1px);outline:none}
+  .drop.over{border-style:solid}
   .drop.err{border-color:var(--red);box-shadow:0 0 0 4px rgba(255,92,92,.14)}
-  .drop .ic{width:56px;height:56px;margin:0 auto 10px;display:block;color:#3A82F7}
-  .drop p{font-size:17px;font-weight:700;color:#1C1C1C}
-  .drop p b{color:#3A82F7}
-  .drop .d2{font-size:13px;color:#39424F;font-weight:500;margin-top:4px}
-  .drop small{display:block;margin-top:8px;font-size:12px;color:#5B6472;font-weight:400}
-  .reassure{font-size:12.5px;color:var(--text-dim);margin-top:10px;text-align:center}
-  .proofneeds{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:8px;font-size:12.5px;color:var(--text-dim)}
+  .drop .ic{width:52px;height:52px;margin:0 auto 12px;display:block;color:#3A82F7}
+  .drop p{font-size:18px;font-weight:800;color:#1C1C1C}
+  .drop p b{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .drop .d2{font-size:13px;color:#39424F;font-weight:500;margin-top:5px;max-width:320px}
+  .drop small{display:block;margin-top:12px;font-size:11.5px;color:#6b7482;font-weight:500;letter-spacing:.2px}
+  /* status chip that replaces the dropzone once an image is chosen */
+  .drop-status{display:none;background:rgba(46,212,122,.08);border:1px solid rgba(46,212,122,.4);border-radius:12px;padding:16px 18px;font-size:14px;font-weight:600;color:var(--text);align-items:center;gap:10px}
+  .drop-status.show{display:flex}
+  .drop-status .dot{width:26px;height:26px;border-radius:50%;background:var(--green);color:#02040E;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+  .drop-status small{display:block;font-weight:400;color:var(--text-dim);font-size:12px;margin-top:2px}
+  .reassure{font-size:12.5px;color:var(--text-dim);margin-top:12px;text-align:center}
+  .proofneeds{display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;margin-top:12px;font-size:12.5px;color:var(--text-dim)}
   .proofneeds span::before{content:"✓ ";color:var(--green);font-weight:700}
+  /* when an image is loaded, collapse the upload helper text */
+  .uploading .reassure,.uploading .proofneeds{display:none}
   .preview{display:none;margin-top:14px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px;align-items:center;gap:12px;flex-wrap:wrap}
   .preview.show{display:flex}
   .preview img{width:64px;height:64px;object-fit:cover;border-radius:8px}
@@ -180,16 +188,21 @@
   .preview .pv-rm{color:var(--red)}
 
   /* On-device redaction */
-  .redact-panel{display:none;margin-top:14px}
-  .redact-panel.show{display:block;animation:fadeUp .25s ease}
-  .rp-head{font-size:14.5px;font-weight:700;margin-bottom:4px}
-  .rp-sub{font-size:12.5px;color:var(--text-dim);margin-bottom:10px}
+  .redact-panel{display:none;margin-top:22px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:20px}
+  .redact-panel.show{display:block;animation:fadeUp .3s ease}
+  .rp-head{font-size:16px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:9px}
+  .rp-head .step{width:24px;height:24px;border-radius:50%;background:var(--grad);color:var(--accent-text);font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+  .rp-sub{font-size:12.5px;color:var(--text-dim);margin-bottom:14px;line-height:1.5}
   .rp-sub b{color:var(--green)}
-  #redactCanvas{width:100%;border:1px solid var(--border);border-radius:10px;cursor:crosshair;touch-action:none;display:block;background:#000}
-  .rp-status{font-size:12px;color:var(--text-dim);margin-top:8px}
-  .rp-warn{font-size:12.5px;color:#E8B54A;margin-top:8px;font-weight:600}
-  .rp-tools{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .rp-canvas-wrap{background:#000;border:1px solid var(--border);border-radius:10px;padding:6px;max-height:52vh;overflow:auto;display:flex;justify-content:center}
+  #redactCanvas{max-width:100%;height:auto;border-radius:6px;cursor:crosshair;touch-action:none;display:block}
+  .rp-status{font-size:12px;color:var(--text-dim);margin-top:10px}
+  .rp-warn{font-size:12.5px;color:#E8B54A;margin-top:10px;font-weight:600;background:rgba(232,181,74,.08);border:1px solid rgba(232,181,74,.35);border-radius:8px;padding:10px 12px}
+  .rp-tools{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center}
   .rp-tools .btn{padding:11px 18px;font-size:13.5px}
+  .rp-tools .rp-secondary{display:flex;gap:8px;flex-wrap:wrap}
+  .rp-tools .rp-done{margin-left:auto}
+  @media(max-width:640px){.rp-tools .rp-done{margin-left:0;width:100%}.rp-tools .rp-done .btn{width:100%}}
 
   /* Contact reveal */
   #contactWrap{display:none;border-top:1px solid var(--border);margin-top:26px;padding-top:8px}
@@ -237,6 +250,8 @@
   .codebox small{display:block;font-size:12px;color:var(--text-dim);letter-spacing:0;font-weight:400;margin-top:6px}
   .result .cta{display:inline-block;margin-top:10px;background:var(--grad);color:var(--accent-text);font-weight:800;padding:14px 34px;border-radius:var(--radius);transition:box-shadow .2s}
   .result .cta:hover{box-shadow:0 0 28px rgba(216,174,94,.35)}
+  .result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+  @media(max-width:520px){.result-actions{flex-direction:column}.result-actions .btn{width:100%}}
 
   /* Confidence strip */
   .strip{max-width:760px;margin:0 auto 54px;text-align:center}
@@ -349,11 +364,12 @@
           <label>Upload your proof</label>
           <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload your proof image">
             <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-            <p>Drop your proof here</p>
+            <p><b>Click to upload</b> or drop it here</p>
             <div class="d2">Failed eval screenshot, blown funded account, or a purchase receipt</div>
-            <small>JPG, PNG, or WebP · Max 10MB · Most codes verified in under 60 seconds</small>
+            <small>JPG, PNG, or WebP · Max 10MB · Verified in under 60 seconds</small>
             <input type="file" id="file" accept=".jpg,.jpeg,.png,.webp" hidden>
           </div>
+          <div class="drop-status" id="dropStatus"><span class="dot">✓</span><span id="dropStatusText"></span></div>
           <p class="err" id="errTop"></p>
           <div class="reassure">Your screenshot is only used to verify eligibility — you'll black out anything private before it uploads.</div>
           <div class="proofneeds"><span>the firm's platform or receipt</span><span>a visible date (last 90 days)</span><span>the status: failed / eliminated / purchase</span><span>your email visible on the page</span></div>
@@ -362,16 +378,18 @@
 
       <!-- On-device PII redaction: original file never leaves the browser -->
       <div class="redact-panel" id="redactPanel">
-        <div class="rp-head">Black out anything personal</div>
-        <div class="rp-sub">We auto-black-out phone numbers, addresses, and account numbers — and <b>keep your email visible</b> (we need to read it to confirm the account is yours). Keep the <b>firm</b>, <b>date</b>, and <b>status</b> visible too. Review the boxes and drag more over anything we missed. Redaction happens <b>on your device</b>: the only personal info that leaves it is your email.</div>
-        <canvas id="redactCanvas"></canvas>
+        <div class="rp-head"><span class="step">2</span> Black out anything private</div>
+        <div class="rp-sub">We auto-cover phone numbers, addresses, and account numbers. <b>Keep your email visible</b> — we read it to confirm the account is yours — plus the <b>firm</b>, <b>date</b>, and <b>status</b>. Drag a box over anything else you want hidden. This all happens on your device.</div>
+        <div class="rp-canvas-wrap"><canvas id="redactCanvas"></canvas></div>
         <div class="rp-status" id="ocrStatus"></div>
-        <div class="rp-warn" id="emailWarn" style="display:none">⚠ We couldn't spot your email on this image. Include the part of the page or receipt showing your email address — claims without a visible email go to manual review instead of instant approval.</div>
+        <div class="rp-warn" id="emailWarn" style="display:none">⚠ We couldn't spot your email on this image. Include the part showing your email address — claims without a visible email go to manual review instead of instant approval.</div>
         <div class="rp-tools">
-          <button class="btn btn-ghost" onclick="undoRect()">Undo box</button>
-          <button class="btn btn-ghost" onclick="clearRects()">Clear boxes</button>
-          <button class="btn btn-ghost" onclick="cancelRedact()">Different image</button>
-          <button class="btn btn-primary" onclick="finishRedaction()">Done — use this image</button>
+          <div class="rp-secondary">
+            <button class="btn btn-ghost" onclick="undoRect()">Undo box</button>
+            <button class="btn btn-ghost" onclick="clearRects()">Clear boxes</button>
+            <button class="btn btn-ghost" onclick="cancelRedact()">Choose a different image</button>
+          </div>
+          <div class="rp-done"><button class="btn btn-primary" onclick="finishRedaction()">Use this image →</button></div>
         </div>
       </div>
 
@@ -379,7 +397,7 @@
         <img id="pimg" alt="">
         <div class="meta"><b id="pname"></b><span id="psize"></span></div>
         <button class="pv-edit" onclick="editRedaction()">Edit redaction</button>
-        <button class="pv-rm" onclick="clearFile()">Remove</button>
+        <button class="pv-rm" onclick="chooseDifferent()">Choose a different image</button>
       </div>
 
       <!-- Contact — revealed once proof is uploaded -->
@@ -411,18 +429,23 @@
       <p>You're approved. Your personal single-use code — <b>70% off your first month on the Builder plan</b> — is on its way to <b id="apprEmail">your inbox</b>. It's valid for <b>7 days</b>, so don't sit on it.</p>
       <p style="margin-top:10px;font-size:12.5px;color:var(--text-dim)">We send to the email visible on your proof. No email within a few minutes? Check spam, or search "MyFundedFutures".</p>
       <a class="cta" href="https://myfundedfutures.com/challenge">Choose Your Plan →</a>
+      <p style="margin-top:14px"><a href="https://myfundedfutures.com">← Back to MyFundedFutures</a></p>
     </div>
     <div class="result" id="resPending">
       <div class="icon">⏳</div>
       <h3>You're in — final check in progress.</h3>
       <p>Your submission needs a quick human look. You'll get your 70% off code by email within <b>24 hours</b>. No action needed.</p>
       <p style="margin-top:14px"><a href="#faq">Questions while you wait? →</a></p>
+      <button type="button" class="linklike" style="margin:14px auto 0" onclick="startOver()">← Start over</button>
     </div>
     <div class="result" id="resDeclined">
       <div class="icon">🤔</div>
       <h3>We couldn't verify that one.</h3>
       <p id="declineMsg">The proof didn't pass verification. You can resubmit once with a clearer, full-window screenshot showing the firm, date, and account status.</p>
-      <button class="btn btn-primary" style="margin-top:20px" onclick="resetForm()">Try Again</button>
+      <div class="result-actions">
+        <button class="btn btn-primary" onclick="tryAgainNewImage()">Upload a different image</button>
+        <button class="btn btn-ghost" onclick="startOver()">Start over</button>
+      </div>
     </div>
     <div class="result" id="resClosed">
       <div class="icon">⏰</div>
@@ -593,9 +616,12 @@ function handleFile(f){
     rects=[]; curRect=null; emailBoxes=[]; emailFound=false;
     drawRedact();
     drop.style.display='none';
+    document.getElementById('formArea').classList.add('uploading');
+    setDropStatus('Image loaded','Black out anything private below ↓');
     document.getElementById('preview').classList.remove('show');
     document.getElementById('redactPanel').classList.add('show');
     autoRedact();
+    document.getElementById('redactPanel').scrollIntoView({behavior:'smooth',block:'start'});
     pushStep('redact');
   };
   rawImg.onerror=()=>{URL.revokeObjectURL(url);dropErr('Could not read that image. Try a JPG or PNG.');};
@@ -640,12 +666,21 @@ canvas.addEventListener('pointerup',()=>{
   curRect=null;
   drawRedact();
 });
+function setDropStatus(main, sub){
+  document.getElementById('dropStatusText').innerHTML=main+(sub?'<small>'+sub+'</small>':'');
+  document.getElementById('dropStatus').classList.add('show');
+}
+function resetUploadArea(){
+  document.getElementById('formArea').classList.remove('uploading');
+  document.getElementById('dropStatus').classList.remove('show');
+  drop.style.display='';
+}
 function undoRect(){rects.pop();drawRedact();}
 function clearRects(){rects=[];drawRedact();}
 function cancelRedact(){
   rawImg=null;rects=[];curRect=null;fileInput.value='';
   document.getElementById('redactPanel').classList.remove('show');
-  drop.style.display='';
+  resetUploadArea();
   checkForm();
 }
 function editRedaction(){
@@ -653,7 +688,9 @@ function editRedaction(){
   fileObj=null;fileHash=null;
   document.getElementById('preview').classList.remove('show');
   document.getElementById('redactPanel').classList.add('show');
+  setDropStatus('Editing your image','Adjust the boxes below, then use it ↓');
   drawRedact();
+  document.getElementById('redactPanel').scrollIntoView({behavior:'smooth',block:'start'});
   checkForm();
 }
 function finishRedaction(){
@@ -662,27 +699,33 @@ function finishRedaction(){
     if(!blob) return showErr('errTop','Could not process the image. Try again.');
     fileObj=new File([blob],'proof-redacted.jpg',{type:'image/jpeg'});
     fileHash=await sha256(fileObj);
-    document.getElementById('pname').textContent='proof-redacted.jpg';
+    document.getElementById('pname').textContent='Proof ready';
     document.getElementById('psize').textContent=fmtSize(fileObj.size)+' · redacted on your device · metadata stripped';
     document.getElementById('pimg').src=canvas.toDataURL('image/jpeg',0.5);
     document.getElementById('pimg').style.display='block';
     document.getElementById('redactPanel').classList.remove('show');
     document.getElementById('preview').classList.add('show');
-    const cw=document.getElementById('contactWrap');
-    if(!cw.classList.contains('show')){
-      cw.classList.add('show');
-      cw.scrollIntoView({behavior:'smooth',block:'nearest'});
-    }
+    setDropStatus('Proof ready ✓','Just your name + email left ↓');
+    const first=!document.getElementById('contactWrap').classList.contains('show');
+    document.getElementById('contactWrap').classList.add('show');
     document.getElementById('mSticky').classList.add('show');
     checkForm();
+    /* let the redaction panel collapse, then glide to the last step */
+    setTimeout(()=>{document.getElementById('contactWrap').scrollIntoView({behavior:'smooth',block:'center'});
+      if(first) document.getElementById('name').focus({preventScroll:true});},120);
   },'image/jpeg',0.92);
 }
 function clearFile(){
   fileObj=null;fileHash=null;rawImg=null;rects=[];fileInput.value='';
   document.getElementById('preview').classList.remove('show');
-  drop.style.display='';
+  document.getElementById('redactPanel').classList.remove('show');
+  resetUploadArea();
   checkForm();
 }
+/* clear the current proof and immediately reopen the file picker */
+function chooseDifferent(){ clearFile(); setTimeout(()=>fileInput.click(),50); }
+/* from the declined screen: reset to the form (keeping firm choice) and pick a new image */
+function tryAgainNewImage(){ resetForm(); setTimeout(()=>fileInput.click(),160); }
 async function sha256(file){
   const buf=await file.arrayBuffer();
   const h=await crypto.subtle.digest('SHA-256',buf);
