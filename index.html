@@ -334,50 +334,19 @@
       <div class="p-fast">Claiming takes under 60 seconds.</div>
       <div class="p-elig"><span>NEW CUSTOMERS ONLY</span> This offer is for your <b>first MyFundedFutures account</b>. Existing or past MFFU customers don't qualify.</div>
 
-      <div class="form-grid">
-        <div>
-          <label>What happened?</label>
-          <div class="radio-cards" id="proofCards">
-            <label class="rcard"><input type="radio" name="proofType" value="failed_eval">
-              <svg class="ric" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
-              <b>Failed eval</b><span>Didn't pass at another firm</span><i class="tick">✓</i></label>
-            <label class="rcard"><input type="radio" name="proofType" value="blown_funded">
-              <svg class="ric" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 5.5 5.5 4-4L21 18"/><path d="M21 13v5h-5"/></svg>
-              <b>Lost funded account</b><span>Breached or eliminated</span><i class="tick">✓</i></label>
-            <label class="rcard"><input type="radio" name="proofType" value="receipt">
-              <svg class="ric" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10a1 1 0 0 1 1 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1z"/><path d="M9 9h6M9 13h6"/></svg>
-              <b>Receipt</b><span>Purchase receipt from another firm</span><i class="tick">✓</i></label>
-          </div>
-
-          <label for="firm">Which firm?</label>
-          <select id="firm">
-            <option value="">Select a firm…</option>
-            <option>Apex Trader Funding</option>
-            <option>Topstep</option>
-            <option>Take Profit Trader</option>
-            <option>Tradeify</option>
-            <option>Lucid Trading</option>
-            <option>Bulenox</option>
-            <option>Elite Trader Funding</option>
-            <option value="other">Other</option>
-          </select>
-          <input type="text" id="firmOther" placeholder="Firm name" style="display:none;margin-top:10px">
+      <div>
+        <label>Upload your proof</label>
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload your proof image">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          <p><b>Click to upload</b> or drop it here</p>
+          <div class="d2">A failed eval, blown funded account, or purchase receipt from another futures prop firm</div>
+          <small>JPG, PNG, or WebP · Max 10MB · Verified in under 60 seconds</small>
+          <input type="file" id="file" accept=".jpg,.jpeg,.png,.webp" hidden>
         </div>
-
-        <div>
-          <label>Upload your proof</label>
-          <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload your proof image">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-            <p><b>Click to upload</b> or drop it here</p>
-            <div class="d2">Failed eval screenshot, blown funded account, or a purchase receipt</div>
-            <small>JPG, PNG, or WebP · Max 10MB · Verified in under 60 seconds</small>
-            <input type="file" id="file" accept=".jpg,.jpeg,.png,.webp" hidden>
-          </div>
-          <div class="drop-status" id="dropStatus"><span class="dot">✓</span><span id="dropStatusText"></span></div>
-          <p class="err" id="errTop"></p>
-          <div class="reassure">Your screenshot is only used to verify eligibility — you'll black out anything private before it uploads.</div>
-          <div class="proofneeds"><span>the firm's platform or receipt</span><span>a visible date (last 90 days)</span><span>the status: failed / eliminated / purchase</span><span>your email visible on the page</span></div>
-        </div>
+        <div class="drop-status" id="dropStatus"><span class="dot">✓</span><span id="dropStatusText"></span></div>
+        <p class="err" id="errTop"></p>
+        <div class="reassure">We read the firm, date, status, and your email straight off the image — no forms to fill. You'll black out anything private before it uploads.</div>
+        <div class="proofneeds"><span>the firm's platform or receipt</span><span>a visible date (last 90 days)</span><span>the status: failed / eliminated / purchase</span><span>your email visible on the page</span></div>
       </div>
 
       <!-- On-device PII redaction: original file never leaves the browser -->
@@ -406,15 +375,14 @@
 
       <!-- Contact — revealed once proof is uploaded -->
       <div id="contactWrap">
-        <div class="row">
-          <div><label for="name">Full name</label><input type="text" id="name" autocomplete="name" placeholder="Your name"></div>
-          <div><label for="email">Email</label><input type="email" id="email" autocomplete="email" placeholder="you@email.com"></div>
-        </div>
-        <div class="vb-sub" style="margin-top:8px">We send your 70% code to the email shown on your proof. Add your email here too so we can reach you if anything needs a second look.</div>
+        <label for="email">Email <span style="color:var(--text-dim);font-weight:400;text-transform:none">(optional)</span></label>
+        <input type="email" id="email" autocomplete="email" placeholder="you@email.com">
+        <div class="hint" style="text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:var(--accent)">Enter email if not displayed in image</div>
+        <div class="vb-sub" style="margin-top:8px">We send your 70% code to the email shown on your proof. If your email isn't visible on the upload, add it here so we know where to send it.</div>
         <input type="text" class="hp" id="hp" name="website" tabindex="-1" autocomplete="off">
         <div class="checks">
           <label><input type="checkbox" id="cTerms"> <span>I agree to the <a href="#terms">program terms</a> and certify I'm a new MyFundedFutures customer using this offer to start trading with MFFU. This proof is real, unedited, and mine — fake proof voids the discount, account, and any pending payouts.</span></label>
-          <label><input type="checkbox" id="cPrivacy"> <span>I consent to processing of my redacted upload per the <a href="#terms">privacy notice</a>. Redaction happens on my device — the only personal information that leaves it is my email address. Images are deleted within 90 days of a decision.</span></label>
+          <label><input type="checkbox" id="cPrivacy"> <span>I consent to processing of my redacted upload per the <a href="#terms">privacy notice</a>. Redaction happens on my device — only my redacted proof (with my email left visible) and any email I type leave it. Images are deleted within 90 days of a decision.</span></label>
           <label><input type="checkbox" id="cMkt"> <span>(Optional) Send me trading updates and offers from MyFundedFutures.</span></label>
         </div>
         <p class="err" id="err"></p>
@@ -506,7 +474,7 @@
   <details><summary>How fast do I get my code?</summary><p>Most submissions verify automatically in under a minute. A small share get a human review and are answered by email within 24 hours.</p></details>
   <details><summary>Which plans can I use it on?</summary><p>The code applies to the <b>Builder plan</b> — 70% off your first month. It's single-use, expires 7 days after it's issued, and can't be combined with other promotions.</p></details>
   <details><summary>Will a plain purchase receipt really work?</summary><p>Yes. A receipt from another futures prop firm proves you've been paying someone else to trade — that's all we need to know. Upload it, black out anything private, and claim your code.</p></details>
-  <details><summary>What happens to my screenshot?</summary><p>Before anything uploads, you black out whatever you want hidden — account numbers, balances, anything private — right in your browser. We receive only that censored copy, re-created on your device with all metadata (location, device info) stripped. The only personal data we collect is your name and email. Redacted images are deleted within 90 days of a decision; we keep a non-reversible fingerprint to prevent duplicate claims.</p></details>
+  <details><summary>What happens to my screenshot?</summary><p>Before anything uploads, you black out whatever you want hidden — account numbers, balances, anything private — right in your browser. We receive only that censored copy, re-created on your device with all metadata (location, device info) stripped. We read the firm, date, status, your email, and name off that image — the only personal data we keep is the email we send your code to. Redacted images are deleted within 90 days of a decision; we keep a non-reversible fingerprint to prevent duplicate claims.</p></details>
   <details><summary>Can I claim this more than once?</summary><p>No — one redemption per trader, ever. Codes are personalized and single-use.</p></details>
 </section>
 
@@ -564,29 +532,17 @@ function emailOk(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);}
 
 /* ---- form completeness → enable Claim button ---- */
 function checkForm(){
-  const ok = !!document.querySelector('input[name=proofType]:checked')
-    && (()=>{const f=document.getElementById('firm').value;return f && (f!=='other' || document.getElementById('firmOther').value.trim());})()
-    && !!fileObj
-    && document.getElementById('name').value.trim().length>=2
-    && emailOk(document.getElementById('email').value.trim())
+  const em=document.getElementById('email').value.trim();
+  const ok = !!fileObj
+    && (em==='' || emailOk(em))          /* email optional; valid if given */
     && document.getElementById('cTerms').checked
     && document.getElementById('cPrivacy').checked;
   document.getElementById('submitBtn').disabled=!ok;
   document.getElementById('mStickyBtn').disabled=!ok;
   return ok;
 }
-['name','firmOther','email'].forEach(id=>document.getElementById(id).addEventListener('input',checkForm));
+document.getElementById('email').addEventListener('input',checkForm);
 ['cTerms','cPrivacy','cMkt'].forEach(id=>document.getElementById(id).addEventListener('change',checkForm));
-
-/* ---- what happened / firm ---- */
-document.getElementById('proofCards').addEventListener('change',()=>{
-  document.querySelectorAll('.rcard').forEach(c=>c.classList.toggle('sel', c.querySelector('input').checked));
-  checkForm();
-});
-document.getElementById('firm').addEventListener('change',e=>{
-  document.getElementById('firmOther').style.display = e.target.value==='other' ? 'block':'none';
-  checkForm();
-});
 
 /* ---- upload + on-device redaction ----
    PRIVACY GUARANTEE: the user's original file is loaded into memory
@@ -717,14 +673,14 @@ function finishRedaction(){
     document.getElementById('pimg').style.display='block';
     document.getElementById('redactPanel').classList.remove('show');
     document.getElementById('preview').classList.add('show');
-    setDropStatus('Proof ready ✓','Just your name + email left ↓');
+    setDropStatus('Proof ready ✓','Confirm below and claim ↓');
     const first=!document.getElementById('contactWrap').classList.contains('show');
     document.getElementById('contactWrap').classList.add('show');
     document.getElementById('mSticky').classList.add('show');
     checkForm();
     /* let the redaction panel collapse, then glide to the last step */
     scrollToEl('contactWrap',140);
-    if(first) setTimeout(()=>document.getElementById('name').focus({preventScroll:true}),260);
+    if(first) setTimeout(()=>document.getElementById('email').focus({preventScroll:true}),260);
   },'image/jpeg',0.92);
 }
 function clearFile(){
@@ -794,17 +750,10 @@ const emailEl=document.getElementById('email');
 /* ---- submit ---- */
 async function submitForm(){
   hideErr('err');
-  const pt=document.querySelector('input[name=proofType]:checked');
-  const firmSel=document.getElementById('firm').value;
-  const fo=document.getElementById('firmOther').value.trim();
-  const name=document.getElementById('name').value.trim();
   const email=emailEl.value.trim();
   /* backstop validation (button should already be gated) */
-  if(!pt) return showErr('err','Select what happened at the top of the form.');
-  if(!firmSel || (firmSel==='other' && !fo)) return showErr('err','Select or enter the firm.');
   if(!fileObj) return showErr('err','Upload your proof to continue.');
-  if(name.length<2) return showErr('err','Enter your full name.');
-  if(!emailOk(email)) return showErr('err','Enter a valid email.');
+  if(email!=='' && !emailOk(email)) return showErr('err','That email doesn’t look right — fix it or leave it blank.');
   if(!document.getElementById('cTerms').checked||!document.getElementById('cPrivacy').checked)
     return showErr('err','Accept the terms and privacy consent to continue.');
   if(document.getElementById('hp').value) return; // honeypot
@@ -822,10 +771,7 @@ async function submitForm(){
   }
 
   const fd=new FormData();
-  fd.append('name',name); fd.append('email',email);
-  fd.append('firm',firmSel);
-  if(firmSel==='other') fd.append('firmOther',fo);
-  fd.append('proofType',pt.value);
+  if(email) fd.append('email',email);
   fd.append('fileSha256',fileHash);
   fd.append('file',fileObj);
   fd.append('consentTerms','1'); fd.append('consentPrivacy','1');
@@ -878,11 +824,6 @@ function resetForm(){
 function startOver(){
   clearFile();
   cancelRedact();
-  document.querySelectorAll('input[name=proofType]').forEach(i=>i.checked=false);
-  document.querySelectorAll('.rcard').forEach(c=>c.classList.remove('sel'));
-  document.getElementById('firm').value='';
-  const fo=document.getElementById('firmOther');fo.value='';fo.style.display='none';
-  document.getElementById('name').value='';
   emailEl.value='';
   ['cTerms','cPrivacy','cMkt'].forEach(id=>document.getElementById(id).checked=false);
   document.getElementById('contactWrap').classList.remove('show');
