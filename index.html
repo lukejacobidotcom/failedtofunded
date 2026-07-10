@@ -373,7 +373,7 @@
     <div id="formArea">
       <div class="p-head">Show us the damage. New users only.</div>
       <div class="p-helper">Failed eval, blown account, or a receipt from another firm. Drop it in — we verify automatically.</div>
-      <div class="p-elig"><span>WHAT TO INCLUDE</span> Keep the <b>firm</b>, a <b>date</b>, and your <b>email</b> visible on the image — black out anything else.</div>
+      <div class="p-helper">Keep the <b>firm</b>, a <b>date</b>, and your <b>email</b> visible on the image — black out anything else.</div>
 
       <div>
         <label>Upload your proof</label>
@@ -396,7 +396,6 @@
         <div class="rp-sub">We auto-cover phone numbers, addresses, and account numbers. <b>Keep your email visible</b> — we read it to confirm the account is yours — plus the <b>firm</b>, <b>date</b>, and <b>status</b>. Drag a box over anything else you want hidden. This all happens on your device.</div>
         <div class="rp-canvas-wrap"><canvas id="redactCanvas"></canvas></div>
         <div class="rp-status" id="ocrStatus"></div>
-        <div class="rp-warn" id="emailWarn" style="display:none">⚠ We couldn't spot your email on this image. Include the part showing your email address — claims without a visible email go to manual review instead of instant approval.</div>
         <div class="rp-tools">
           <div class="rp-secondary">
             <button class="btn btn-ghost" onclick="undoRect()">Undo box</button>
@@ -776,7 +775,6 @@ let emailBoxes=[], emailFound=false;
 function setOcrStatus(msg){const el=document.getElementById('ocrStatus');if(el)el.textContent=msg;}
 function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
 async function autoRedact(){
-  document.getElementById('emailWarn').style.display='none';
   setOcrStatus('Scanning for personal info to auto-redact…');
   try{
     if(!window.Tesseract) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js');
@@ -805,7 +803,6 @@ async function autoRedact(){
     setOcrStatus(auto
       ? 'Auto-redacted '+auto+' item'+(auto===1?'':'s')+' (phones, addresses, account numbers). Your email stays visible (green). Add boxes for anything we missed.'
       : 'No phones, addresses, or account numbers detected. Add boxes for anything personal we missed — your email stays visible.');
-    if(!emailFound) document.getElementById('emailWarn').style.display='block';
   }catch(e){
     setOcrStatus('Auto-redaction unavailable — draw boxes over anything personal, but keep your email visible.');
   }
