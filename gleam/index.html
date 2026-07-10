@@ -8,25 +8,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;800&display=swap" rel="stylesheet">
-<!--
-  ============================================================
-  FAILED TO FUNDED — GLEAM version (entry collection via Gleam).
-  This variant swaps the custom upload/on-device-redaction/vision
-  backend for the Gleam widget (gleam.io/zO1qk/failed-eval-campaign).
-  Verification + code delivery are handled through Gleam / manual
-  review — NOT instant AI checks. Copy has been adjusted to match:
-  no "instant/under 60 seconds" and no "on-device redaction" claims.
-  COMPLIANCE: copy still needs human/legal sign-off. Gleam-collected
-  proof lives on Gleam's servers, so the privacy story differs from
-  the custom build.
-  ============================================================
--->
+<!-- GLEAM version: identical to index.html except the upload box is the Gleam
+     widget (gleam.io/zO1qk/failed-eval-campaign). Verification/delivery run
+     through Gleam + manual review, so the two "how fast / what happens to my
+     screenshot" answers are worded accordingly. -->
 <style>
   :root{
-    --bg:#02040E; --surface:#0A101F; --surface-2:#111A2E; --border:#243049;
-    --text:#FFFFFF; --text-dim:#ACB7C8; --accent:#D8AE5E; --accent-2:#3A82F7;
-    --grad:linear-gradient(to right,#D8AE5E,#3A82F7); --accent-text:#1C1C1C;
-    --green:#2ED47A; --red:#FF5C5C; --radius:12px;
+    --bg:#02040E;--surface:#0A101F;--surface-2:#111A2E;--border:#243049;
+    --text:#FFFFFF;--text-dim:#ACB7C8;--accent:#D8AE5E;--accent-2:#3A82F7;
+    --grad:linear-gradient(to right,#D8AE5E,#3A82F7);--accent-text:#1C1C1C;
+    --green:#2ED47A;--red:#FF5C5C;--radius:12px;
     --font:'Lexend',system-ui,-apple-system,sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -43,7 +34,6 @@
   @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-  /* Header */
   header{position:sticky;top:0;z-index:50;background:rgba(2,4,14,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
   .nav{display:flex;align-items:center;justify-content:space-between;height:68px}
   .logo{display:flex;flex-direction:column;gap:2px}
@@ -56,7 +46,6 @@
   .hnav a:hover{color:var(--text)}
   @media(max-width:760px){.hnav{display:none}}
 
-  /* Hero */
   .hero{padding:34px 0 8px;text-align:center;position:relative}
   .hero::before{content:"";position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:min(760px,90vw);height:420px;background:radial-gradient(closest-side,rgba(216,174,94,.13),transparent 72%);pointer-events:none}
   .hero>*{position:relative}
@@ -66,34 +55,27 @@
   h1 em{color:var(--accent);font-style:normal;text-shadow:0 0 34px rgba(216,174,94,.5)}
   .sub{color:var(--text-dim);font-size:clamp(15px,2vw,19px);max-width:660px;margin:18px auto 0;font-weight:600;animation:fadeUp .5s ease .1s both}
   .sub b{color:var(--text)}
-  .urgency{font-size:13px;color:var(--text-dim);margin-top:12px;animation:fadeUp .5s ease .14s both}
-  .urgency b{color:var(--accent)}
   .goldline{height:2px;max-width:520px;margin:20px auto 0;background:linear-gradient(to right,transparent,#D8AE5E,#3A82F7,transparent);opacity:.7}
 
-  /* Claim card */
-  .portal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:30px 34px;max-width:720px;margin:22px auto 26px;text-align:left;box-shadow:0 26px 80px rgba(0,0,0,.5);transition:border-color .25s,box-shadow .25s;animation:fadeUp .6s ease .22s both}
+  .portal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:30px 34px;max-width:1020px;margin:22px auto 26px;text-align:left;box-shadow:0 26px 80px rgba(0,0,0,.5);transition:border-color .25s,box-shadow .25s;animation:fadeUp .6s ease .22s both}
   .portal:hover,.portal:focus-within{border-color:rgba(216,174,94,.45);box-shadow:0 26px 80px rgba(0,0,0,.5),0 0 44px rgba(216,174,94,.08)}
   .p-head{font-size:22px;font-weight:800;margin-bottom:4px}
   .p-helper{font-size:13.5px;color:var(--text-dim);margin-bottom:4px}
-  .p-fast{font-size:12px;color:var(--accent);font-weight:600;margin-bottom:14px}
-  .p-elig{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12.5px;color:var(--text-dim);background:rgba(216,174,94,.08);border:1px solid rgba(216,174,94,.4);border-radius:10px;padding:11px 14px;margin-bottom:20px}
-  .p-elig b{color:var(--text)}
-  .p-elig span{background:var(--grad);color:var(--accent-text);font-size:10.5px;font-weight:800;letter-spacing:.6px;padding:3px 9px;border-radius:99px;white-space:nowrap}
+  label{display:block;font-size:13.5px;font-weight:600;margin:20px 0 8px}
+  .reassure{font-size:12.5px;color:var(--text-dim);margin-top:12px;text-align:center}
+  .proofneeds{display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;margin-top:12px;font-size:12.5px;color:var(--text-dim)}
+  .proofneeds span::before{content:"✓ ";color:var(--green);font-weight:700}
 
-  /* Gleam embed wrapper */
-  .gleam-wrap{min-height:420px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2);padding:8px}
+  /* Gleam embed wrapper (replaces the upload box) */
+  .gleam-wrap{min-height:420px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2);padding:8px;margin-top:8px}
   .gleam-wrap .e-widget{min-height:400px;display:block}
-  .gleam-loading{color:var(--text-dim);font-size:13px;text-align:center;padding:36px 10px}
-  .reassure{font-size:12.5px;color:var(--text-dim);margin-top:14px;text-align:center}
 
-  /* Confidence strip */
   .strip{max-width:760px;margin:0 auto 54px;text-align:center}
   .strip p{font-size:14px;color:var(--text-dim);margin-bottom:12px}
   .pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
   .pill{background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:8px 16px;font-size:12.5px;font-weight:600;color:var(--text)}
   .pill::before{content:"✓ ";color:var(--green);font-weight:800}
 
-  /* Steps strip */
   .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:0 0 60px;position:relative}
   @media(min-width:641px){.steps::before{content:"";position:absolute;top:47px;left:10%;right:10%;height:2px;background:linear-gradient(to right,rgba(216,174,94,.45),rgba(58,130,247,.45),rgba(216,174,94,.45));z-index:0}}
   @media(max-width:640px){.steps{grid-template-columns:1fr}}
@@ -106,7 +88,6 @@
   .step.payoff .n{box-shadow:0 0 22px rgba(216,174,94,.45)}
   .step.payoff h3{color:var(--accent)}
 
-  /* Eligibility */
   .elig{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px;margin-bottom:60px}
   .elig h2{font-size:21px;margin-bottom:18px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:26px}
@@ -119,7 +100,6 @@
   .rules li::before{content:"◆";position:absolute;left:0;color:var(--accent);font-size:11px;top:3px}
   @media(max-width:640px){.elig li{background:var(--surface-2);border-radius:10px;padding:12px 14px 12px 34px}.quals li::before,.rules li::before{left:12px;top:12px}}
 
-  /* FAQ */
   .faq{margin-bottom:70px;max-width:760px;margin-left:auto;margin-right:auto}
   .faq h2{font-size:26px;margin-bottom:6px}
   .faq .faq-sub{font-size:14px;color:var(--text-dim);margin-bottom:22px}
@@ -132,10 +112,38 @@
   details[open] summary::after{content:"–"}
   details p{color:var(--text-dim);font-size:14px;padding-bottom:17px;animation:fadeUp .25s ease}
 
-  /* Footer */
   footer{border-top:1px solid var(--border);padding:38px 0 52px}
   .fine{font-size:11px;color:var(--text-dim);line-height:1.7;max-width:900px}
   .fine b{color:var(--text)}
+
+  /* Desktop-only "rescue price" stamp */
+  .savestamp{display:none}
+  @keyframes stampIn{from{opacity:0;transform:rotate(-7deg) scale(.6)}to{opacity:1;transform:rotate(-7deg) scale(1)}}
+  @media(min-width:761px){
+    .savestamp{display:block;position:fixed;left:22px;bottom:22px;z-index:60;
+      background:var(--surface);border:2px solid var(--accent);border-radius:14px;
+      padding:12px 18px;transform:rotate(-7deg);text-align:center;text-decoration:none;
+      box-shadow:0 16px 44px rgba(0,0,0,.55);animation:stampIn .5s ease .9s both;transition:transform .15s}
+    .savestamp:hover{transform:rotate(-7deg) translateY(-2px) scale(1.03)}
+    .savestamp .ss-top{font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--text-dim);font-weight:700}
+    .savestamp .ss-price{font-weight:800;color:var(--accent);line-height:1;margin:2px 0 1px}
+    .savestamp .ss-price s{color:var(--text-dim);font-size:16px;font-weight:600;margin-right:7px;text-decoration-color:var(--red)}
+    .savestamp .ss-price .now{font-size:30px}
+    .savestamp .ss-bot{font-size:10px;color:var(--text-dim)}
+    .savestamp .ss-bot b{color:var(--text)}
+  }
+  @media(max-width:640px){
+    .hero{padding:18px 0 4px}
+    h1{font-size:clamp(30px,9vw,42px)}
+    .sub{font-size:15px;margin-top:10px}
+    .goldline{margin-top:14px}
+    .portal{padding:18px 15px;margin:16px auto 20px;border-radius:14px}
+    .p-head{font-size:19px}
+    .p-helper{font-size:13px}
+    .proofneeds{display:none}
+    .strip{margin-bottom:36px}
+    .steps{margin-bottom:44px}
+  }
 </style>
 </head>
 <body>
@@ -149,40 +157,40 @@
 </header>
 
 <section class="hero wrap">
-  <div class="badge">Failed to Funded · <b>&nbsp;New MyFundedFutures traders only</b></div>
-  <h1><em>70% off</em> when you switch.</h1>
-  <p class="sub">Your last firm failed you. Bring the failed eval (or receipt). <b>We'll give you a fresh start at 70% off</b> — for traders new to MyFundedFutures.</p>
-  <p class="urgency" id="urgencyLine">Codes are <b>single-use</b> and expire <b>7 days</b> after approval.</p>
+  <div class="badge"><b>Failed to Funded</b></div>
+  <h1><em>70% Off Builder</em><br>Switch and be Saved</h1>
+  <p class="sub">Bring proof another prop firm did you dirty. Leave with <b>70% off</b>.</p>
   <div class="goldline"></div>
 
   <!-- CLAIM CARD -->
   <div class="portal" id="portal">
     <div id="claimBody">
-      <div class="p-head">Claim your 70% Builder code</div>
-      <div class="p-helper">Enter below — upload proof you've had a bad time at another futures prop firm, add your email, and we'll review it and send your code.</div>
-      <div class="p-fast">Takes about a minute to enter.</div>
-      <div class="p-elig"><span>NEW CUSTOMERS ONLY</span> This offer is for your <b>first MyFundedFutures account</b>. Existing or past MFFU customers don't qualify.</div>
+      <div class="p-head">Show us the damage. New users only.</div>
+      <div class="p-helper">Failed eval, blown account, or a receipt from another firm. Enter below — we review it and send your code.</div>
+      <div class="p-helper">Keep the <b>firm</b>, a <b>date</b>, and your <b>email</b> visible on the image — black out anything else.</div>
 
+      <label>Enter your proof</label>
       <!-- ===== GLEAM ENTRY WIDGET ===== -->
       <div class="gleam-wrap">
         <a class="e-widget no-button generic-loader" href="https://gleam.io/zO1qk/failed-eval-campaign" rel="nofollow">Failed Eval Campaign</a>
       </div>
-      <div class="reassure">Black out account numbers, balances, and anything private before you upload. One entry per trader.</div>
+      <div class="reassure">Your screenshot is only used to verify eligibility — black out anything private before you upload. One entry per trader.</div>
+      <div class="proofneeds"><span>the firm's platform or receipt</span><span>a visible date (last 90 days)</span><span>the status: failed / eliminated / purchase</span><span>your email visible on the page</span></div>
     </div>
   </div>
 
   <!-- Confidence strip -->
   <div class="strip">
-    <p><b style="color:var(--text)">Raise your standard.</b> Built for traders switching from firms that overcomplicate funding.</p>
+    <p><b style="color:var(--text)">For traders who are done with the other guys' nonsense.</b></p>
     <div class="pills"><span class="pill">No activation fees</span><span class="pill">Instant payout approvals</span><span class="pill">Trader-first rules</span></div>
   </div>
 </section>
 
 <section class="wrap">
   <div class="steps" id="how">
-    <div class="step"><div class="n">1</div><h3>Enter your proof</h3><p>Upload the fail, breach, or receipt from another firm and add your email in the form above.</p></div>
-    <div class="step"><div class="n">2</div><h3>We review it</h3><p>Our team checks your proof and confirms you're new to MyFundedFutures. Most entries are handled within 24 hours.</p></div>
-    <div class="step payoff"><div class="n">3</div><h3>Unlock 70% off</h3><p>We email your personal code for 70% off your first month on a Builder plan.</p></div>
+    <div class="step"><div class="n">1</div><h3>Upload the evidence</h3><p>The fail, the blown account, or a receipt. Any firm that isn't us.</p></div>
+    <div class="step"><div class="n">2</div><h3>We review it</h3><p>Our team checks your proof and that you're new to MFFU — usually within 24 hours.</p></div>
+    <div class="step payoff"><div class="n">3</div><h3>70% off. Welcome home.</h3><p>Your comeback code lands in your inbox — Builder, first month.</p></div>
   </div>
 
   <div class="elig" id="qualify">
@@ -231,30 +239,28 @@
   </div>
 </footer>
 
+<!-- Desktop-only rescue-price stamp -->
+<a class="savestamp" href="#portal" aria-label="70 percent off, 33 dollars first month, was 109 dollars">
+  <div class="ss-top">Don't worry we're here</div>
+  <div class="ss-price"><s>$109</s><span class="now">$33</span></div>
+  <div class="ss-bot">your comeback price · <b>the other guys: full price</b></div>
+</a>
+
 <!-- Gleam widget loader -->
 <script type="text/javascript" src="https://widget.gleamjs.io/e.js" async="true"></script>
 
-<!-- Limited-time gate: countdown text while open, closed message after -->
+<!-- Limited-time gate: closed message after the window ends -->
 <script>
 (function(){
   var OFFER_END = new Date('2026-07-31T23:59:59-04:00'); // <- set the real end (ET)
   document.addEventListener('DOMContentLoaded', function(){
-    var now = Date.now(), u = document.getElementById('urgencyLine');
-    if (now > OFFER_END.getTime()){
-      var body = document.getElementById('claimBody');
-      if (body) body.innerHTML =
+    if (Date.now() > OFFER_END.getTime()){
+      var b = document.getElementById('claimBody');
+      if (b) b.innerHTML =
         '<div class="p-head">This round is closed.</div>'+
         '<p class="p-helper" style="margin-top:6px">Failed to Funded is a limited-time program and this window has ended. '+
         'Follow MyFundedFutures for the next one — or see what\'s live right now.</p>'+
         '<a class="cta-mini" style="display:inline-block;margin-top:14px" href="https://myfundedfutures.com/challenge">See current offers →</a>';
-      if (u) u.textContent = '';
-      return;
-    }
-    if (u){
-      var days = Math.max(0, Math.ceil((OFFER_END.getTime()-now)/864e5));
-      u.innerHTML = 'Limited run — ends <b>'+OFFER_END.toLocaleDateString(undefined,{month:'long',day:'numeric'})+'</b>'+
-        (days<=10 ? ' · <b>'+days+' day'+(days===1?'':'s')+' left</b>' : '')+
-        '. Codes are <b>single-use</b> and expire <b>7 days</b> after approval.';
     }
   });
 })();
