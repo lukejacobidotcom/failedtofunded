@@ -1,0 +1,396 @@
+/* Mobile and tablet spacing refinement for the conquest landing page. */
+@media (min-width: 701px) and (max-width: 980px) {
+  .section {
+    padding: 80px 0;
+  }
+
+  .hero-inner {
+    padding-top: 58px;
+    padding-bottom: 68px;
+  }
+
+  .plan-heading {
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+
+  .compare-layout {
+    gap: 36px;
+  }
+}
+
+@media (max-width: 700px) {
+  body {
+    padding-bottom: 64px;
+  }
+
+  .promo {
+    min-height: 40px;
+    gap: 6px;
+    padding: 7px 12px;
+    font-size: 9px;
+    line-height: 1.35;
+  }
+
+  .promo span {
+    max-width: 264px;
+  }
+
+  .promo a {
+    flex: 0 0 auto;
+  }
+
+  .nav {
+    height: 60px;
+  }
+
+  .logo img {
+    width: 158px;
+  }
+
+  .mobile-menu {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hero {
+    min-height: 0;
+    align-items: stretch;
+  }
+
+  .hero-inner {
+    padding: 38px 0 52px;
+  }
+
+  .hero-kicker {
+    margin-bottom: 14px;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  h1 {
+    font-size: 42px;
+    line-height: 1.04;
+  }
+
+  .hero-lede {
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .hero-actions {
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .button {
+    min-height: 44px;
+    padding: 11px 16px;
+  }
+
+  .offer-note {
+    margin-top: 11px;
+    font-size: 10.5px;
+    line-height: 1.45;
+  }
+
+  .comparison-prompt {
+    gap: 8px;
+    margin-top: 22px;
+    padding-top: 18px;
+  }
+
+  .comparison-prompt label {
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+
+  .comparison-prompt select {
+    height: 46px;
+    font-size: 14px;
+  }
+
+  .prompt-output {
+    min-height: 0;
+    padding: 9px 11px;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .proof-strip {
+    margin-top: -16px;
+  }
+
+  .proof-item {
+    min-height: 86px;
+    padding: 14px 12px;
+  }
+
+  .proof-item strong {
+    font-size: 17px;
+    line-height: 1.2;
+  }
+
+  .proof-item span {
+    margin-top: 3px;
+    font-size: 10.5px;
+    line-height: 1.35;
+  }
+
+  .section {
+    padding: 56px 0;
+  }
+
+  .section-title {
+    font-size: 31px;
+    line-height: 1.1;
+  }
+
+  .section-copy {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .plan-heading {
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .offer-lockup {
+    padding: 14px 15px;
+  }
+
+  .offer-lockup strong {
+    font-size: 16px;
+  }
+
+  .offer-lockup span {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .plan-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .plan-tab {
+    min-width: 0;
+    min-height: 50px;
+    justify-content: center;
+    padding: 9px 6px;
+    text-align: center;
+    font-size: 13px;
+  }
+
+  .plan-tab span {
+    display: none;
+  }
+
+  .plan-main,
+  .plan-cta {
+    padding: 22px 16px;
+  }
+
+  .plan-main h3 {
+    font-size: 26px;
+  }
+
+  .plan-main > p {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .plan-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .plan-features li {
+    min-height: 76px;
+    padding: 11px 9px 11px 34px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .plan-features li::before {
+    top: 11px;
+    left: 9px;
+  }
+
+  .plan-cta .discount {
+    margin-top: 5px;
+    font-size: 44px;
+  }
+
+  .plan-cta .code-row {
+    margin-top: 14px;
+  }
+
+  .plan-cta .button {
+    margin-top: 10px;
+  }
+
+  .plan-cta small {
+    margin-top: 9px;
+    font-size: 9.5px;
+  }
+
+  .compare-layout {
+    gap: 24px;
+  }
+
+  .compare-sticky .button {
+    width: 100%;
+    margin-top: 18px;
+  }
+
+  .compare-row {
+    gap: 5px;
+    padding: 17px 0;
+  }
+
+  .compare-label {
+    font-size: 10px;
+  }
+
+  .compare-value strong {
+    font-size: 17px;
+    line-height: 1.35;
+  }
+
+  .compare-value span {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .switch-inner {
+    gap: 24px;
+    padding: 38px 0;
+  }
+
+  .switch-inner h2 {
+    font-size: 29px;
+  }
+
+  .switch-inner p {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .switch-actions {
+    gap: 8px;
+  }
+
+  .faq-list {
+    margin-top: 24px;
+  }
+
+  summary {
+    min-height: 58px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  details p {
+    margin-bottom: 18px;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .footer-main {
+    gap: 28px 18px;
+    padding: 44px 0 32px;
+  }
+
+  .footer-brand img {
+    width: 188px;
+  }
+
+  .footer-brand p {
+    margin-top: 12px;
+    font-size: 12px;
+  }
+
+  .footer-col h3 {
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+
+  .footer-col a {
+    margin-top: 8px;
+    font-size: 11px;
+  }
+
+  .disclosures {
+    padding: 18px 0 22px;
+    font-size: 9px;
+    line-height: 1.55;
+  }
+
+  .copyright {
+    gap: 12px;
+    padding-top: 14px;
+  }
+
+  .socials {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sticky-mobile {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .sticky-mobile .button {
+    min-height: 42px;
+  }
+}
+
+@media (max-width: 359px) {
+  .promo span {
+    max-width: 220px;
+  }
+
+  h1 {
+    font-size: 37px;
+  }
+
+  .hero-kicker {
+    max-width: 280px;
+  }
+
+  .plan-features {
+    grid-template-columns: 1fr;
+  }
+
+  .plan-features li {
+    min-height: 58px;
+  }
+
+  .sticky-mobile strong {
+    font-size: 12px;
+  }
+}
+@media (max-width: 700px) {
+  .sticky-mobile {
+    display: grid;
+    opacity: 0;
+    transform: translateY(100%);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+
+  .sticky-mobile.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}

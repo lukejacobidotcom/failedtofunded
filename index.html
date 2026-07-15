@@ -616,6 +616,8 @@
       *, *::before, *::after { transition: none !important; }
     }
   </style>
+  <link rel="stylesheet" href="/mobile.css?v=2">
+  <link rel="stylesheet" href="/marketing.css?v=2">
 </head>
 <body>
   <div class="promo">
@@ -652,14 +654,20 @@
       </div>
       <div class="container hero-inner">
         <div class="hero-copy">
+          <div class="competitor-badge" id="competitorBadge" hidden>Comparing <strong id="competitorName"></strong></div>
           <div class="hero-kicker">Built for futures traders who are ready to move forward</div>
-          <h1>Stop paying for rules that <span>hold you back.</span></h1>
-          <p class="hero-lede">Comparing another futures prop firm? Start with the rules that affect how you trade, then choose the MyFundedFutures path that fits you.</p>
+          <h1 id="heroHeadline">Stop paying for rules that <span>hold you back.</span></h1>
+          <p class="hero-lede" id="heroLede">Comparing another futures prop firm? Start with the rules that affect how you trade, then choose the MyFundedFutures path that fits you.</p>
+          <ul class="hero-proof" aria-label="Why traders start with Rapid">
+            <li><strong>24-hour</strong> payout requests</li>
+            <li><strong>No Rapid</strong> consistency rule</li>
+            <li><strong>$0</strong> activation fee</li>
+          </ul>
           <div class="hero-actions">
-            <a class="button button-primary tracked-checkout" data-plan="rapid" href="https://myfundedfutures.com/challenge?coupon=300K&id=70">Get 50% Off</a>
+            <a class="button button-primary tracked-checkout" data-plan="rapid" data-cta-location="hero" href="https://myfundedfutures.com/challenge?coupon=300K&id=70">Start Rapid - 50% Off Applied</a>
             <a class="button button-secondary" href="#compare">Compare what matters</a>
           </div>
-          <p class="offer-note">Use code <b>300K</b>. Maximum two uses per user on eligible evaluations. Checkout terms govern.</p>
+          <p class="offer-note"><strong>No proof required.</strong> Use code <b>300K</b>. Maximum two uses per user on eligible evaluations. Checkout terms govern.</p>
 
           <div class="comparison-prompt">
             <div>
@@ -1006,5 +1014,7 @@
 
     refreshTrackedLinks();
   </script>
+  <script src="/mobile.js?v=1" defer></script>
+  <script src="/marketing.js?v=2" defer></script>
 </body>
 </html>
