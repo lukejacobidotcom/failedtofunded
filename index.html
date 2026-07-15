@@ -1,939 +1,1010 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Failed to Funded — 70% Off When You Switch | MyFundedFutures</title>
-<meta name="description" content="Failed an eval or blew a funded account at another firm? Upload proof and get a personalized 70% off code for your first month at MyFundedFutures.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;800&display=swap" rel="stylesheet">
-<!--
-  ============================================================
-  FAILED TO FUNDED — Competitor Rescue Portal (production front-end)
-  v4.2 deploy build — 2026-07-06. Two-column above-the-fold form,
-  Kevin's "Raise Your Standard" integration, Real User agent fixes.
-  ============================================================
-  BRAND: tokens extracted from live myfundedfutures.com 2026-07-05
-  API:   set API_BASE in the CONFIG block at the top of <script>.
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Switch to MyFundedFutures | 50% Off Eligible Evaluations</title>
+  <meta name="description" content="Compare the rules that matter, choose your MyFundedFutures plan, and use code 300K for 50% off eligible Rapid, Pro, and Builder 50K evaluations.">
+  <meta property="og:title" content="Your next futures account should work harder for you.">
+  <meta property="og:description" content="Compare the rules. Choose your path. Get 50% off eligible MyFundedFutures evaluations.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://assets-mffu.fundedcms.com/static-assets-frontend/1b252a63-79d8-4638-9452-c13dd791f018_large_11zon-removebg-preview.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="https://myfundedfutures.com/images/mffu/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #02040e;
+      --bg-soft: #080c16;
+      --surface: #11151f;
+      --surface-2: #171c27;
+      --line: #2c3240;
+      --line-soft: #202634;
+      --text: #ffffff;
+      --muted: #a9b1c0;
+      --gold: #d8ae5e;
+      --gold-light: #f1d89c;
+      --blue: #3a82f7;
+      --blue-light: #79aaff;
+      --green: #39d98a;
+      --danger: #ff7070;
+      --max: 1240px;
+      --radius: 8px;
+      --font: "Lexend", Arial, sans-serif;
+    }
 
-  API CONTRACT (backend must implement):
-    POST {API_BASE}/otp                { email } -> 204
-    POST {API_BASE}/submissions       multipart/form-data:
-         name, email, otp, firm, firmOther?, proofType,
-         fileSha256, file, consentTerms, consentPrivacy,
-         marketingOptIn, hp
-         (no user-entered date — 90-day recency enforced server-side
-          from the date extracted off the proof)
-      -> 201 { submissionId, status: "approved"|"pending_review"|"declined",
-               code?, expiresAt?, declineReason? }
-      -> error statuses mapped to friendly copy:
-         400/401 bad OTP · 409 already claimed · else generic
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: var(--font);
+      line-height: 1.5;
+      letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
+    }
 
-  COUPON ISSUANCE (updated 2026-07-06): codes come from a pre-generated
-  1:1 pool (switch_codes table, 1,000 codes supplied by Luke). On
-  approval the backend atomically assigns the next unused code, then
-  notifies RallyLH which triggers the Braze email:
-    POST https://mffu-rally.onrender.com/integrations/failedtofunded/approved-builder-coupon
-    GET  https://mffu-rally.onrender.com/integrations/failedtofunded/health
-    Authorization: Bearer <FAILED_TO_FUNDED_WEBHOOK_SECRET>
-      (env var on the portal backend — NEVER commit the secret)
-    Kill switch env (RallyLH side): FAILED_TO_FUNDED_SEND_ENABLED
-    body: { "event_id": "fft_approved_<submissionId>", "email",
-            "coupon_code", "approval_status": "approved",
-            "proof_type", "competitor", "approved_at" }
-    (idempotent on event_id · retry w/ backoff on 5xx ·
-     proof_type enum per RallyLH, e.g. failed_competitor_evaluation)
-  VALIDATION additions: new-user check vs MFFU customer DB (verified
-  email; re-checked at checkout) + AI-generated-image screening
-  (suspected AI never instant-approves; routes to human queue).
-  DEPLOY CHECK: verify deployed byte length matches source — a
-  truncated inline script kills the page silently.
-  NOTE: until the backend ships, "Send code" will fail on https
-  (demo mode only activates on file://). Do not drive traffic yet.
-  COMPLIANCE: copy requires human/legal sign-off. Verify claims:
-  "No activation fees", "Instant payout approvals", "Trader-first
-  rules", "verified in under 60 seconds".
-  ============================================================
--->
-<style>
-  :root{
-    --bg:#02040E;
-    --surface:#0A101F;
-    --surface-2:#111A2E;
-    --border:#243049;
-    --text:#FFFFFF;
-    --text-dim:#ACB7C8;
-    --accent:#D8AE5E;
-    --accent-2:#3A82F7;
-    --grad:linear-gradient(to right,#D8AE5E,#3A82F7);
-    --accent-text:#1C1C1C;
-    --green:#2ED47A;
-    --red:#FF5C5C;
-    --radius:12px;
-    --font:'Lexend',system-ui,-apple-system,sans-serif;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    background:
-      radial-gradient(1100px 560px at 50% -120px, rgba(58,130,247,.09), transparent 62%),
-      radial-gradient(900px 520px at 85% 18%, rgba(216,174,94,.06), transparent 58%),
-      radial-gradient(700px 460px at 8% 62%, rgba(58,130,247,.045), transparent 60%),
-      var(--bg);
-    color:var(--text);font-family:var(--font);line-height:1.55;-webkit-font-smoothing:antialiased}
-  a{color:var(--accent);text-decoration:none}
-  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-  @keyframes fillMeter{from{width:0}}
-  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+    button, select, input { font: inherit; letter-spacing: 0; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    .container { width: min(calc(100% - 40px), var(--max)); margin: 0 auto; }
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .section-title {
+      margin: 0;
+      max-width: 800px;
+      font-size: clamp(30px, 4vw, 50px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .section-copy { max-width: 720px; margin: 16px 0 0; color: var(--muted); font-size: 17px; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
-  /* Header */
-  header{position:sticky;top:0;z-index:50;background:rgba(2,4,14,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
-  .nav{display:flex;align-items:center;justify-content:space-between;height:68px}
-  .logo{display:flex;flex-direction:column;gap:2px}
-  .logo img{height:28px;display:block}
-  .logo-sub{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);font-weight:600}
-  .nav .cta-mini{background:var(--grad);color:var(--accent-text);font-weight:700;padding:10px 20px;border-radius:var(--radius);font-size:14px;transition:box-shadow .2s,transform .15s}
-  .nav .cta-mini:hover{box-shadow:0 0 24px rgba(216,174,94,.35);transform:translateY(-1px)}
-  .hnav{display:flex;gap:20px;font-size:13.5px}
-  .hnav a{color:var(--text-dim);transition:color .15s}
-  .hnav a:hover{color:var(--text)}
-  @media(max-width:760px){.hnav{display:none}}
-  .linklike{background:none;border:none;color:var(--text-dim);text-decoration:underline;cursor:pointer;font-family:var(--font);font-size:12.5px;margin-top:10px}
-  .linklike:hover{color:var(--text)}
+    .promo {
+      position: relative;
+      z-index: 80;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 8px 20px;
+      background: var(--gold);
+      color: #15181f;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .promo a { text-decoration: underline; text-underline-offset: 3px; }
 
-  /* Hero */
-  .hero{padding:34px 0 8px;text-align:center;position:relative}
-  .hero::before{content:"";position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:min(760px,90vw);height:420px;background:radial-gradient(closest-side,rgba(216,174,94,.13),transparent 72%);pointer-events:none}
-  .hero>*{position:relative}
-  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:8px 18px;font-size:13px;color:var(--text-dim);margin-bottom:22px;animation:fadeUp .5s ease both}
-  .badge b{color:var(--accent)}
-  h1{font-size:clamp(34px,6vw,62px);font-weight:800;line-height:1.08;letter-spacing:-.5px;max-width:860px;margin:0 auto;animation:fadeUp .5s ease .05s both}
-  h1 em{color:var(--accent);font-style:normal;text-shadow:0 0 34px rgba(216,174,94,.5)}
-  .sub{color:var(--text-dim);font-size:clamp(15px,2vw,19px);max-width:660px;margin:18px auto 0;font-weight:600;animation:fadeUp .5s ease .1s both}
-  .sub b{color:var(--text)}
-  .urgency{font-size:13px;color:var(--text-dim);margin-top:12px;animation:fadeUp .5s ease .14s both}
-  .urgency b{color:var(--accent)}
-  .goldline{height:2px;max-width:520px;margin:20px auto 0;background:linear-gradient(to right,transparent,#D8AE5E,#3A82F7,transparent);opacity:.7}
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 70;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: rgba(2,4,14,.94);
+      backdrop-filter: blur(14px);
+    }
+    .nav {
+      height: 74px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 28px;
+    }
+    .logo img { width: 190px; height: auto; }
+    .nav-links { display: flex; align-items: center; justify-content: center; gap: 30px; }
+    .nav-links a { color: #d9dde6; font-size: 14px; font-weight: 600; }
+    .nav-links a:hover, .nav-links a:focus-visible { color: var(--gold); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .login-link { padding: 11px 12px; color: #e9edf4; font-size: 14px; font-weight: 700; }
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+    .button:hover { transform: translateY(-1px); }
+    .button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+    .button-primary {
+      color: #15181f;
+      background: var(--gold);
+      box-shadow: 0 10px 28px rgba(216,174,94,.18);
+    }
+    .button-primary:hover { background: var(--gold-light); box-shadow: 0 12px 34px rgba(216,174,94,.28); }
+    .button-secondary {
+      color: var(--text);
+      border-color: #566174;
+      background: rgba(9,13,22,.68);
+    }
+    .button-secondary:hover { border-color: var(--gold); }
+    .mobile-menu {
+      width: 44px;
+      height: 44px;
+      display: none;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--text);
+      background: transparent;
+      cursor: pointer;
+    }
+    .mobile-menu span, .mobile-menu::before, .mobile-menu::after {
+      width: 18px;
+      height: 2px;
+      display: block;
+      content: "";
+      background: currentColor;
+    }
+    .mobile-menu span { margin: 4px 0; }
 
-  /* Two-column form layout (desktop) — upload above the fold */
-  .form-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:0 28px;align-items:start}
-  @media(max-width:760px){.form-grid{grid-template-columns:1fr}}
-  .form-grid .radio-cards{grid-template-columns:1fr;gap:8px}
-  .form-grid .rcard{display:grid;grid-template-columns:22px 1fr;gap:2px 12px;text-align:left;padding:12px 14px}
-  .form-grid .rcard .ric{grid-row:1/3;margin:0;align-self:center}
-  .form-grid .rcard b{margin:0}
+    .hero {
+      position: relative;
+      min-height: 690px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line-soft);
+      background: #050812;
+    }
+    .hero::before {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      content: "";
+      background: linear-gradient(90deg, #050812 0%, #050812 47%, rgba(5,8,18,.76) 69%, rgba(5,8,18,.28) 100%);
+    }
+    .hero-art {
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 54%;
+      height: 100%;
+      overflow: hidden;
+      background: #0b111d;
+    }
+    .hero-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: 72% center;
+      transform: scale(1.08);
+      filter: saturate(.92) contrast(1.02);
+    }
+    .hero-art::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: linear-gradient(180deg, rgba(2,4,14,.03), rgba(2,4,14,.45));
+    }
+    .hero-inner { position: relative; z-index: 2; width: 100%; padding: 72px 0 84px; }
+    .hero-copy { width: min(690px, 62%); }
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 22px;
+      color: #e8edf7;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .hero-kicker::before {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      content: "";
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(57,217,138,.12);
+    }
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(44px, 6.2vw, 82px);
+      line-height: 1.01;
+      letter-spacing: 0;
+    }
+    h1 span { color: var(--gold); }
+    .hero-lede { max-width: 640px; margin: 24px 0 0; color: #c3cad6; font-size: clamp(17px, 2vw, 21px); }
+    .hero-actions { display: flex; align-items: center; gap: 12px; margin-top: 30px; }
+    .hero-actions .button { min-width: 190px; }
+    .offer-note { margin: 16px 0 0; color: #929dac; font-size: 12px; }
+    .comparison-prompt {
+      width: min(620px, 100%);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      margin-top: 34px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255,255,255,.14);
+    }
+    .comparison-prompt label { display: block; margin-bottom: 8px; color: #e8ecf3; font-size: 13px; font-weight: 700; }
+    .comparison-prompt select {
+      width: 100%;
+      height: 50px;
+      border: 1px solid #4a5363;
+      border-radius: 6px;
+      padding: 0 44px 0 14px;
+      color: var(--text);
+      background: #111722;
+      cursor: pointer;
+    }
+    .comparison-prompt select:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+    .prompt-output {
+      align-self: end;
+      min-width: 220px;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-left: 3px solid var(--blue);
+      background: rgba(58,130,247,.1);
+      color: #dce8ff;
+      font-size: 12px;
+      font-weight: 600;
+    }
 
-  /* Claim card */
-  .portal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:30px 34px;max-width:1020px;margin:22px auto 26px;text-align:left;box-shadow:0 26px 80px rgba(0,0,0,.5);transition:border-color .25s,box-shadow .25s;animation:fadeUp .6s ease .22s both}
-  .portal:hover,.portal:focus-within{border-color:rgba(216,174,94,.45);box-shadow:0 26px 80px rgba(0,0,0,.5),0 0 44px rgba(216,174,94,.08)}
-  .p-head{font-size:22px;font-weight:800;margin-bottom:4px}
-  .p-helper{font-size:13.5px;color:var(--text-dim);margin-bottom:4px}
-  .p-fast{font-size:12px;color:var(--accent);font-weight:600;margin-bottom:14px}
-  .p-elig{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12.5px;color:var(--text-dim);background:rgba(216,174,94,.08);border:1px solid rgba(216,174,94,.4);border-radius:10px;padding:11px 14px;margin-bottom:20px}
-  .p-elig b{color:var(--text)}
-  .p-elig span{background:var(--grad);color:var(--accent-text);font-size:10.5px;font-weight:800;letter-spacing:.6px;padding:3px 9px;border-radius:99px;white-space:nowrap}
-  label{display:block;font-size:13.5px;font-weight:600;margin:20px 0 8px}
-  input[type=text],input[type=email],select{
-    width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;
-    color:var(--text);padding:13px 14px;font-size:15px;font-family:var(--font)}
-  input:focus,select:focus{outline:none;border-color:var(--accent-2)}
-  .hint{font-size:12.5px;color:var(--text-dim);margin-top:6px}
-  .err{color:var(--red);font-size:13px;margin-top:10px;display:none}
-  .err.show{display:block}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:640px){.row{grid-template-columns:1fr}}
+    .proof-strip {
+      position: relative;
+      z-index: 4;
+      margin-top: -36px;
+    }
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line);
+      background: #0d121c;
+      box-shadow: 0 22px 52px rgba(0,0,0,.34);
+    }
+    .proof-item { min-height: 110px; padding: 22px 24px; border-right: 1px solid var(--line); }
+    .proof-item:last-child { border-right: 0; }
+    .proof-item strong { display: block; color: var(--gold-light); font-size: 22px; }
+    .proof-item span { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
 
-  /* Option cards */
-  .radio-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  @media(max-width:640px){.radio-cards{grid-template-columns:1fr}}
-  .rcard{position:relative;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:16px 12px 14px;cursor:pointer;transition:border-color .15s,background .15s,transform .15s;text-align:center}
-  .rcard:hover{transform:translateY(-2px);border-color:rgba(216,174,94,.4)}
-  .rcard input{position:absolute;opacity:0}
-  .rcard:focus-within{outline:2px solid var(--accent-2);outline-offset:2px}
-  .rcard .ric{width:22px;height:22px;margin:0 auto 8px;display:block;color:var(--accent-2);transition:color .15s}
-  .rcard b{display:block;font-size:14px;margin-bottom:3px;color:var(--text-dim);transition:color .15s}
-  .rcard span{font-size:12px;color:var(--text-dim)}
-  .rcard .tick{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#02040E;display:none;font-size:11px;font-weight:800;align-items:center;justify-content:center}
-  .rcard.sel{border-color:var(--accent);background:rgba(216,174,94,.09)}
-  .rcard.sel b{color:var(--text)}
-  .rcard.sel .ric{color:var(--accent)}
-  .rcard.sel .tick{display:inline-flex}
+    .section { padding: 100px 0; }
+    .section-alt { border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); background: #080b13; }
 
-  /* Upload zone */
-  .drop{position:relative;background:linear-gradient(180deg,#FBFCFE,#EEF2F8);border:2px dashed #A9B6CC;border-radius:14px;padding:52px 22px;text-align:center;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .15s,background .2s;color:#1C1C1C;min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .drop:hover,.drop.over,.drop:focus-visible{border-color:var(--accent-2);background:linear-gradient(180deg,#FBFCFE,#E9F0FC);box-shadow:0 0 0 4px rgba(58,130,247,.16);transform:translateY(-1px);outline:none}
-  .drop.over{border-style:solid}
-  .drop.err{border-color:var(--red);box-shadow:0 0 0 4px rgba(255,92,92,.14)}
-  .drop .ic{width:52px;height:52px;margin:0 auto 12px;display:block;color:#3A82F7}
-  .drop p{font-size:18px;font-weight:800;color:#1C1C1C}
-  .drop p b{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-  .drop .d2{font-size:13px;color:#39424F;font-weight:500;margin-top:5px;max-width:320px}
-  .drop small{display:block;margin-top:12px;font-size:11.5px;color:#6b7482;font-weight:500;letter-spacing:.2px}
-  /* status chip that replaces the dropzone once an image is chosen */
-  .drop-status{display:none;background:rgba(46,212,122,.08);border:1px solid rgba(46,212,122,.4);border-radius:12px;padding:16px 18px;font-size:14px;font-weight:600;color:var(--text);align-items:center;gap:10px}
-  .drop-status.show{display:flex}
-  .drop-status .dot{width:26px;height:26px;border-radius:50%;background:var(--green);color:#02040E;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
-  .drop-status small{display:block;font-weight:400;color:var(--text-dim);font-size:12px;margin-top:2px}
-  .reassure{font-size:12.5px;color:var(--text-dim);margin-top:12px;text-align:center}
-  .proofneeds{display:grid;grid-template-columns:1fr 1fr;gap:7px 14px;margin-top:12px;font-size:12.5px;color:var(--text-dim)}
-  .proofneeds span::before{content:"✓ ";color:var(--green);font-weight:700}
-  /* when an image is loaded, collapse the upload helper text */
-  .uploading .reassure,.uploading .proofneeds{display:none}
-  .preview{display:none;margin-top:14px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px;align-items:center;gap:12px;flex-wrap:wrap}
-  .preview.show{display:flex}
-  .preview img{width:64px;height:64px;object-fit:cover;border-radius:8px}
-  .preview .meta{flex:1;font-size:13.5px;min-width:180px}
-  .preview .meta span{color:var(--text-dim);display:block;font-size:12px}
-  .preview button{background:none;border:none;cursor:pointer;font-size:13px;font-family:var(--font)}
-  .preview .pv-edit{color:var(--accent-2)}
-  .preview .pv-rm{color:var(--red)}
+    .plan-heading {
+      display: grid;
+      grid-template-columns: 1fr minmax(280px, 430px);
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 42px;
+    }
+    .offer-lockup {
+      padding: 18px 20px;
+      border-left: 3px solid var(--gold);
+      background: #11151f;
+    }
+    .offer-lockup strong { display: block; color: var(--gold-light); font-size: 18px; }
+    .offer-lockup span { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; }
+    .plan-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .plan-tab {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 15px 18px;
+      color: var(--muted);
+      background: #0e131d;
+      cursor: pointer;
+      text-align: left;
+      font-weight: 800;
+    }
+    .plan-tab span { color: #697487; font-size: 12px; font-weight: 600; }
+    .plan-tab[aria-selected="true"] { border-color: var(--gold); color: var(--text); background: rgba(216,174,94,.09); }
+    .plan-tab[aria-selected="true"] span { color: var(--gold-light); }
+    .plan-panel {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      min-height: 350px;
+      border: 1px solid var(--line);
+      background: #0d121c;
+    }
+    .plan-main { padding: 38px; }
+    .plan-main h3 { margin: 0; font-size: 34px; }
+    .plan-main > p { max-width: 680px; margin: 12px 0 0; color: var(--muted); }
+    .plan-features {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
+      margin: 28px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .plan-features li {
+      position: relative;
+      min-height: 62px;
+      padding: 12px 14px 12px 42px;
+      border: 1px solid var(--line-soft);
+      background: #111722;
+      color: #d9dee7;
+      font-size: 13px;
+    }
+    .plan-features li::before {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      content: "\2713";
+      color: #04120a;
+      background: var(--green);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .plan-cta {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 38px;
+      border-left: 1px solid var(--line);
+      background: #141a25;
+    }
+    .plan-cta .label { color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    .plan-cta .discount { margin-top: 8px; color: var(--gold); font-size: 54px; font-weight: 800; line-height: 1; }
+    .plan-cta .code-row { display: flex; gap: 8px; margin-top: 18px; }
+    .code {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #777f8d;
+      border-radius: 5px;
+      padding: 12px;
+      color: var(--gold-light);
+      background: #090d15;
+      font-weight: 800;
+    }
+    .copy-code {
+      width: 46px;
+      border: 1px solid #596376;
+      border-radius: 5px;
+      color: var(--text);
+      background: transparent;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .copy-code:hover { border-color: var(--gold); }
+    .plan-cta .button { width: 100%; margin-top: 14px; }
+    .plan-cta small { display: block; margin-top: 12px; color: #8490a0; font-size: 10px; line-height: 1.5; }
 
-  /* On-device redaction */
-  .redact-panel{display:none;margin-top:22px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:20px}
-  .redact-panel.show{display:block;animation:fadeUp .3s ease}
-  .rp-head{font-size:16px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:9px}
-  .rp-head .step{width:24px;height:24px;border-radius:50%;background:var(--grad);color:var(--accent-text);font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-  .rp-sub{font-size:12.5px;color:var(--text-dim);margin-bottom:14px;line-height:1.5}
-  .rp-sub b{color:var(--green)}
-  .rp-canvas-wrap{background:#000;border:1px solid var(--border);border-radius:10px;padding:6px;max-height:52vh;overflow:auto;display:flex;justify-content:center}
-  #redactCanvas{max-width:100%;height:auto;border-radius:6px;cursor:crosshair;touch-action:none;display:block}
-  .rp-status{font-size:12px;color:var(--text-dim);margin-top:10px}
-  .rp-warn{font-size:12.5px;color:#E8B54A;margin-top:10px;font-weight:600;background:rgba(232,181,74,.08);border:1px solid rgba(232,181,74,.35);border-radius:8px;padding:10px 12px}
-  .rp-tools{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;align-items:center}
-  .rp-tools .btn{padding:11px 18px;font-size:13.5px}
-  .rp-tools .rp-secondary{display:flex;gap:8px;flex-wrap:wrap}
-  .rp-tools .rp-done{margin-left:auto}
-  @media(max-width:640px){.rp-tools .rp-done{margin-left:0;width:100%}.rp-tools .rp-done .btn{width:100%}}
+    .compare-layout {
+      display: grid;
+      grid-template-columns: minmax(250px,.72fr) 1.28fr;
+      gap: 58px;
+      align-items: start;
+    }
+    .compare-sticky { position: sticky; top: 112px; }
+    .compare-sticky .button { margin-top: 24px; }
+    .compare-table { border-top: 1px solid var(--line); }
+    .compare-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 24px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .compare-label { color: #8e99aa; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+    .compare-value strong { display: block; font-size: 20px; }
+    .compare-value span { display: block; margin-top: 6px; color: var(--muted); font-size: 13px; }
 
-  /* Contact reveal */
-  #contactWrap{display:none;border-top:1px solid var(--border);margin-top:26px;padding-top:8px}
-  #contactWrap.show{display:block;animation:fadeUp .3s ease}
-  .otp-row{display:flex;gap:10px;align-items:flex-end}
-  .otp-row>div{flex:1}
-  .otp-row .btn{padding:13px 20px;font-size:13.5px;white-space:nowrap}
-  .checks{margin-top:20px}
-  .checks label{display:flex;gap:10px;font-weight:400;font-size:13px;color:var(--text-dim);margin:11px 0;cursor:pointer;text-align:left}
-  .checks label>span{flex:1;display:inline}
-  .checks input{margin-top:3px;accent-color:var(--accent-2);flex-shrink:0}
+    .switch-band {
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: #111722;
+    }
+    .switch-band::after {
+      position: absolute;
+      right: -120px;
+      top: -110px;
+      width: 360px;
+      height: 360px;
+      border: 1px solid rgba(216,174,94,.35);
+      border-radius: 50%;
+      content: "";
+      box-shadow: 0 0 0 48px rgba(216,174,94,.04), 0 0 0 96px rgba(58,130,247,.025);
+    }
+    .switch-inner {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 48px;
+      align-items: center;
+      padding: 52px 0;
+    }
+    .switch-inner h2 { margin: 0; font-size: clamp(28px, 4vw, 44px); line-height: 1.08; }
+    .switch-inner p { max-width: 720px; margin: 12px 0 0; color: var(--muted); }
+    .switch-actions { display: flex; gap: 10px; }
 
-  /* Verify email step */
-  .verify-box{border:1px solid var(--accent-2);background:rgba(58,130,247,.07);border-radius:var(--radius);padding:18px;margin-top:20px}
-  .vb-head{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-  .vb-num{width:22px;height:22px;border-radius:50%;background:var(--accent-2);color:#fff;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-  .vb-sub{font-size:12.5px;color:var(--text-dim);margin-bottom:12px}
-  .sent-note{display:none;font-size:13px;color:var(--green);font-weight:600;margin:12px 0 4px}
-  .sent-note.show{display:block}
-  #otp{font-size:20px;letter-spacing:6px;text-align:center;max-width:220px}
-  .btn{border:none;cursor:pointer;font-family:var(--font);font-weight:700;font-size:15px;padding:14px 30px;border-radius:var(--radius);transition:transform .15s,opacity .15s,box-shadow .2s}
-  .btn:hover{transform:translateY(-1px)}
-  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
-  .btn-primary{background:var(--grad);color:var(--accent-text)}
-  .btn-primary:hover:not(:disabled){box-shadow:0 0 28px rgba(216,174,94,.35)}
-  .btn-ghost{background:transparent;color:var(--text-dim);border:1px solid var(--border)}
-  .submitrow{margin-top:24px;text-align:center}
-  .submitrow .btn{width:100%;font-size:16.5px;padding:17px}
-  .micro{display:block;margin-top:10px;font-size:12px;color:var(--text-dim);text-align:center}
+    .faq-list { max-width: 900px; margin-top: 38px; border-top: 1px solid var(--line); }
+    details { border-bottom: 1px solid var(--line); }
+    summary {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      list-style: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; color: var(--gold); font-size: 24px; font-weight: 400; }
+    details[open] summary::after { content: "-"; }
+    details p { max-width: 760px; margin: -4px 0 24px; color: var(--muted); font-size: 14px; }
 
-  /* Mobile sticky CTA */
-  .msticky{display:none}
-  @media(max-width:640px){
-    .msticky.show{display:block;position:fixed;bottom:0;left:0;right:0;z-index:60;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(2,4,14,.93);backdrop-filter:blur(8px);border-top:1px solid var(--border)}
-    .msticky .btn{width:100%;font-size:15.5px;padding:15px}
-  }
+    footer { border-top: 1px solid var(--line); background: #080b12; }
+    .footer-main {
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, .8fr);
+      gap: 54px;
+      padding: 62px 0 44px;
+    }
+    .footer-brand img { width: 210px; }
+    .footer-brand p { max-width: 360px; margin: 18px 0 0; color: var(--muted); font-size: 13px; }
+    .footer-col h3 { margin: 0 0 15px; color: #e5e9f0; font-size: 13px; }
+    .footer-col a { display: block; width: fit-content; margin-top: 10px; color: var(--muted); font-size: 12px; }
+    .footer-col a:hover { color: var(--gold); }
+    .disclosures {
+      padding: 24px 0 30px;
+      border-top: 1px solid var(--line);
+      color: #7f8998;
+      font-size: 10px;
+      line-height: 1.65;
+    }
+    .disclosures p { margin: 0 0 8px; }
+    .copyright {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line-soft);
+    }
+    .socials { display: flex; gap: 16px; }
+    .socials a { color: #a7b0bf; font-weight: 700; }
 
-  /* Result states */
-  .result{display:none;text-align:center;padding:24px 0}
-  .result.show{display:block;animation:fadeUp .3s ease}
-  .result .icon{font-size:48px;margin-bottom:12px}
-  .result h3{font-size:24px;margin-bottom:10px}
-  .result p{color:var(--text-dim);font-size:15px;max-width:480px;margin:0 auto}
-  .codebox{margin:24px auto;max-width:360px;background:var(--surface-2);border:1px dashed var(--accent);border-radius:var(--radius);padding:18px;font-size:26px;font-weight:800;letter-spacing:2px;color:var(--accent);cursor:pointer;text-align:center;box-shadow:0 0 34px rgba(216,174,94,.12)}
-  .codebox small{display:block;font-size:12px;color:var(--text-dim);letter-spacing:0;font-weight:400;margin-top:6px}
-  .result .cta{display:inline-block;margin-top:10px;background:var(--grad);color:var(--accent-text);font-weight:800;padding:14px 34px;border-radius:var(--radius);transition:box-shadow .2s}
-  .result .cta:hover{box-shadow:0 0 28px rgba(216,174,94,.35)}
-  .result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}
-  @media(max-width:520px){.result-actions{flex-direction:column}.result-actions .btn{width:100%}}
+    .sticky-mobile {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 90;
+      display: none;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      background: rgba(8,11,18,.96);
+      backdrop-filter: blur(12px);
+    }
+    .sticky-mobile strong { display: block; color: var(--gold-light); font-size: 13px; }
+    .sticky-mobile span { display: block; color: var(--muted); font-size: 10px; }
+    .sticky-mobile .button { min-height: 44px; padding: 10px 16px; font-size: 12px; }
 
-  /* Verifying overlay — spinning proof-firm logo */
-  .checking{display:none;text-align:center;padding:52px 12px}
-  .checking.show{display:block;animation:fadeUp .3s ease}
-  .spin{width:96px;height:96px;margin:0 auto 22px;position:relative;display:flex;align-items:center;justify-content:center}
-  .spin::before{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid rgba(255,255,255,.08);border-top-color:var(--accent);border-right-color:var(--accent-2);animation:spin360 .9s linear infinite}
-  .spin img{width:58px;height:58px;object-fit:contain;border-radius:12px;animation:spin360 1.15s linear infinite}
-  @keyframes spin360{to{transform:rotate(360deg)}}
-  .checking h3{font-size:20px;margin-bottom:8px}
-  .checking #checkMsg{color:var(--text-dim);font-size:14px;min-height:20px}
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 120;
+      padding: 12px 16px;
+      border: 1px solid var(--green);
+      border-radius: 6px;
+      color: #dff9ea;
+      background: #0b2115;
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
 
-  /* Confidence strip */
-  .strip{max-width:760px;margin:0 auto 54px;text-align:center}
-  .strip p{font-size:14px;color:var(--text-dim);margin-bottom:12px}
-  .pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-  .pill{background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:8px 16px;font-size:12.5px;font-weight:600;color:var(--text)}
-  .pill::before{content:"✓ ";color:var(--green);font-weight:800}
+    @media (max-width: 980px) {
+      .nav { grid-template-columns: 1fr auto; }
+      .nav-links, .nav-actions { display: none; }
+      .mobile-menu { display: grid; }
+      .nav.open { height: auto; padding: 16px 0 20px; align-items: start; }
+      .nav.open .nav-links {
+        grid-column: 1 / -1;
+        display: grid;
+        justify-content: stretch;
+        gap: 0;
+        border-top: 1px solid var(--line);
+      }
+      .nav.open .nav-links a { padding: 14px 4px; border-bottom: 1px solid var(--line-soft); }
+      .nav.open .nav-actions { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; }
+      .hero { min-height: 700px; }
+      .hero::before { background: linear-gradient(90deg, #050812 0%, rgba(5,8,18,.97) 55%, rgba(5,8,18,.7) 100%); }
+      .hero-art { width: 60%; opacity: .45; }
+      .hero-copy { width: min(760px, 86%); }
+      .proof-grid { grid-template-columns: repeat(2, 1fr); }
+      .proof-item:nth-child(2) { border-right: 0; }
+      .proof-item:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .plan-heading, .compare-layout { grid-template-columns: 1fr; }
+      .compare-sticky { position: static; }
+      .plan-panel { grid-template-columns: 1fr; }
+      .plan-cta { border-left: 0; border-top: 1px solid var(--line); }
+      .switch-inner { grid-template-columns: 1fr; }
+      .switch-actions { justify-content: start; }
+      .footer-main { grid-template-columns: 1.4fr repeat(2, 1fr); }
+      .footer-col:last-child { grid-column: 2; }
+    }
 
-  /* Steps strip */
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:0 0 60px;position:relative}
-  @media(min-width:641px){.steps::before{content:"";position:absolute;top:47px;left:10%;right:10%;height:2px;background:linear-gradient(to right,rgba(216,174,94,.45),rgba(58,130,247,.45),rgba(216,174,94,.45));z-index:0}}
-  @media(max-width:640px){.steps{grid-template-columns:1fr}}
-  .step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px 24px;position:relative;z-index:1;transition:transform .18s,border-color .18s}
-  .step:hover{transform:translateY(-3px);border-color:rgba(216,174,94,.4)}
-  .step .n{width:44px;height:44px;border-radius:50%;background:var(--grad);color:var(--accent-text);font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
-  .step h3{font-size:16px;margin-bottom:6px}
-  .step p{font-size:14px;color:var(--text-dim)}
-  .step.payoff{border-color:rgba(216,174,94,.55)}
-  .step.payoff .n{box-shadow:0 0 22px rgba(216,174,94,.45)}
-  .step.payoff h3{color:var(--accent)}
+    @media (max-width: 700px) {
+      body { padding-bottom: 70px; }
+      .container { width: min(calc(100% - 28px), var(--max)); }
+      .promo { min-height: 44px; font-size: 10px; }
+      .site-header { top: 0; }
+      .nav { height: 64px; }
+      .logo img { width: 170px; }
+      .hero { min-height: 710px; align-items: flex-start; }
+      .hero::before { background: linear-gradient(180deg, rgba(5,8,18,.98) 0%, rgba(5,8,18,.94) 60%, rgba(5,8,18,.82) 100%); }
+      .hero-art { inset: auto 0 0 0; width: 100%; height: 48%; opacity: .3; }
+      .hero-art img { object-position: center bottom; transform: scale(1.18); }
+      .hero-inner { padding: 52px 0 72px; }
+      .hero-copy { width: 100%; }
+      h1 { font-size: clamp(40px, 13vw, 58px); }
+      .hero-lede { font-size: 16px; }
+      .hero-actions { display: grid; grid-template-columns: 1fr; }
+      .hero-actions .button { width: 100%; }
+      .comparison-prompt { grid-template-columns: 1fr; }
+      .prompt-output { min-width: 0; }
+      .proof-strip { margin-top: -22px; }
+      .proof-grid { grid-template-columns: 1fr 1fr; }
+      .proof-item { min-height: 100px; padding: 17px 14px; }
+      .proof-item strong { font-size: 18px; }
+      .section { padding: 72px 0; }
+      .section-title { font-size: 34px; }
+      .section-copy { font-size: 15px; }
+      .plan-heading { gap: 24px; }
+      .plan-tabs { grid-template-columns: 1fr; }
+      .plan-tab { min-height: 58px; }
+      .plan-main, .plan-cta { padding: 24px 18px; }
+      .plan-main h3 { font-size: 28px; }
+      .plan-features { grid-template-columns: 1fr; }
+      .plan-cta .discount { font-size: 48px; }
+      .compare-row { grid-template-columns: 1fr; gap: 8px; }
+      .switch-actions { display: grid; grid-template-columns: 1fr; }
+      .footer-main { grid-template-columns: 1fr 1fr; gap: 36px 20px; }
+      .footer-brand { grid-column: 1 / -1; }
+      .footer-col:last-child { grid-column: auto; }
+      .copyright { align-items: flex-start; flex-direction: column; }
+      .sticky-mobile { display: grid; }
+      .toast { right: 14px; bottom: 84px; }
+    }
 
-  /* Eligibility */
-  .elig{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px;margin-bottom:60px}
-  .elig h2{font-size:21px;margin-bottom:18px}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
-  .elig h3{font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:12px}
-  .elig ul{list-style:none;display:grid;gap:10px}
-  .elig li{font-size:14.5px;color:var(--text-dim);padding-left:26px;position:relative}
-  .elig li b{color:var(--text)}
-  .quals li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
-  .rules li::before{content:"◆";position:absolute;left:0;color:var(--accent);font-size:11px;top:3px}
-  @media(max-width:640px){.elig li{background:var(--surface-2);border-radius:10px;padding:12px 14px 12px 34px}.quals li::before,.rules li::before{left:12px;top:12px}}
-
-  /* FAQ */
-  .faq{margin-bottom:70px;max-width:760px;margin-left:auto;margin-right:auto}
-  .faq h2{font-size:26px;margin-bottom:6px}
-  .faq .faq-sub{font-size:14px;color:var(--text-dim);margin-bottom:22px}
-  details{background:var(--surface);border:1px solid var(--border);border-left:3px solid transparent;border-radius:10px;margin-bottom:10px;padding:0 20px;transition:border-color .2s,background .2s}
-  details:hover{background:var(--surface-2)}
-  details[open]{border-left-color:var(--accent)}
-  summary{cursor:pointer;font-weight:600;font-size:15px;padding:17px 0;list-style:none}
-  summary::-webkit-details-marker{display:none}
-  summary::after{content:"+";float:right;color:var(--accent);font-size:19px;font-weight:700;transition:transform .2s}
-  details[open] summary::after{content:"–"}
-  details p{color:var(--text-dim);font-size:14px;padding-bottom:17px;animation:fadeUp .25s ease}
-
-  /* Footer */
-  footer{border-top:1px solid var(--border);padding:38px 0 52px}
-  .fine{font-size:11px;color:var(--text-dim);line-height:1.7;max-width:900px}
-  .fine b{color:var(--text)}
-  .hp{position:absolute;left:-9999px;opacity:0}
-
-  /* Desktop-only "rescue price" stamp (corny on purpose) */
-  .savestamp{display:none}
-  @keyframes stampIn{from{opacity:0;transform:rotate(-7deg) scale(.6)}to{opacity:1;transform:rotate(-7deg) scale(1)}}
-  @media(min-width:761px){
-    .savestamp{display:block;position:fixed;left:22px;bottom:22px;z-index:60;
-      background:var(--surface);border:2px solid var(--accent);border-radius:14px;
-      padding:12px 18px;transform:rotate(-7deg);text-align:center;text-decoration:none;
-      box-shadow:0 16px 44px rgba(0,0,0,.55);animation:stampIn .5s ease .9s both;transition:transform .15s}
-    .savestamp:hover{transform:rotate(-7deg) translateY(-2px) scale(1.03)}
-    .savestamp .ss-top{font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--text-dim);font-weight:700}
-    .savestamp .ss-price{font-weight:800;color:var(--accent);line-height:1;margin:2px 0 1px}
-    .savestamp .ss-price s{color:var(--text-dim);font-size:16px;font-weight:600;margin-right:7px;text-decoration-color:var(--red)}
-    .savestamp .ss-price .now{font-size:30px}
-    .savestamp .ss-bot{font-size:10px;color:var(--text-dim)}
-    .savestamp .ss-bot b{color:var(--text)}
-  }
-  /* Mobile: tighter hero, less between the fold and the upload */
-  @media(max-width:640px){
-    .hero{padding:18px 0 4px}
-    h1{font-size:clamp(30px,9vw,42px)}
-    .sub{font-size:15px;margin-top:10px}
-    .goldline{margin-top:14px}
-    .portal{padding:18px 15px;margin:16px auto 20px;border-radius:14px}
-    .p-head{font-size:19px}
-    .p-helper{font-size:13px}
-    .drop{padding:30px 14px;min-height:168px}
-    .drop p{font-size:16px}
-    .drop .d2{font-size:12px}
-    .proofneeds{display:none}
-    .strip{margin-bottom:36px}
-    .steps{margin-bottom:44px}
-  }
-</style>
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
 </head>
 <body>
-
-<header>
-  <div class="wrap nav">
-    <a class="logo" href="https://myfundedfutures.com"><img src="https://res.cloudinary.com/myfundedfutures/image/upload/v1731010648/Main%20website%20dev/mffu_logo_white_6494f127a4.svg" alt="MyFundedFutures"><span class="logo-sub">Trader Comeback Program</span></a>
-    <nav class="hnav"><a href="#how">How it works</a><a href="#qualify">Who qualifies</a><a href="#faq">FAQ</a><a href="https://myfundedfutures.com/challenge">All plans</a></nav>
-    <a class="cta-mini" href="#portal">Claim 70% Off</a>
+  <div class="promo">
+    <span>NEW TO MFFU? 50% OFF ELIGIBLE RAPID, PRO, OR BUILDER 50K EVALUATIONS WITH CODE 300K.</span>
+    <a class="tracked-checkout" data-plan="rapid" href="https://myfundedfutures.com/challenge?coupon=300K&id=70">Claim offer</a>
   </div>
-</header>
 
-<section class="hero wrap">
-  <div class="badge"><b>Failed to Funded</b></div>
-  <h1><em>70% Off Builder</em><br>Switch and be Saved</h1>
-  <p class="sub">Bring proof another prop firm did you dirty. Leave with <b>70% off</b>.</p>
-  <div class="goldline"></div>
-
-  <!-- CLAIM CARD -->
-  <div class="portal" id="portal">
-    <div id="formArea">
-      <div class="p-head">Show us the damage. New users only.</div>
-      <div class="p-helper">Failed eval, blown account, or a receipt from another firm. Drop it in — we verify automatically.</div>
-      <div class="p-helper">Keep the <b>firm</b>, a <b>date</b>, and your <b>email</b> visible on the image — black out anything else.</div>
-
-      <div>
-        <label>Upload your proof</label>
-        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Upload your proof image">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-          <p><b>Click to upload</b>, drop, or paste it here</p>
-          <div class="d2">A failed eval, blown funded account, or purchase receipt from another futures prop firm · <b>Ctrl/⌘+V</b> to paste a screenshot</div>
-          <small>JPG, PNG, or WebP · Max 10MB · Verified in under 60 seconds</small>
-          <input type="file" id="file" accept=".jpg,.jpeg,.png,.webp" hidden>
-        </div>
-        <div class="drop-status" id="dropStatus"><span class="dot">✓</span><span id="dropStatusText"></span></div>
-        <p class="err" id="errTop"></p>
-        <div class="reassure">Your screenshot is only used to verify eligibility — you'll black out anything private before it uploads.</div>
-        <div class="proofneeds"><span>the firm's platform or receipt</span><span>a visible date (last 90 days)</span><span>the status: failed / eliminated / purchase</span><span>your email visible on the page</span></div>
+  <header class="site-header">
+    <div class="container nav" id="siteNav">
+      <a class="logo" href="https://myfundedfutures.com/" aria-label="MyFundedFutures home">
+        <img src="https://res.cloudinary.com/myfundedfutures/image/upload/v1731010648/Main%20website%20dev/mffu_logo_white_6494f127a4.svg" alt="MyFundedFutures">
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="https://myfundedfutures.com/why-us">About us</a>
+        <a href="https://myfundedfutures.com/how-it-works">How it works</a>
+        <a href="#plans">Plans</a>
+        <a href="#compare">Why switch</a>
+        <a href="https://help.myfundedfutures.com/en/">Help</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="login-link" href="https://myfundedfutures.com/login">Login</a>
+        <a class="button button-primary tracked-checkout" data-plan="rapid" href="https://myfundedfutures.com/challenge?coupon=300K&id=70">Get Funded</a>
       </div>
+      <button class="mobile-menu" id="mobileMenu" type="button" aria-label="Open navigation" aria-expanded="false">
+        <span></span>
+      </button>
+    </div>
+  </header>
 
-      <!-- On-device PII redaction: original file never leaves the browser -->
-      <div class="redact-panel" id="redactPanel">
-        <div class="rp-head"><span class="step">2</span> Black out anything private</div>
-        <div class="rp-sub">We auto-cover phone numbers, addresses, and account numbers. <b>Keep your email visible</b> — we read it to confirm the account is yours — plus the <b>firm</b>, <b>date</b>, and <b>status</b>. Drag a box over anything else you want hidden. This all happens on your device.</div>
-        <div class="rp-canvas-wrap"><canvas id="redactCanvas"></canvas></div>
-        <div class="rp-status" id="ocrStatus"></div>
-        <div class="rp-tools">
-          <div class="rp-secondary">
-            <button class="btn btn-ghost" onclick="undoRect()">Undo box</button>
-            <button class="btn btn-ghost" onclick="clearRects()">Clear boxes</button>
-            <button class="btn btn-ghost" onclick="cancelRedact()">Choose a different image</button>
+  <main>
+    <section class="hero">
+      <div class="hero-art" aria-hidden="true">
+        <img src="https://assets-mffu.fundedcms.com/static-assets-frontend/1b252a63-79d8-4638-9452-c13dd791f018_large_11zon-removebg-preview.webp" alt="">
+      </div>
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <div class="hero-kicker">Built for futures traders who are ready to move forward</div>
+          <h1>Stop paying for rules that <span>hold you back.</span></h1>
+          <p class="hero-lede">Comparing another futures prop firm? Start with the rules that affect how you trade, then choose the MyFundedFutures path that fits you.</p>
+          <div class="hero-actions">
+            <a class="button button-primary tracked-checkout" data-plan="rapid" href="https://myfundedfutures.com/challenge?coupon=300K&id=70">Get 50% Off</a>
+            <a class="button button-secondary" href="#compare">Compare what matters</a>
           </div>
-          <div class="rp-done"><button class="btn btn-primary" onclick="finishRedaction()">Use this image →</button></div>
+          <p class="offer-note">Use code <b>300K</b>. Maximum two uses per user on eligible evaluations. Checkout terms govern.</p>
+
+          <div class="comparison-prompt">
+            <div>
+              <label for="competitor">Who are you comparing?</label>
+              <select id="competitor">
+                <option value="another firm">Choose a prop firm</option>
+                <option value="Topstep">Topstep</option>
+                <option value="Apex Trader Funding">Apex Trader Funding</option>
+                <option value="Tradeify">Tradeify</option>
+                <option value="Take Profit Trader">Take Profit Trader</option>
+                <option value="FundedNext">FundedNext</option>
+                <option value="Alpha Futures">Alpha Futures</option>
+                <option value="Lucid Trading">Lucid Trading</option>
+                <option value="another futures prop firm">Another firm</option>
+              </select>
+            </div>
+            <div class="prompt-output" id="competitorOutput" aria-live="polite">Pick a firm and we will focus the page on the tradeoffs that matter.</div>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="preview" id="preview">
-        <img id="pimg" alt="">
-        <div class="meta"><b id="pname"></b><span id="psize"></span></div>
-        <button class="pv-edit" onclick="editRedaction()">Edit redaction</button>
-        <button class="pv-rm" onclick="chooseDifferent()">Choose a different image</button>
+    <div class="proof-strip">
+      <div class="container proof-grid" aria-label="MyFundedFutures highlights">
+        <div class="proof-item"><strong>24 hours</strong><span>Rapid payout request cadence</span></div>
+        <div class="proof-item"><strong>$0</strong><span>Activation fee on any MFFU plan</span></div>
+        <div class="proof-item"><strong>Up to 90%</strong><span>Share of simulated profits generated</span></div>
+        <div class="proof-item"><strong>100,000+</strong><span>Traders have chosen MFFU</span></div>
       </div>
+    </div>
 
-      <!-- Contact — revealed once proof is uploaded -->
-      <div id="contactWrap">
-        <label for="email">Email <span style="color:var(--text-dim);font-weight:400;text-transform:none">(optional)</span></label>
-        <input type="email" id="email" autocomplete="email" placeholder="you@email.com">
-        <div class="hint" style="text-transform:uppercase;letter-spacing:.5px;font-weight:700;color:var(--accent)">Enter email if not displayed in image</div>
-        <div class="vb-sub" style="margin-top:8px">We send your 70% code to the email shown on your proof. If your email isn't visible on the upload, add it here so we know where to send it.</div>
-        <input type="text" class="hp" id="hp" name="website" tabindex="-1" autocomplete="off">
-        <div class="checks">
-          <label><input type="checkbox" id="cTerms"> <span>I agree to the <a href="#terms">program terms</a> and certify I'm a new MyFundedFutures customer using this offer to start trading with MFFU. This proof is real, unedited, and mine — fake proof voids the discount, account, and any pending payouts.</span></label>
-          <label><input type="checkbox" id="cPrivacy"> <span>I consent to processing of my redacted upload per the <a href="#terms">privacy notice</a>. Redaction happens on my device — only my redacted proof (with my email left visible) and any email I type leave it. Images are deleted within 90 days of a decision.</span></label>
-          <label><input type="checkbox" id="cMkt"> <span>(Optional) Send me trading updates and offers from MyFundedFutures.</span></label>
+    <section class="section" id="plans">
+      <div class="container">
+        <div class="plan-heading">
+          <div>
+            <p class="eyebrow">Choose your path</p>
+            <h2 class="section-title">One firm. Three ways to trade.</h2>
+            <p class="section-copy">Start with how you want to trade after the evaluation. We will send you directly to the eligible plan with the conquest offer applied.</p>
+          </div>
+          <div class="offer-lockup">
+            <strong>50% off with code 300K</strong>
+            <span>Eligible Rapid and Pro evaluations, plus Builder 50K. Maximum two uses per user.</span>
+          </div>
         </div>
-        <p class="err" id="err"></p>
-        <div class="submitrow">
-          <button class="btn btn-primary" id="submitBtn" onclick="submitForm()" disabled>Claim My 70% Code</button>
-          <span class="micro">Switch with proof. Claim your code. · One per trader · Most codes issued instantly</span>
-          <button type="button" class="linklike" onclick="startOver()">← Start over with different choices</button>
+
+        <div class="plan-tabs" role="tablist" aria-label="MFFU plans">
+          <button class="plan-tab" type="button" role="tab" aria-selected="true" data-plan="rapid">Rapid <span>Speed and flexibility</span></button>
+          <button class="plan-tab" type="button" role="tab" aria-selected="false" data-plan="builder">Builder <span>Structured progression</span></button>
+          <button class="plan-tab" type="button" role="tab" aria-selected="false" data-plan="pro">Pro <span>Performance path</span></button>
+        </div>
+
+        <div class="plan-panel" role="tabpanel" aria-live="polite">
+          <div class="plan-main">
+            <p class="eyebrow" id="planEyebrow">Recommended for active traders</p>
+            <h3 id="planTitle">Rapid</h3>
+            <p id="planDescription">The cleanest conquest offer for traders who care about payout cadence and fewer funded-account constraints.</p>
+            <ul class="plan-features" id="planFeatures">
+              <li>Payout requests every 24 hours</li>
+              <li>No daily loss limit on funded accounts</li>
+              <li>No consistency rule on Rapid</li>
+              <li>$0 activation fee</li>
+            </ul>
+          </div>
+          <aside class="plan-cta">
+            <span class="label">Conquest offer</span>
+            <div class="discount">50% OFF</div>
+            <div class="code-row">
+              <div class="code" id="couponCode">300K</div>
+              <button class="copy-code" id="copyCode" type="button" aria-label="Copy coupon code">COPY</button>
+            </div>
+            <a class="button button-primary tracked-checkout" id="planCta" data-plan="rapid" href="https://myfundedfutures.com/challenge?coupon=300K&id=70">Choose Rapid</a>
+            <small>Offer eligibility, account sizes, availability, and final price are confirmed at checkout. Evaluation fees are non-refundable.</small>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="compare">
+      <div class="container compare-layout">
+        <div class="compare-sticky">
+          <p class="eyebrow">What to compare</p>
+          <h2 class="section-title">Ignore the noise. Compare the rules that touch your money.</h2>
+          <p class="section-copy" id="compareIntro">If you are evaluating another firm, use this as the minimum decision checklist.</p>
+          <a class="button button-primary tracked-checkout" data-plan="rapid" href="https://myfundedfutures.com/challenge?coupon=300K&id=70">Start with Rapid</a>
+        </div>
+        <div class="compare-table">
+          <div class="compare-row">
+            <div class="compare-label">Payout cadence</div>
+            <div class="compare-value"><strong>Request every 24 hours on Rapid</strong><span>Compare the exact payout request window, minimum days, and review process at every firm.</span></div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-label">Daily loss limit</div>
+            <div class="compare-value"><strong>No daily loss limits on Rapid and Pro funded accounts</strong><span>That changes how much room your strategy has after evaluation.</span></div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-label">Consistency</div>
+            <div class="compare-value"><strong>No consistency rule on Rapid</strong><span>Do not let a low sticker price hide funded-account rules that do not fit your trading style.</span></div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-label">Activation cost</div>
+            <div class="compare-value"><strong>$0 activation fee on any MFFU plan</strong><span>Compare the total cost to get from evaluation to funded, not only the first checkout price.</span></div>
+          </div>
+          <div class="compare-row">
+            <div class="compare-label">Profit share</div>
+            <div class="compare-value"><strong>Earn up to 90% of simulated profits generated</strong><span>Always compare split, payout eligibility, and the rules that can prevent a payout together.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="switch-band">
+      <div class="container switch-inner">
+        <div>
+          <h2>Already paid another firm and have the proof?</h2>
+          <p>The original Failed to Funded rescue program is still available as a separate path. Upload eligible proof and see whether you qualify for the stronger Builder comeback offer.</p>
+        </div>
+        <div class="switch-actions">
+          <a class="button button-primary" href="/rescue.html">Check rescue eligibility</a>
+          <a class="button button-secondary tracked-checkout" data-plan="rapid" href="https://myfundedfutures.com/challenge?coupon=300K&id=70">Skip proof, take 50% off</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
+        <p class="eyebrow">Questions before you switch</p>
+        <h2 class="section-title">The important stuff, in plain English.</h2>
+        <div class="faq-list">
+          <details>
+            <summary>What does code 300K apply to?</summary>
+            <p>The public MFFU offer lists 50% off eligible Rapid and Pro evaluations plus Builder 50K, with a maximum of two uses per user. Exact account sizes, availability, and final price are confirmed at checkout.</p>
+          </details>
+          <details>
+            <summary>Do I need proof from another prop firm?</summary>
+            <p>No proof is needed to use the standard 300K checkout path, subject to checkout eligibility. Proof is only needed for the separate Failed to Funded rescue program at /rescue.html.</p>
+          </details>
+          <details>
+            <summary>Which MFFU plan should I choose?</summary>
+            <p>Rapid is the clearest starting point if payout cadence and fewer funded-account constraints matter most. Builder is the structured progression path. Pro is for traders who want the Pro account structure. Review the current plan rules before purchase.</p>
+          </details>
+          <details>
+            <summary>Is this page affiliated with the competitor I selected?</summary>
+            <p>No. Competitor names are used only so you can personalize your comparison. MyFundedFutures is not affiliated with or endorsed by the firms named on this page.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-main">
+      <div class="footer-brand">
+        <a href="https://myfundedfutures.com/">
+          <img src="https://res.cloudinary.com/myfundedfutures/image/upload/v1731010648/Main%20website%20dev/mffu_logo_white_6494f127a4.svg" alt="MyFundedFutures">
+        </a>
+        <p>Consistent payouts, clear rules, and a platform built for real futures traders.</p>
+      </div>
+      <div class="footer-col">
+        <h3>Legal</h3>
+        <a href="https://myfundedfutures.com/disclaimer">Disclaimer</a>
+        <a href="https://myfundedfutures.com/privacy-policy">Privacy Policy</a>
+        <a href="https://myfundedfutures.com/terms">Terms</a>
+        <a href="https://myfundedfutures.com/cancellation">Cancellation</a>
+      </div>
+      <div class="footer-col">
+        <h3>About us</h3>
+        <a href="https://myfundedfutures.com/why-us">Why Us</a>
+        <a href="https://myfundedfutures.com/community">Community</a>
+        <a href="https://myfundedfutures.com/careers">Careers</a>
+        <a href="https://www.trustpilot.com/review/myfundedfutures.com">Testimonials</a>
+      </div>
+      <div class="footer-col">
+        <h3>More</h3>
+        <a href="https://myfundedfutures.com/how-it-works">How It Works</a>
+        <a href="https://myfundedfutures.com/blog">Blogs</a>
+        <a href="https://help.myfundedfutures.com/en/">FAQ</a>
+        <a href="https://discord.gg/d7tUceuxg8">Discord</a>
+      </div>
+    </div>
+    <div class="container disclosures">
+      <p><sup>1</sup> The funded account stage operates exclusively in a simulated trading environment. All trades are executed on a demo basis and do not involve real capital. Customers who meet the required performance criteria may, at our sole discretion, receive an invitation to access live capital trading through one of our affiliated companies. Such access is by invitation only and subject to additional criteria and terms.</p>
+      <p><sup>2</sup> Payouts are based on simulated account profits and are subject to rules compliance, trading day requirements, and firm review. See program Terms for full eligibility conditions.</p>
+      <p><sup>3</sup> All MFFU accounts operate in a simulated environment. Evaluation fees are non-refundable. See our Terms for full program details.</p>
+      <p>All third-party company and product names are trademarks of their respective owners and are used for identification and comparison context only. No affiliation or endorsement is implied.</p>
+      <div class="copyright">
+        <span>&copy; 2023-2026 MyFundedFutures. All rights reserved.</span>
+        <div class="socials">
+          <a href="https://www.instagram.com/myfundedfutures/" aria-label="Instagram">Instagram</a>
+          <a href="https://x.com/MyFundedFutures" aria-label="X">X</a>
+          <a href="https://www.youtube.com/@MyFundedFutures" aria-label="YouTube">YouTube</a>
         </div>
       </div>
     </div>
+  </footer>
 
-    <!-- VERIFYING (spinning logo) — src is swappable; falls back to the ring if it fails to load -->
-    <div class="checking" id="checking">
-      <div class="spin"><img id="checkLogo" referrerpolicy="no-referrer" onerror="this.style.display='none'" alt=""
-        src="https://apextraderfunding.com/cdn-cgi/image/width=256,height=256,fit=cover,gravity=auto,format=auto//app/uploads/cropped-APEX_FAV-270x270.png"></div>
-      <h3>Checking your proof…</h3>
-      <p id="checkMsg">Reading the firm, date, and status…</p>
-    </div>
-
-    <!-- RESULTS -->
-    <div class="result" id="resApproved">
-      <div class="icon">🎉</div>
-      <h3>Standard raised. Welcome to the other side.</h3>
-      <p>You're approved. Your personal single-use code — <b>70% off your first month on the Builder plan</b> — is on its way to <b id="apprEmail">your inbox</b>. It's valid for <b>7 days</b>, so don't sit on it.</p>
-      <p style="margin-top:10px;font-size:12.5px;color:var(--text-dim)">We send to the email visible on your proof. No email within a few minutes? Check spam, or search "MyFundedFutures".</p>
-      <a class="cta" href="https://myfundedfutures.com/challenge">Choose Your Plan →</a>
-      <p style="margin-top:14px"><a href="https://myfundedfutures.com">← Back to MyFundedFutures</a></p>
-    </div>
-    <div class="result" id="resPending">
-      <div class="icon">⏳</div>
-      <h3>You're in — final check in progress.</h3>
-      <p>Your submission needs a quick human look. You'll get your 70% off code by email within <b>24 hours</b>. No action needed.</p>
-      <p style="margin-top:14px"><a href="#faq">Questions while you wait? →</a></p>
-      <button type="button" class="linklike" style="margin:14px auto 0" onclick="startOver()">← Start over</button>
-    </div>
-    <div class="result" id="resDeclined">
-      <div class="icon">🤔</div>
-      <h3>We couldn't verify that one.</h3>
-      <p id="declineMsg">The proof didn't pass verification. You can resubmit once with a clearer, full-window screenshot showing the firm, date, and account status.</p>
-      <div class="result-actions">
-        <button class="btn btn-primary" onclick="tryAgainNewImage()">Upload a different image</button>
-        <button class="btn btn-ghost" onclick="startOver()">Start over</button>
-      </div>
-    </div>
-    <div class="result" id="resClosed">
-      <div class="icon">⏰</div>
-      <h3>This round is closed.</h3>
-      <p>Failed to Funded was a limited-time program and this window has ended. Follow MyFundedFutures for the next one — or see what's live right now.</p>
-      <a class="cta" href="https://myfundedfutures.com/challenge">See Current Offers →</a>
-    </div>
+  <div class="sticky-mobile">
+    <div><strong>50% off</strong><span>Code 300K</span></div>
+    <a class="button button-primary tracked-checkout" data-plan="rapid" href="https://myfundedfutures.com/challenge?coupon=300K&id=70">Claim offer</a>
   </div>
+  <div class="toast" id="toast" role="status" aria-live="polite">Code 300K copied</div>
 
-  <!-- Confidence strip -->
-  <div class="strip">
-    <p><b style="color:var(--text)">For traders who are done with the other guys' nonsense.</b></p>
-    <div class="pills"><span class="pill">No activation fees</span><span class="pill">Instant payout approvals</span><span class="pill">Trader-first rules</span></div>
-  </div>
-</section>
+  <script>
+    const planConfig = {
+      rapid: {
+        eyebrow: "Recommended for active traders",
+        title: "Rapid",
+        description: "The cleanest conquest offer for traders who care about payout cadence and fewer funded-account constraints.",
+        features: [
+          "Payout requests every 24 hours",
+          "No daily loss limit on funded accounts",
+          "No consistency rule on Rapid",
+          "$0 activation fee"
+        ],
+        id: "70",
+        cta: "Choose Rapid"
+      },
+      builder: {
+        eyebrow: "Recommended for structured progression",
+        title: "Builder 50K",
+        description: "A measured path for traders who want to build through the evaluation structure with the 50K Builder option.",
+        features: [
+          "Builder 50K is eligible for code 300K",
+          "Structured evaluation path",
+          "$0 activation fee",
+          "Clear checkout handoff"
+        ],
+        id: "84",
+        cta: "Choose Builder 50K"
+      },
+      pro: {
+        eyebrow: "Recommended for the Pro structure",
+        title: "Pro",
+        description: "The Pro route for traders who want the Pro funded-account structure and no daily loss limit after evaluation.",
+        features: [
+          "Eligible Pro evaluations receive 50% off",
+          "No daily loss limit on funded accounts",
+          "Up to 90% simulated profit share",
+          "$0 activation fee"
+        ],
+        id: "48",
+        cta: "Choose Pro"
+      }
+    };
 
-<section class="wrap">
-  <div class="steps" id="how">
-    <div class="step"><div class="n">1</div><h3>Upload the evidence</h3><p>The fail, the blown account, or a receipt. Any firm that isn't us.</p></div>
-    <div class="step"><div class="n">2</div><h3>We check it, fast</h3><p>Robots read it in seconds. Humans step in only if something smells off.</p></div>
-    <div class="step payoff"><div class="n">3</div><h3>70% off. Welcome home.</h3><p>Your comeback code lands in your inbox — Builder, first month.</p></div>
-  </div>
+    const preservedParams = [
+      "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
+      "gclid", "gbraid", "wbraid", "msclkid", "ref"
+    ];
+    const landingParams = new URLSearchParams(window.location.search);
+    let activePlan = "rapid";
+    let selectedCompetitor = "";
 
-  <div class="elig" id="qualify">
-    <h2>Who qualifies</h2>
-    <div class="grid2">
-      <div>
-        <h3>You qualify if</h3>
-        <ul class="quals">
-          <li>You have proof from another futures prop firm — a failed eval, blown funded account, or purchase receipt</li>
-          <li>The event happened in the <b>last 90 days</b></li>
-          <li><b>New to MyFundedFutures</b> — this offer is for your first MFFU account</li>
-          <li>You're 18+ and in a supported country</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Offer rules</h3>
-        <ul class="rules">
-          <li><b>One redemption</b> per trader, ever</li>
-          <li><b>First month only</b></li>
-          <li><b>Builder plan only</b></li>
-          <li>Not stackable with other promos</li>
-          <li>Limited-time program — ends when the window closes or codes run out</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="wrap faq" id="faq">
-  <h2>Questions before you claim?</h2>
-  <p class="faq-sub">Here's what traders usually ask before switching.</p>
-  <details><summary>What counts as valid proof?</summary><p>A screenshot or receipt from another futures prop firm showing one of three things: a failed evaluation, a breached/eliminated sim-funded account, or a purchase receipt — with a visible date within the last 90 days and the firm identifiable.</p></details>
-  <details><summary>How fast do I get my code?</summary><p>Most submissions verify automatically in under a minute. A small share get a human review and are answered by email within 24 hours.</p></details>
-  <details><summary>Which plans can I use it on?</summary><p>The code applies to the <b>Builder plan</b> — 70% off your first month. It's single-use, expires 7 days after it's issued, and can't be combined with other promotions.</p></details>
-  <details><summary>Will a plain purchase receipt really work?</summary><p>Yes. A receipt from another futures prop firm proves you've been paying someone else to trade — that's all we need to know. Upload it, black out anything private, and claim your code.</p></details>
-  <details><summary>What happens to my screenshot?</summary><p>Before anything uploads, you black out whatever you want hidden — account numbers, balances, anything private — right in your browser. We receive only that censored copy, re-created on your device with all metadata (location, device info) stripped. We read the firm, date, status, your email, and name off that image — the only personal data we keep is the email we send your code to. Redacted images are deleted within 90 days of a decision; we keep a non-reversible fingerprint to prevent duplicate claims.</p></details>
-  <details><summary>Can I claim this more than once?</summary><p>No — one redemption per trader, ever. Codes are personalized and single-use.</p></details>
-</section>
-
-<footer>
-  <div class="wrap fine" id="terms">
-    <b>Failed to Funded program terms (summary):</b> Offer available to eligible traders with verifiable proof of a failed evaluation, eliminated sim-funded account, or purchase receipt from another futures proprietary trading firm dated within 90 days of submission. Limit one redemption per person, lifetime. Available to new MyFundedFutures customers only — not available to anyone with an existing or prior MyFundedFutures account. Code is personalized, single-use, applies to the first billing cycle (first month) of the Builder plan only, expires 7 days after issuance, and cannot be combined with other offers. This is a limited-time program: MyFundedFutures may close the submission window at any time, including when the code inventory is exhausted. This offer is not available through affiliates and carries no affiliate commission. Submitting altered, fabricated, or third-party proof voids the offer and may result in account termination and forfeiture of pending payouts. MyFundedFutures may modify or end this program at any time. Verification decisions are at MyFundedFutures' sole discretion.
-    <br><br>
-    <b>Risk disclosure:</b> Trading futures involves substantial risk of loss and is not suitable for everyone. Evaluations are simulated trading environments; passing an evaluation is not a guarantee of profits or funding outcomes. Nothing on this page is financial advice. All company and product names are trademarks of their respective owners and are used for identification only; no affiliation or endorsement is implied.
-    <br><br>© 2026 MyFundedFutures. All rights reserved.
-  </div>
-</footer>
-
-<!-- Desktop-only rescue-price stamp -->
-<a class="savestamp" href="#portal" aria-label="70 percent off, 33 dollars first month, was 109 dollars">
-  <div class="ss-top">Don't worry we're here</div>
-  <div class="ss-price"><s>$109</s><span class="now">$33</span></div>
-  <div class="ss-bot">your comeback price · <b>the other guys: full price</b></div>
-</a>
-
-<!-- Mobile sticky CTA (appears once the form is started) -->
-<div class="msticky" id="mSticky"><button class="btn btn-primary" id="mStickyBtn" onclick="submitForm()" disabled>Claim My 70% Code</button></div>
-
-<script>
-/* ================= CONFIG ================= */
-const CONFIG = {
-  API_BASE: 'https://failedtofunded-api.onrender.com/api/switch',  // <- the Render service (see service/README_DEPLOY.md)
-  OFFER_END: '2026-07-31T23:59:59-04:00',  // <- LIMITED-TIME WINDOW: set real end (ET). Server must also reject submissions after this.
-  MAX_FILE_MB: 10,
-  MIN_W: 500, MIN_H: 300,         // reject images too small to verify
-  ALLOWED: ['image/jpeg','image/png','image/webp'],
-  // DEMO auto-enables when opened as a local file (no backend).
-  DEMO: location.protocol === 'file:'
-};
-/* Limited-time gate: countdown while open, closed state after */
-document.addEventListener('DOMContentLoaded',()=>{
-  const end=new Date(CONFIG.OFFER_END);
-  if(Date.now()>end.getTime()){
-    document.getElementById('formArea').style.display='none';
-    document.getElementById('resClosed').classList.add('show');
-  }else{
-    const days=Math.max(0,Math.ceil((end.getTime()-Date.now())/864e5));
-    const u=document.getElementById('urgencyLine');
-    if(u) u.innerHTML='Limited run — ends <b>'+end.toLocaleDateString(undefined,{month:'long',day:'numeric'})+'</b>'
-      +(days<=10?' · <b>'+days+' day'+(days===1?'':'s')+' left</b>':'')
-      +'. Codes are <b>single-use</b> and expire <b>7 days</b> after approval.';
-  }
-});
-if(CONFIG.DEMO){
-  const r=document.createElement('div');
-  r.style.cssText='position:fixed;bottom:14px;right:14px;z-index:99;background:#3A82F7;color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:8px;opacity:.9;pointer-events:none;max-width:46vw';
-  r.textContent='DEMO PREVIEW — no backend · add #pending or #declined to URL to preview other outcomes';
-  document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(r));
-}
-/* =========================================== */
-
-let fileObj = null, fileHash = null;
-
-function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.classList.add('show');}
-function hideErr(id){document.getElementById(id).classList.remove('show');}
-function fmtSize(b){return b<1024*1024 ? Math.max(1,Math.round(b/1024))+' KB' : (b/1024/1024).toFixed(2)+' MB';}
-function emailOk(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);}
-
-/* ---- form completeness → enable Claim button ---- */
-function checkForm(){
-  const em=document.getElementById('email').value.trim();
-  const ok = !!fileObj
-    && (em==='' || emailOk(em))          /* email optional; valid if given */
-    && document.getElementById('cTerms').checked
-    && document.getElementById('cPrivacy').checked;
-  document.getElementById('submitBtn').disabled=!ok;
-  document.getElementById('mStickyBtn').disabled=!ok;
-  return ok;
-}
-document.getElementById('email').addEventListener('input',checkForm);
-['cTerms','cPrivacy','cMkt'].forEach(id=>document.getElementById(id).addEventListener('change',checkForm));
-
-/* ---- upload + on-device redaction ----
-   PRIVACY GUARANTEE: the user's original file is loaded into memory
-   only. What uploads is a canvas re-render with black boxes burned in
-   (flattened, irreversible) — which also strips ALL metadata (EXIF,
-   GPS, device info). Only name + email are collected as PII. */
-const drop=document.getElementById('drop'), fileInput=document.getElementById('file');
-const canvas=document.getElementById('redactCanvas'), ctx=canvas.getContext('2d');
-let rawImg=null, rects=[], curRect=null;
-
-drop.addEventListener('click',()=>fileInput.click());
-drop.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fileInput.click();}});
-drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('over');});
-drop.addEventListener('dragleave',()=>drop.classList.remove('over'));
-drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
-fileInput.addEventListener('change',e=>{if(e.target.files[0])handleFile(e.target.files[0]);});
-/* paste a screenshot straight from the clipboard (Ctrl/Cmd+V) */
-document.addEventListener('paste',e=>{
-  if(document.getElementById('formArea').style.display==='none') return; /* ignore on result/closed screens */
-  const items=(e.clipboardData&&e.clipboardData.items)||[];
-  for(const it of items){
-    if(it.type&&it.type.indexOf('image/')===0){
-      const f=it.getAsFile();
-      if(f){e.preventDefault();handleFile(f);return;}
+    function trackedUrl(plan) {
+      const config = planConfig[plan] || planConfig.rapid;
+      const url = new URL("https://myfundedfutures.com/challenge");
+      url.searchParams.set("coupon", "300K");
+      url.searchParams.set("id", config.id);
+      preservedParams.forEach((key) => {
+        const value = landingParams.get(key);
+        if (value) url.searchParams.set(key, value);
+      });
+      if (!url.searchParams.has("utm_source")) url.searchParams.set("utm_source", "failedtofunded");
+      if (!url.searchParams.has("utm_medium")) url.searchParams.set("utm_medium", "conquest_landing_page");
+      if (!url.searchParams.has("utm_campaign")) url.searchParams.set("utm_campaign", "competitor_conquest");
+      if (selectedCompetitor) {
+        const slug = selectedCompetitor.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+        url.searchParams.set("utm_content", "compare_" + slug);
+      }
+      return url.toString();
     }
-  }
-});
 
-function dropErr(msg){showErr('errTop',msg);drop.classList.add('err');}
-function handleFile(f){
-  hideErr('errTop');drop.classList.remove('err');
-  if(!CONFIG.ALLOWED.includes(f.type)) return dropErr('That file type won’t work — upload a JPG, PNG or WebP screenshot.');
-  if(f.size>CONFIG.MAX_FILE_MB*1024*1024) return dropErr('File is over '+CONFIG.MAX_FILE_MB+'MB. Crop it or re-screenshot and try again.');
-  const url=URL.createObjectURL(f);
-  rawImg=new Image();
-  rawImg.onload=()=>{
-    URL.revokeObjectURL(url);
-    if(rawImg.naturalWidth<CONFIG.MIN_W||rawImg.naturalHeight<CONFIG.MIN_H){rawImg=null;return dropErr('That image is too small to verify — upload a full-window screenshot.');}
-    const maxW=1600, k=Math.min(1, maxW/rawImg.naturalWidth);
-    canvas.width=Math.round(rawImg.naturalWidth*k);
-    canvas.height=Math.round(rawImg.naturalHeight*k);
-    rects=[]; curRect=null; emailBoxes=[]; emailFound=false;
-    drawRedact();
-    drop.style.display='none';
-    document.getElementById('formArea').classList.add('uploading');
-    setDropStatus('Image loaded','Black out anything private below ↓');
-    document.getElementById('preview').classList.remove('show');
-    document.getElementById('redactPanel').classList.add('show');
-    autoRedact();
-    scrollToEl('redactPanel',110);   /* land on the image where it renders */
-    pushStep('redact');
-  };
-  rawImg.onerror=()=>{URL.revokeObjectURL(url);dropErr('Could not read that image. Try a JPG or PNG.');};
-  rawImg.src=url;
-}
+    function refreshTrackedLinks() {
+      document.querySelectorAll(".tracked-checkout").forEach((link) => {
+        link.href = trackedUrl(link.dataset.plan || activePlan);
+      });
+    }
 
-function drawRedact(){
-  if(!rawImg) return;
-  ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,canvas.width,canvas.height); /* white underlay: transparent PNGs stay readable */
-  ctx.drawImage(rawImg,0,0,canvas.width,canvas.height);
-  ctx.fillStyle='#000';
-  rects.forEach(r=>ctx.fillRect(r.x,r.y,r.w,r.h));
-  ctx.strokeStyle='#2ED47A';ctx.lineWidth=2;
-  emailBoxes.forEach(r=>ctx.strokeRect(r.x,r.y,r.w,r.h)); /* green = kept visible for verification */
-  if(curRect){
-    const r=normRect(curRect);
-    ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(r.x,r.y,r.w,r.h);
-    ctx.strokeStyle='#3A82F7';ctx.lineWidth=2;ctx.strokeRect(r.x,r.y,r.w,r.h);
-  }
-}
-function normRect(r){return {x:Math.min(r.x,r.x+r.w), y:Math.min(r.y,r.y+r.h), w:Math.abs(r.w), h:Math.abs(r.h)};}
-function cpos(e){
-  const b=canvas.getBoundingClientRect();
-  return {x:(e.clientX-b.left)*canvas.width/b.width, y:(e.clientY-b.top)*canvas.height/b.height};
-}
-canvas.addEventListener('pointerdown',e=>{
-  e.preventDefault();
-  const p=cpos(e);
-  curRect={x:p.x,y:p.y,w:0,h:0};
-  canvas.setPointerCapture(e.pointerId);
-});
-canvas.addEventListener('pointermove',e=>{
-  if(!curRect) return;
-  const p=cpos(e);
-  curRect.w=p.x-curRect.x; curRect.h=p.y-curRect.y;
-  drawRedact();
-});
-canvas.addEventListener('pointerup',()=>{
-  if(!curRect) return;
-  const r=normRect(curRect);
-  if(r.w>6&&r.h>6) rects.push(r);
-  curRect=null;
-  drawRedact();
-});
-function setDropStatus(main, sub){
-  document.getElementById('dropStatusText').innerHTML=main+(sub?'<small>'+sub+'</small>':'');
-  document.getElementById('dropStatus').classList.add('show');
-}
-/* smooth-scroll an element to just below the sticky header */
-function scrollToEl(id, delay){
-  setTimeout(()=>{
-    const el=document.getElementById(id); if(!el) return;
-    const y=el.getBoundingClientRect().top+window.pageYOffset-84;
-    window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
-  }, delay||60);
-}
-function resetUploadArea(){
-  document.getElementById('formArea').classList.remove('uploading');
-  document.getElementById('dropStatus').classList.remove('show');
-  drop.style.display='';
-}
-function undoRect(){rects.pop();drawRedact();}
-function clearRects(){rects=[];drawRedact();}
-function cancelRedact(){
-  rawImg=null;rects=[];curRect=null;fileInput.value='';
-  document.getElementById('redactPanel').classList.remove('show');
-  resetUploadArea();
-  checkForm();
-}
-function editRedaction(){
-  if(!rawImg) return;
-  fileObj=null;fileHash=null;
-  document.getElementById('preview').classList.remove('show');
-  document.getElementById('redactPanel').classList.add('show');
-  setDropStatus('Editing your image','Adjust the boxes below, then use it ↓');
-  drawRedact();
-  scrollToEl('redactPanel',90);
-  checkForm();
-}
-function finishRedaction(){
-  curRect=null;drawRedact();
-  canvas.toBlob(async blob=>{
-    if(!blob) return showErr('errTop','Could not process the image. Try again.');
-    fileObj=new File([blob],'proof-redacted.jpg',{type:'image/jpeg'});
-    fileHash=await sha256(fileObj);
-    document.getElementById('pname').textContent='Proof ready';
-    document.getElementById('psize').textContent=fmtSize(fileObj.size)+' · redacted on your device · metadata stripped';
-    document.getElementById('pimg').src=canvas.toDataURL('image/jpeg',0.5);
-    document.getElementById('pimg').style.display='block';
-    document.getElementById('redactPanel').classList.remove('show');
-    document.getElementById('preview').classList.add('show');
-    setDropStatus('Proof ready ✓','Confirm below and claim ↓');
-    const first=!document.getElementById('contactWrap').classList.contains('show');
-    document.getElementById('contactWrap').classList.add('show');
-    document.getElementById('mSticky').classList.add('show');
-    checkForm();
-    /* let the redaction panel collapse, then glide to the last step */
-    scrollToEl('contactWrap',140);
-    if(first) setTimeout(()=>document.getElementById('email').focus({preventScroll:true}),260);
-  },'image/jpeg',0.92);
-}
-function clearFile(){
-  fileObj=null;fileHash=null;rawImg=null;rects=[];fileInput.value='';
-  document.getElementById('preview').classList.remove('show');
-  document.getElementById('redactPanel').classList.remove('show');
-  resetUploadArea();
-  checkForm();
-}
-/* clear the current proof and immediately reopen the file picker */
-function chooseDifferent(){ clearFile(); setTimeout(()=>fileInput.click(),50); }
-/* from the declined screen: reset to the form (keeping firm choice) and pick a new image */
-function tryAgainNewImage(){ resetForm(); setTimeout(()=>fileInput.click(),160); }
-async function sha256(file){
-  const buf=await file.arrayBuffer();
-  const h=await crypto.subtle.digest('SHA-256',buf);
-  return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
+    function renderPlan(plan) {
+      const config = planConfig[plan];
+      if (!config) return;
+      activePlan = plan;
+      document.querySelectorAll(".plan-tab").forEach((tab) => {
+        tab.setAttribute("aria-selected", String(tab.dataset.plan === plan));
+      });
+      document.getElementById("planEyebrow").textContent = config.eyebrow;
+      document.getElementById("planTitle").textContent = config.title;
+      document.getElementById("planDescription").textContent = config.description;
+      document.getElementById("planFeatures").innerHTML = config.features.map((item) => "<li>" + item + "</li>").join("");
+      const cta = document.getElementById("planCta");
+      cta.dataset.plan = plan;
+      cta.textContent = config.cta;
+      refreshTrackedLinks();
+    }
 
-/* ---- automatic PII redaction (client-side OCR) ----
-   Phones, addresses, and long account numbers are auto-boxed.
-   Emails are detected and KEPT VISIBLE (green outline) — the
-   verifier must read the email to confirm the account is the
-   applicant's. OCR failure degrades gracefully to manual boxes. */
-let emailBoxes=[], emailFound=false;
-function setOcrStatus(msg){const el=document.getElementById('ocrStatus');if(el)el.textContent=msg;}
-function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
-async function autoRedact(){
-  setOcrStatus('Scanning for personal info to auto-redact…');
-  try{
-    if(!window.Tesseract) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js');
-    const res=await Tesseract.recognize(canvas,'eng');
-    if(!rawImg) return; /* user cancelled mid-scan */
-    const EMAIL=/[\w.+-]+@[\w-]+\.[\w.-]{2,}/;
-    const ADDR=/\b\d{1,6}\s+\S+.*\b(street|st|avenue|ave|road|rd|drive|dr|boulevard|blvd|lane|ln|court|ct|suite|ste|apt|unit)\b/i;
-    const LONGNUM=/\b[\d -]{12,23}\d\b/;
-    const PHONE=/(\+?\d[\d().\s-]{7,}\d)/;
-    let auto=0;
-    (res.data.lines||[]).forEach(line=>{
-      const t=line.text||'', b=line.bbox;
-      if(!b) return;
-      if(EMAIL.test(t)){
-        emailFound=true;
-        emailBoxes.push({x:b.x0-4,y:b.y0-4,w:(b.x1-b.x0)+8,h:(b.y1-b.y0)+8});
-        return;
-      }
-      const digits=(t.match(/\d/g)||[]).length;
-      if(ADDR.test(t)||LONGNUM.test(t)||(PHONE.test(t)&&digits>=10)){
-        rects.push({x:b.x0-4,y:b.y0-4,w:(b.x1-b.x0)+8,h:(b.y1-b.y0)+8});
-        auto++;
-      }
+    document.querySelectorAll(".plan-tab").forEach((tab) => {
+      tab.addEventListener("click", () => renderPlan(tab.dataset.plan));
     });
-    drawRedact();
-    setOcrStatus(auto
-      ? 'Auto-redacted '+auto+' item'+(auto===1?'':'s')+' (phones, addresses, account numbers). Your email stays visible (green). Add boxes for anything we missed.'
-      : 'No phones, addresses, or account numbers detected. Add boxes for anything personal we missed — your email stays visible.');
-  }catch(e){
-    setOcrStatus('Auto-redaction unavailable — draw boxes over anything personal, but keep your email visible.');
-  }
-}
 
-/* ---- email (no verification step) ---- */
-const emailEl=document.getElementById('email');
+    const competitor = document.getElementById("competitor");
+    competitor.addEventListener("change", () => {
+      selectedCompetitor = competitor.value === "another firm" ? "" : competitor.value;
+      const name = competitor.value;
+      const output = document.getElementById("competitorOutput");
+      const intro = document.getElementById("compareIntro");
+      if (selectedCompetitor) {
+        output.textContent = "Comparing " + name + "? Start with total cost, payout cadence, and funded-account rules.";
+        intro.textContent = "If " + name + " is on your shortlist, use this as the minimum decision checklist before you buy.";
+      } else {
+        output.textContent = "Pick a firm and we will focus the page on the tradeoffs that matter.";
+        intro.textContent = "If you are evaluating another firm, use this as the minimum decision checklist.";
+      }
+      refreshTrackedLinks();
+    });
 
-/* ---- verifying overlay (spinning proof-firm logo) ---- */
-let _checkTimer=null;
-const CHECK_MSGS=['Reading the firm, date, and status…',
-  "Confirming it's a futures prop firm…",
-  'Checking your email on the proof…','Almost there…'];
-function showChecking(){
-  document.getElementById('formArea').style.display='none';
-  document.getElementById('mSticky').classList.remove('show');
-  document.getElementById('checking').classList.add('show');
-  const el=document.getElementById('checkMsg'); let i=0;
-  if(el) el.textContent=CHECK_MSGS[0];
-  stopCheckMsgs();
-  _checkTimer=setInterval(()=>{i=(i+1)%CHECK_MSGS.length;if(el)el.textContent=CHECK_MSGS[i];},1600);
-  document.getElementById('portal').scrollIntoView({behavior:'smooth'});
-}
-function stopCheckMsgs(){if(_checkTimer){clearInterval(_checkTimer);_checkTimer=null;}}
-function hideChecking(){document.getElementById('checking').classList.remove('show');stopCheckMsgs();}
+    document.getElementById("copyCode").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText("300K");
+      } catch {
+        const temp = document.createElement("input");
+        temp.value = "300K";
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        temp.remove();
+      }
+      const toast = document.getElementById("toast");
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1800);
+    });
 
-/* ---- submit ---- */
-async function submitForm(){
-  hideErr('err');
-  const email=emailEl.value.trim();
-  /* backstop validation (button should already be gated) */
-  if(!fileObj) return showErr('err','Upload your proof to continue.');
-  if(email!=='' && !emailOk(email)) return showErr('err','That email doesn’t look right — fix it or leave it blank.');
-  if(!document.getElementById('cTerms').checked||!document.getElementById('cPrivacy').checked)
-    return showErr('err','Accept the terms and privacy consent to continue.');
-  if(document.getElementById('hp').value) return; // honeypot
+    const menuButton = document.getElementById("mobileMenu");
+    const siteNav = document.getElementById("siteNav");
+    menuButton.addEventListener("click", () => {
+      const open = siteNav.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(open));
+      menuButton.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+    });
+    siteNav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        siteNav.classList.remove("open");
+        menuButton.setAttribute("aria-expanded", "false");
+      });
+    });
 
-  const btn=document.getElementById('submitBtn'), mbtn=document.getElementById('mStickyBtn');
-  btn.disabled=true;mbtn.disabled=true;btn.textContent='Verifying proof…';mbtn.textContent='Verifying proof…';
-  showChecking();
-
-  if(CONFIG.DEMO){
-    setTimeout(()=>{
-      if(location.hash.includes('pending')) showResult({status:'pending_review'});
-      else if(location.hash.includes('declined')) showResult({status:'declined'});
-      else showResult({status:'approved'});
-    },1400);
-    return;
-  }
-
-  const fd=new FormData();
-  if(email) fd.append('email',email);
-  fd.append('fileSha256',fileHash);
-  fd.append('file',fileObj);
-  fd.append('consentTerms','1'); fd.append('consentPrivacy','1');
-  fd.append('marketingOptIn',document.getElementById('cMkt').checked?'1':'0');
-
-  try{
-    const r=await fetch(CONFIG.API_BASE+'/submissions',{method:'POST',body:fd});
-    let data={}; try{data=await r.json();}catch(_){}
-    if(!r.ok){
-      if(r.status===409) throw new Error('Looks like this offer was already claimed. One code per trader, ever.');
-      if(r.status===410) throw new Error('This offer window has closed.');
-      throw new Error('Something went wrong on our side. Give it a minute and try again.');
-    }
-    showResult(data);
-  }catch(e){
-    hideChecking();
-    document.getElementById('formArea').style.display='block';
-    document.getElementById('mSticky').classList.add('show');
-    btn.disabled=false;mbtn.disabled=false;btn.textContent='Claim My 70% Code';mbtn.textContent='Claim My 70% Code';
-    showErr('err',e.message||'Something went wrong on our side. Please try again.');
-    checkForm();
-  }
-}
-
-function showResult(data){
-  hideChecking();
-  document.getElementById('formArea').style.display='none';
-  document.getElementById('mSticky').classList.remove('show');
-  if(data.status==='approved'){
-    document.getElementById('apprEmail').textContent=data.sentTo||emailEl.value.trim()||'your inbox';
-    document.getElementById('resApproved').classList.add('show');
-  }else if(data.status==='pending_review'){
-    document.getElementById('resPending').classList.add('show');
-  }else{
-    if(data.declineReason) document.getElementById('declineMsg').textContent=data.declineReason;
-    document.getElementById('resDeclined').classList.add('show');
-  }
-  document.getElementById('portal').scrollIntoView({behavior:'smooth'});
-  pushStep('result');
-}
-function resetForm(){
-  hideChecking();
-  document.querySelectorAll('.result').forEach(r=>r.classList.remove('show'));
-  document.getElementById('formArea').style.display='block';
-  const btn=document.getElementById('submitBtn'), mbtn=document.getElementById('mStickyBtn');
-  btn.textContent='Claim My 70% Code';mbtn.textContent='Claim My 70% Code';
-  /* fresh proof required on retry */
-  clearFile();
-  document.getElementById('mSticky').classList.add('show');
-  checkForm();
-  document.getElementById('portal').scrollIntoView({behavior:'smooth'});
-}
-
-/* ---- go back / reconsider: full flow reset ---- */
-function startOver(){
-  /* if we're on a result screen (approved/pending/declined/closed), bring
-     the form back — otherwise Start over appears to do nothing */
-  document.querySelectorAll('.result').forEach(r=>r.classList.remove('show'));
-  document.getElementById('formArea').style.display='block';
-  const btn=document.getElementById('submitBtn'), mbtn=document.getElementById('mStickyBtn');
-  if(btn) btn.textContent='Claim My 70% Code';
-  if(mbtn) mbtn.textContent='Claim My 70% Code';
-  clearFile();
-  cancelRedact();
-  emailEl.value='';
-  ['cTerms','cPrivacy','cMkt'].forEach(id=>document.getElementById(id).checked=false);
-  document.getElementById('contactWrap').classList.remove('show');
-  document.getElementById('mSticky').classList.remove('show');
-  hideErr('err');hideErr('errTop');
-  checkForm();
-  document.getElementById('portal').scrollIntoView({behavior:'smooth'});
-}
-
-/* ---- browser Back steps back through the flow, not out of the site ---- */
-function pushStep(step){try{history.pushState({fftStep:step},'');}catch(e){}}
-window.addEventListener('popstate',()=>{
-  if(document.querySelector('.result.show')){resetForm();return;}
-  if(document.getElementById('redactPanel').classList.contains('show')){cancelRedact();}
-});
-</script>
+    refreshTrackedLinks();
+  </script>
 </body>
 </html>
