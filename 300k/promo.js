@@ -4,7 +4,7 @@
   const OFFER_CODE = "300K";
   const DEADLINE_MS = Date.parse("2026-08-01T03:59:59Z");
   const LANDING_PAGE = "300k_offer";
-  const LANDING_VARIANT = "300k_v5";
+  const LANDING_VARIANT = "300k_v6";
   const ATTRIBUTION_KEYS = [
     "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
     "gclid", "gbraid", "wbraid", "msclkid", "ref"
@@ -13,9 +13,9 @@
     rapid: {
       id: "70",
       name: "Rapid",
-      title: "Rapid: built for payout speed.",
+      title: "Rapid: most payouts approved instantly.",
       cta: "Get Rapid 50% Off",
-      context: "Daily payout requests. No daily loss limit on funded accounts. No consistency rule."
+      context: "Request payouts daily. Most payout requests are approved instantly. No daily loss limit on funded accounts. No consistency rule."
     },
     pro: {
       id: "48",
@@ -192,11 +192,6 @@
     if (emitEvent) pushEvent("mffu_300k_plan_selected", { plan: plan });
   }
 
-  function setCountdownPart(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.textContent = String(value).padStart(2, "0");
-  }
-
   function expireOffer() {
     if (offerExpired && document.body.classList.contains("offer-expired")) return;
     offerExpired = true;
@@ -211,26 +206,9 @@
       button.disabled = true;
       button.textContent = "Offer ended";
     });
-    const label = document.querySelector(".countdown-label");
-    if (label) label.textContent = "OFFER ENDED";
-    setCountdownPart("days", 0);
-    setCountdownPart("hours", 0);
-    setCountdownPart("minutes", 0);
-    setCountdownPart("seconds", 0);
+    const deadline = document.querySelector(".offer-urgency strong");
+    if (deadline) deadline.textContent = "Offer ended";
     rewriteLinks();
-  }
-
-  function updateCountdown() {
-    const remaining = DEADLINE_MS - Date.now();
-    if (remaining <= 0) {
-      expireOffer();
-      return;
-    }
-    const totalSeconds = Math.floor(remaining / 1000);
-    setCountdownPart("days", Math.floor(totalSeconds / 86400));
-    setCountdownPart("hours", Math.floor((totalSeconds % 86400) / 3600));
-    setCountdownPart("minutes", Math.floor((totalSeconds % 3600) / 60));
-    setCountdownPart("seconds", totalSeconds % 60);
   }
 
   async function copyCode() {
@@ -288,8 +266,7 @@
   }
 
   selectPlan(activePlan, false);
-  updateCountdown();
-  window.setInterval(updateCountdown, 1000);
+  if (Date.now() >= DEADLINE_MS) expireOffer();
 
   window.mffuAttribution = Object.freeze({
     sessionId: sessionId,
