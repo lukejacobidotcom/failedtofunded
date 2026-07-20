@@ -1,0 +1,256 @@
+.hero-layout {
+  min-height: 720px;
+  align-items: center;
+  padding-top: 64px;
+  padding-bottom: 72px;
+}
+
+.hero-copy {
+  max-width: 720px;
+}
+
+.hero .eyebrow {
+  margin-bottom: 12px;
+  color: var(--mffu-gold-light);
+}
+
+.hero h1 {
+  max-width: 700px;
+  margin-bottom: 24px;
+  font-size: 68px;
+  line-height: 1.02;
+}
+
+.hero-offer-line {
+  max-width: 650px;
+  margin: 0 0 26px;
+  padding: 17px 20px;
+  border-left: 4px solid var(--mffu-blue);
+  border-radius: 0 12px 12px 0;
+  background: linear-gradient(90deg, rgba(58, 130, 247, .16), rgba(58, 130, 247, .03)), var(--mffu-panel);
+  color: var(--mffu-soft);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.eligible-plans {
+  display: block;
+  margin-bottom: 4px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.plan-picker {
+  max-width: 650px;
+  padding: 18px;
+  border: 1px solid #272b36;
+  border-radius: 14px;
+  background: #0b0e18;
+}
+
+.plan-picker-label {
+  margin-bottom: 11px;
+  color: #d1d5db;
+  font-size: 12px;
+}
+
+.plan-switcher {
+  width: 100%;
+  border-color: #303544;
+  background: #070914;
+}
+
+.plan-switch {
+  min-height: 48px;
+  font-size: 13px;
+}
+
+.selected-plan-summary {
+  max-width: 650px;
+  margin-top: 14px;
+  padding: 17px 20px;
+  border: 1px solid rgba(96, 165, 250, .3);
+  border-left: 4px solid var(--mffu-blue-light);
+  border-radius: 0 12px 12px 0;
+  background: rgba(58, 130, 247, .09);
+}
+
+.selected-plan-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--mffu-blue-light);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.selected-plan-summary .plan-context {
+  min-height: 0;
+  margin: 0;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.55;
+}
+
+.offer-deadline {
+  display: grid;
+  width: min(100%, 650px);
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  align-items: center;
+  margin-top: 22px;
+  padding: 18px 20px;
+  border: 1px solid rgba(243, 204, 129, .38);
+  border-radius: 12px;
+  background: linear-gradient(100deg, rgba(216, 174, 94, .13), rgba(58, 130, 247, .08)), #10131c;
+}
+
+.countdown-label {
+  display: block;
+  min-width: 92px;
+  color: #fff;
+}
+
+.countdown-label small,
+.countdown-label strong {
+  display: block;
+}
+
+.countdown-label small {
+  color: var(--mffu-gold-light);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.countdown-label strong {
+  margin-top: 4px;
+  font-size: 17px;
+  line-height: 1.15;
+}
+
+.countdown {
+  grid-template-columns: repeat(4, minmax(54px, 1fr));
+  gap: 7px;
+}
+
+.countdown div {
+  min-width: 0;
+  padding: 10px 6px 8px;
+  border: 1px solid #303542;
+  border-radius: 8px;
+  background: #090c15;
+}
+
+.countdown strong {
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.countdown span {
+  margin-top: 5px;
+  color: var(--mffu-muted);
+  font-size: 8px;
+}
+
+.hero-actions {
+  width: min(100%, 650px);
+  margin-top: 22px;
+}
+
+.hero-actions .mffu-button {
+  min-width: 320px;
+}
+
+.checkout-note {
+  max-width: 650px;
+  margin-top: 10px;
+  font-size: 10px;
+}
+
+@media (max-width: 1100px) {
+  .hero h1 {
+    font-size: 56px;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero-layout {
+    min-height: 0;
+    padding-top: 48px;
+    padding-bottom: 58px;
+  }
+
+  .hero h1 {
+    font-size: 43px;
+  }
+
+  .hero-offer-line {
+    padding: 15px 16px;
+  }
+
+  .eligible-plans {
+    font-size: 17px;
+  }
+
+  .plan-picker {
+    padding: 14px;
+  }
+
+  .plan-switch {
+    min-height: 46px;
+    font-size: 10px;
+  }
+
+  .selected-plan-summary {
+    padding: 15px 16px;
+  }
+
+  .selected-plan-summary .plan-context {
+    font-size: 13px;
+  }
+
+  .offer-deadline {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .countdown-label {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .countdown {
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .countdown strong {
+    font-size: 22px;
+  }
+
+  .hero-actions .mffu-button {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 390px) {
+  .hero h1 {
+    font-size: 38px;
+  }
+
+  .countdown div {
+    padding-right: 3px;
+    padding-left: 3px;
+  }
+
+  .countdown strong {
+    font-size: 19px;
+  }
+}

@@ -4,7 +4,7 @@
   const OFFER_CODE = "300K";
   const DEADLINE_MS = Date.parse("2026-08-01T03:59:59Z");
   const LANDING_PAGE = "300k_offer";
-  const LANDING_VARIANT = "300k_v3";
+  const LANDING_VARIANT = "300k_v4";
   const ATTRIBUTION_KEYS = [
     "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
     "gclid", "gbraid", "wbraid", "msclkid", "ref"
