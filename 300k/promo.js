@@ -4,7 +4,7 @@
   const OFFER_CODE = "300K";
   const DEADLINE_MS = Date.parse("2026-08-01T03:59:59Z");
   const LANDING_PAGE = "300k_offer";
-  const LANDING_VARIANT = "300k_v2";
+  const LANDING_VARIANT = "300k_v3";
   const ATTRIBUTION_KEYS = [
     "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
     "gclid", "gbraid", "wbraid", "msclkid", "ref"
@@ -136,7 +136,7 @@
 
     const config = PLANS[plan] || PLANS.rapid;
     const url = new URL("https://myfundedfutures.com/challenge");
-    url.searchParams.set("coupon", OFFER_CODE);
+    url.searchParams.set("coupon", OFFER_CODE.toLowerCase());
     url.searchParams.set("id", config.id);
     ATTRIBUTION_KEYS.forEach((key) => {
       const value = query.get(key);
@@ -196,8 +196,8 @@
     if (offerExpired && document.body.classList.contains("offer-expired")) return;
     offerExpired = true;
     document.body.classList.add("offer-expired");
-    const promoBar = document.getElementById("promoBar");
-    if (promoBar) promoBar.firstElementChild.textContent = "THE 300K PROMOTION HAS ENDED";
+    const promoMessage = document.getElementById("promoMessage");
+    if (promoMessage) promoMessage.textContent = "The 300K promotion has ended.";
     const headline = document.getElementById("heroHeadline");
     const lede = document.getElementById("heroLede");
     if (headline) headline.textContent = "The 300K promotion has ended.";
