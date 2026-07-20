@@ -4,7 +4,7 @@
   const OFFER_CODE = "300K";
   const DEADLINE_MS = Date.parse("2026-08-01T03:59:59Z");
   const LANDING_PAGE = "300k_offer";
-  const LANDING_VARIANT = "300k_v4";
+  const LANDING_VARIANT = "300k_v5";
   const ATTRIBUTION_KEYS = [
     "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
     "gclid", "gbraid", "wbraid", "msclkid", "ref"
@@ -13,19 +13,22 @@
     rapid: {
       id: "70",
       name: "Rapid",
-      cta: "Claim 50% Off Rapid",
+      title: "Rapid: built for payout speed.",
+      cta: "Get Rapid 50% Off",
       context: "Daily payout requests. No daily loss limit on funded accounts. No consistency rule."
     },
     pro: {
       id: "48",
       name: "Pro",
-      cta: "Claim 50% Off Pro",
+      title: "Pro: built for flexibility.",
+      cta: "Get Pro 50% Off",
       context: "More funded-account flexibility. No daily loss limit. Up to 90% of simulated profits."
     },
     builder: {
       id: "84",
       name: "Builder 50K",
-      cta: "Claim 50% Off Builder 50K",
+      title: "Builder 50K: built for structure.",
+      cta: "Get Builder 50K 50% Off",
       context: "A structured evaluation path. Builder 50K only for this offer. $0 activation fee."
     }
   };
@@ -177,7 +180,9 @@
       button.setAttribute("aria-selected", String(active));
     });
     const context = document.getElementById("planContext");
+    const contextTitle = document.getElementById("planContextTitle");
     const heroCta = document.getElementById("heroCta");
+    if (contextTitle) contextTitle.textContent = PLANS[plan].title;
     if (context) context.textContent = PLANS[plan].context;
     if (heroCta) {
       heroCta.dataset.plan = plan;

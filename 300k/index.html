@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Get 50% off eligible MyFundedFutures Rapid, Pro, and Builder 50K evaluations with code 300K. Two uses through July 31.">
+  <meta name="description" content="Get 50% off Rapid, Pro, or Builder 50K evaluations. Use code 300K twice through July 31. Rapid includes daily payout requests and no consistency rule.">
   <meta name="theme-color" content="#02040e">
   <title>50% Off. 1 Week. | MFFU Code 300K</title>
   <link rel="canonical" href="https://myfundedfutures.com/300k">
@@ -17,8 +17,9 @@
   <meta name="twitter:description" content="Use code 300K twice for 50% off eligible Rapid, Pro, or Builder 50K evaluations through July 31.">
   <meta name="twitter:image" content="https://failedtofunded.com/300k/og.png">
   <link rel="icon" href="https://myfundedfutures.com/images/mffu/favicon.ico">
-  <link rel="stylesheet" href="/300k/styles.css?v=4">
-  <link rel="stylesheet" href="/300k/hero-v4.css?v=4">
+  <link rel="stylesheet" href="/300k/styles.css?v=5">
+  <link rel="stylesheet" href="/300k/hero-v4.css?v=5">
+  <link rel="stylesheet" href="/300k/conversion-v5.css?v=5">
 </head>
 <body>
   <header class="mffu-header">
@@ -92,25 +93,15 @@
     <section class="hero">
       <div class="mffu-shell hero-layout">
         <div class="hero-copy">
-          <p class="eyebrow">THE 300K OFFER</p>
+          <p class="eyebrow">7 DAYS. TWO USES. ONE CODE.</p>
           <h1 id="heroHeadline">50% Off. 1 Week.</h1>
-          <p class="hero-offer-line" id="heroLede"><strong class="eligible-plans">Rapid, Pro, or Builder 50K.</strong> Use code <strong>300K</strong> up to two times through July 31.</p>
+          <p class="hero-offer-line" id="heroLede"><strong class="eligible-plans">Half off Rapid, Pro, or Builder 50K.</strong> Use code <strong>300K</strong> twice before July 31.</p>
 
-          <div class="plan-picker">
-            <span class="plan-picker-label">Choose your plan</span>
-            <div class="plan-switcher" role="tablist" aria-label="Choose an eligible plan">
-              <button class="plan-switch is-active" type="button" role="tab" aria-selected="true" data-plan="rapid">Rapid</button>
-              <button class="plan-switch" type="button" role="tab" aria-selected="false" data-plan="pro">Pro</button>
-              <button class="plan-switch" type="button" role="tab" aria-selected="false" data-plan="builder">Builder 50K</button>
-            </div>
+          <div class="offer-facts" aria-label="300K offer summary">
+            <div><strong>50%</strong><span>Off evaluations</span></div>
+            <div><strong>2</strong><span>Uses per trader</span></div>
+            <div><strong>300K</strong><span>Code applied</span></div>
           </div>
-
-          <div class="selected-plan-summary"><span class="selected-plan-label">Selected plan advantage</span><p class="plan-context" id="planContext">Daily payout requests. No daily loss limit on funded accounts. No consistency rule.</p></div>
-
-          <div class="hero-actions">
-            <a class="mffu-button mffu-button-large tracked-checkout" id="heroCta" data-plan="rapid" data-cta-location="hero" href="https://myfundedfutures.com/challenge?id=70&amp;coupon=300k">Claim 50% Off Rapid</a>
-          </div>
-          <p class="checkout-note">Code 300K is applied automatically. Confirm the discount and current plan terms at checkout.</p>
 
           <div class="offer-deadline">
             <span class="countdown-label"><small>Offer ends</small><strong>July 31</strong></span>
@@ -120,6 +111,33 @@
               <div><strong id="minutes">--</strong><span>Min</span></div>
               <div><strong id="seconds">--</strong><span>Sec</span></div>
             </div>
+          </div>
+
+          <div class="plan-picker">
+            <div class="plan-picker-heading">
+              <span class="plan-picker-label">Choose your evaluation</span>
+              <span class="rapid-nudge">Rapid recommended</span>
+            </div>
+            <div class="plan-switcher" role="tablist" aria-label="Choose an eligible plan">
+              <button class="plan-switch is-active" type="button" role="tab" aria-selected="true" data-plan="rapid">Rapid</button>
+              <button class="plan-switch" type="button" role="tab" aria-selected="false" data-plan="pro">Pro</button>
+              <button class="plan-switch" type="button" role="tab" aria-selected="false" data-plan="builder">Builder 50K</button>
+            </div>
+          </div>
+
+          <div class="selected-plan-summary">
+            <span class="selected-plan-label">Why this plan</span>
+            <strong class="selected-plan-title" id="planContextTitle">Rapid: built for payout speed.</strong>
+            <p class="plan-context" id="planContext">Daily payout requests. No daily loss limit on funded accounts. No consistency rule.</p>
+          </div>
+
+          <div class="hero-actions">
+            <a class="mffu-button mffu-button-large tracked-checkout" id="heroCta" data-plan="rapid" data-cta-location="hero" href="https://myfundedfutures.com/challenge?id=70&amp;coupon=300k">Get Rapid 50% Off</a>
+          </div>
+          <div class="checkout-reassurance">
+            <span>Code applied automatically</span>
+            <span>$0 activation fee</span>
+            <span>Checkout in minutes</span>
           </div>
         </div>
         <div class="hero-art">
@@ -140,15 +158,15 @@
     <section class="content-section plans-section" id="eligible">
       <div class="mffu-shell">
         <div class="section-heading">
-          <p class="eyebrow">ONE CODE. YOUR RULES.</p>
-          <h2>Pick your plan. The code follows you.</h2>
-          <p>Rapid for payout speed. Pro for funded-account flexibility. Builder 50K for a more structured path.</p>
+          <p class="eyebrow">50% OFF. PICK YOUR PATH.</p>
+          <h2>Choose the plan that fits how you trade.</h2>
+          <p>Rapid for 24-hour payout requests. Pro for flexibility. Builder 50K for structure. Every plan has a $0 activation fee.</p>
         </div>
 
         <div class="plan-grid">
           <article class="plan-card is-featured">
             <div class="plan-card-top">
-              <span class="plan-label">Most popular</span>
+              <span class="plan-label">Recommended</span>
               <h3>Rapid</h3>
               <p>For traders who want the fastest MFFU path to payout requests.</p>
             </div>
@@ -158,7 +176,7 @@
               <li>No consistency rule</li>
               <li>$0 activation fee</li>
             </ul>
-            <a class="mffu-button tracked-checkout" data-plan="rapid" data-cta-location="rapid_card" href="https://myfundedfutures.com/challenge?id=70&amp;coupon=300k">Claim 50% Off Rapid</a>
+            <a class="mffu-button tracked-checkout" data-plan="rapid" data-cta-location="rapid_card" href="https://myfundedfutures.com/challenge?id=70&amp;coupon=300k">Get Rapid 50% Off</a>
           </article>
 
           <article class="plan-card">
@@ -173,7 +191,7 @@
               <li>Clear, plan-specific rules</li>
               <li>$0 activation fee</li>
             </ul>
-            <a class="mffu-button tracked-checkout" data-plan="pro" data-cta-location="pro_card" href="https://myfundedfutures.com/challenge?id=48&amp;coupon=300k">Claim 50% Off Pro</a>
+            <a class="mffu-button tracked-checkout" data-plan="pro" data-cta-location="pro_card" href="https://myfundedfutures.com/challenge?id=48&amp;coupon=300k">Get Pro 50% Off</a>
           </article>
 
           <article class="plan-card">
@@ -188,32 +206,17 @@
               <li>Clear evaluation progression</li>
               <li>$0 activation fee</li>
             </ul>
-            <a class="mffu-button tracked-checkout" data-plan="builder" data-cta-location="builder_card" href="https://myfundedfutures.com/challenge?id=84&amp;coupon=300k">Claim 50% Off Builder 50K</a>
+            <a class="mffu-button tracked-checkout" data-plan="builder" data-cta-location="builder_card" href="https://myfundedfutures.com/challenge?id=84&amp;coupon=300k">Get Builder 50K 50% Off</a>
           </article>
         </div>
         <p class="plans-note">The 300K offer applies to eligible evaluations only. Current checkout terms govern.</p>
       </div>
     </section>
-
-    <section class="content-section steps-section">
-      <div class="mffu-shell">
-        <div class="section-heading compact">
-          <p class="eyebrow">THREE STEPS</p>
-          <h2>Choose. Check out. Trade.</h2>
-        </div>
-        <div class="steps">
-          <article><span>1</span><div><h3>Pick your rules</h3><p>Choose Rapid, Pro, or Builder 50K.</p></div></article>
-          <article><span>2</span><div><h3>Get 50% off</h3><p>Code 300K is already attached to every checkout button.</p></div></article>
-          <article><span>3</span><div><h3>Start your evaluation</h3><p>Trade the same way you already do.</p></div></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="content-section why-section" id="why-mffu">
+<section class="content-section why-section" id="why-mffu">
       <div class="mffu-shell">
         <div class="section-heading">
           <p class="eyebrow">WHY MFFU</p>
-          <h2>Why 100,000+ <span>choose</span> My Funded Futures</h2>
+          <h2>The offer gets you in. The payout path makes it matter.</h2>
         </div>
         <div class="benefit-grid">
           <article><small>Payouts</small><h3>Get Paid Reliably</h3><p>A track record of paying traders consistently and transparently.</p></article>
@@ -228,7 +231,7 @@
       <div class="mffu-shell faq-layout">
         <div class="section-heading">
           <p class="eyebrow">OFFER DETAILS</p>
-          <h2>The offer, without the fine-print maze.</h2>
+          <h2>Everything that matters before checkout.</h2>
         </div>
         <div class="faq-list">
           <details><summary>Which plans work with code 300K?</summary><p>Eligible Rapid and Pro evaluations, plus the Builder 50K evaluation.</p></details>
@@ -244,10 +247,10 @@
       <div class="mffu-shell final-cta-inner">
         <div>
           <p class="eyebrow">CODE 300K</p>
-          <h2>Two uses. 50% off. Ends July 31.</h2>
-          <p>Pick your plan and put both discounted shots to work.</p>
+          <h2>50% off closes July 31. Pick your plan now.</h2>
+          <p>Use code 300K twice. Your selected plan and discount are carried into checkout.</p>
         </div>
-        <a class="mffu-button mffu-button-large tracked-checkout" data-plan="rapid" data-follow-active data-cta-location="final_cta" href="https://myfundedfutures.com/challenge?id=70&amp;coupon=300k">Claim 50% Off Rapid</a>
+        <a class="mffu-button mffu-button-large tracked-checkout" data-plan="rapid" data-follow-active data-cta-location="final_cta" href="https://myfundedfutures.com/challenge?id=70&amp;coupon=300k">Get Rapid 50% Off</a>
       </div>
     </section>
 
@@ -314,10 +317,10 @@
 
   <div class="sticky-offer" id="stickyOffer">
     <div><strong>50% off</strong><span>Code 300K, two uses</span></div>
-    <a class="mffu-button tracked-checkout" data-plan="rapid" data-follow-active data-cta-location="mobile_sticky" href="https://myfundedfutures.com/challenge?id=70&amp;coupon=300k">Claim offer</a>
+    <a class="mffu-button tracked-checkout" data-plan="rapid" data-follow-active data-cta-location="mobile_sticky" href="https://myfundedfutures.com/challenge?id=70&amp;coupon=300k">Get 50% Off</a>
   </div>
 
   <script src="/300k/header.js?v=3" defer></script>
-  <script src="/300k/promo.js?v=4" defer></script>
+  <script src="/300k/promo.js?v=5" defer></script>
 </body>
 </html>
