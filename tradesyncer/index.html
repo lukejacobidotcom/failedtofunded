@@ -521,7 +521,8 @@ function sbarRow(label, n, lp){
   </div>`;
 }
 function gaugeFoot(inst, size){
-  const label = size === 'sm' ? `n=${inst.all.n}` : `P ${inst.win.n} · U ${inst.lose.n} · demo data`;
+  const label = size === 'sm' ? 'Illustrative demo'
+    : `${inst.win.n.toLocaleString()} profitable · ${inst.lose.n.toLocaleString()} unprofitable · demo`;
   return `<div class="w-foot"><span>${label}</span>
     <span class="mf-mark">${mfMark()}Powered by MarketFramework</span></div>`;
 }
@@ -529,11 +530,10 @@ function mfMark(){
   return `<svg width="11" height="11" viewBox="0 0 12 12"><rect x="0.5" y="4" width="2.4" height="7.5" rx="1.2" fill="var(--brand)"/><rect x="4.8" y="1" width="2.4" height="10.5" rx="1.2" fill="var(--brand)" opacity=".75"/><rect x="9.1" y="6" width="2.4" height="5.5" rx="1.2" fill="var(--brand)" opacity=".5"/></svg>`;
 }
 function gaugeHead(inst, size){
-  const sel = `<select class="sym-sel" data-role="gsel" aria-label="Switch instrument">${INSTRUMENTS.map(i2 =>
-    `<option value="${i2.sym}"${i2.sym === inst.sym ? ' selected' : ''}>${i2.sym}</option>`).join('')}</select>`;
+  const sel = `<select class="sym-sel" data-role="gsel" aria-label="Switch instrument" style="max-width:calc(100% - 60px)">${INSTRUMENTS.map(i2 =>
+    `<option value="${i2.sym}"${i2.sym === inst.sym ? ' selected' : ''}>${i2.sym} · ${i2.name}</option>`).join('')}</select>`;
   const live = size === 'sm' ? '' : `<span class="w-live"><span class="dot"></span>LIVE</span>`;
   return `<div class="w-head">${sel}
-    <span class="w-name">${inst.name}</span>
     <span style="margin-left:auto;display:inline-flex;align-items:center;gap:8px">${live}<span class="ibtn">i</span></span></div>`;
 }
 /* mount a gauge into a host and wire its instrument dropdown */
@@ -543,6 +543,10 @@ function mountGauge(host, sym, size, fluid){
   host.innerHTML = html;
   const sel = host.querySelector('[data-role="gsel"]');
   if (sel) sel.addEventListener('change', () => mountGauge(host, sel.value, size, fluid));
+  host.querySelectorAll('.sm-hover').forEach(el => {
+    el.addEventListener('mouseenter', () => showPulseTip(el));
+    el.addEventListener('mouseleave', hideTip);
+  });
 }
 function renderGauge(sym, size){
   const inst = bySym[sym];
@@ -551,15 +555,11 @@ function renderGauge(sym, size){
   const width = size === 'sm' ? 270 : size === 'lg' ? 520 : 368;
   let body = '';
   if (size === 'sm'){
+    /* Widget-B format per Juan: plain rows, no divergence pill, no axis labels — details on hover */
     const row = (label, c) => `<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;font-size:11.5px;font-weight:600;color:var(--ink-2)">
-        <span>${label}</span><span style="font-weight:700;font-variant-numeric:tabular-nums;color:${c.lp>=50?'var(--long)':'var(--short)'}">${pctSide(c.lp)}</span></div>
-      <span class="sbar" style="margin-top:5px"><span class="l" style="width:${c.lp}%"></span><span class="gap"></span><span class="s"></span></span>`;
-    body = `<div style="padding:10px 16px 2px">
-      <div style="display:flex;align-items:center;gap:9px">
-        <span class="divg" data-role="divg" data-sym="${sym}" data-suffix=" pt">${fmt1(d)}<small> pt</small></span>
-        <span class="edge-chip ${st.cls}">${st.txt}</span>
-      </div>
-      <div class="axis-lab" style="margin:12px 0 -4px"><span class="al">◀ % LONG</span><span style="color:var(--ink-3)">50%</span><span class="as">% SHORT ▶</span></div>
+        <span>${label}</span><span style="font-weight:700;font-variant-numeric:tabular-nums;color:${c.lp>=50?'var(--long)':'var(--short)'}">${pctRound(c.lp)}</span></div>
+      <span class="sbar" style="margin-top:5px"><span class="l" data-role="${label.startsWith('Prof')?'wbar':'ubar'}" data-sym="${sym}" style="width:${c.lp}%"></span><span class="gap"></span><span class="s"></span></span>`;
+    body = `<div class="sm-hover" data-sym="${sym}" style="padding:2px 16px 6px;cursor:default">
       ${row('Profitable traders', inst.win)}
       ${row('Unprofitable traders', inst.lose)}
     </div>`;
@@ -841,7 +841,7 @@ renderChart(chartMockHost, { sym:'NQ', tf:'5m', compact:true });
 
 /* Section 2 sizes */
 document.getElementById('gaugeSizes').innerHTML = `
-  <div class="size-col"><span class="size-tag">Small · <b>270px</b> — mobile / grid filler</span><div id="gs1"></div></div>
+  <div class="size-col"><span class="size-tag">Small · <b>270px</b> — mobile / grid filler · hover for detail</span><div id="gs1"></div></div>
   <div class="size-col"><span class="size-tag">Medium · <b>368px</b> — standard card</span><div id="gs2"></div></div>
   <div class="size-col"><span class="size-tag">Large · <b>520px</b> — feature slot, adds spread history</span><div id="gs3"></div></div>`;
 mountGauge(document.getElementById('gs1'), 'MGC', 'sm');
