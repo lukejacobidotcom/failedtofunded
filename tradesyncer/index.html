@@ -332,9 +332,9 @@
 <!-- ================= SECTION 4: CHART PANEL ================= -->
 <div class="wrap"><section id="chart">
   <div class="sec-head"><span class="sec-num">04</span><h2>Widget C — Intraday Positioning Chart</h2></div>
-  <p class="sec-sub">The deep-dive panel: price on top, positioning below, from MarketFramework's continuously-recorded
-  1m/5m/15m positioning candles. A trader sees in one glance when profitable traders flipped — and how the unprofitable
-  crowd chased the move. Hover for the crosshair; switch instrument and timeframe.</p>
+  <p class="sec-sub">The deep-dive panel: price candles and cohort positioning on one chart, aligned bar-for-bar, from
+  MarketFramework's continuously-recorded 1m/5m/15m positioning candles. A trader sees in one glance when profitable
+  traders flipped — and how price followed. Hover for the crosshair; switch instrument and timeframe.</p>
   <div id="chartFull"></div>
 </section></div>
 
@@ -675,12 +675,10 @@ function renderChart(el, state){
   const series = { win: idx.map(k=>s1.win[k]), lose: idx.map(k=>s1.lose[k]), all: idx.map(k=>s1.all[k]) };
   const n = idx.length;
   const W = 720, L = 40, R = 112, T = 16;
-  const HP = compact ? 92 : 116;              /* price pane */
-  const GAP = 34;
-  const HS = compact ? 168 : 196;             /* positioning pane */
+  const HS = compact ? 240 : 276;             /* single shared pane */
   const B = 26;
-  const H = T + HP + GAP + HS + B;
-  const posTop = T + HP + GAP, posBot = posTop + HS;
+  const H = T + HS + B;
+  const posTop = T, posBot = posTop + HS;
   const x = k => L + k * (W - L - R) / (n - 1);
   /* price candles (demo path follows the profitable cohort) */
   const p1 = makePrice(sym);
@@ -690,7 +688,7 @@ function renderChart(el, state){
   });
   const pv = candles.flatMap(c => [c.h, c.l]);
   const plo = Math.min(...pv), phi = Math.max(...pv);
-  const yP = v => T + (phi - v) * HP / (phi - plo || 1);
+  const yP = v => posTop + 4 + (phi - v) * (HS - 8) / (phi - plo || 1);
   const allV = [...series.win, ...series.lose, ...series.all, 50];
   let lo = Math.floor((Math.min(...allV) - 4) / 5) * 5, hi = Math.ceil((Math.max(...allV) + 4) / 5) * 5;
   lo = Math.max(0, lo); hi = Math.min(100, hi);
@@ -707,12 +705,10 @@ function renderChart(el, state){
     candleSvg += `<line x1="${xx.toFixed(1)}" y1="${yP(c.h).toFixed(1)}" x2="${xx.toFixed(1)}" y2="${yP(c.l).toFixed(1)}" stroke="${col}" stroke-width="1"/>` +
       `<rect x="${(xx - cwid/2).toFixed(1)}" y="${bTop.toFixed(1)}" width="${cwid.toFixed(1)}" height="${Math.max(1,(bBot-bTop)).toFixed(1)}" fill="${col}" rx="0.5"/>`;
   });
-  /* gridlines + axis labels for both panes */
+  /* gridlines + axis labels — % on the left, price ticks tucked inside-right */
   let grid = '', ylabs = '';
   [plo, (plo+phi)/2, phi].forEach(g => {
-    const yy = yP(g).toFixed(1);
-    grid += `<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="var(--border)" stroke-width="1" stroke-dasharray="1 5"/>`;
-    ylabs += `<text x="${L-7}" y="${+yy+3}" text-anchor="end" font-size="9" fill="var(--ink-3)">${fmtPrice(sym, g)}</text>`;
+    ylabs += `<text x="${W-R-6}" y="${(yP(g)+3).toFixed(1)}" text-anchor="end" font-size="8.5" fill="var(--ink-3)" opacity=".85">${fmtPrice(sym, g)}</text>`;
   });
   for (let g = lo; g <= hi; g += 10){
     const yy = y(g).toFixed(1);
@@ -736,7 +732,7 @@ function renderChart(el, state){
     const anchor = crossK > n * .62 ? 'end' : 'start';
     const tx = anchor === 'end' ? cx2 - 6 : cx2 + 6;
     crossSvg = `<line x1="${cx2}" y1="${T}" x2="${cx2}" y2="${posBot}" stroke="var(--brand)" stroke-width="1.2" stroke-dasharray="4 4" opacity=".55"/>
-      <text x="${tx}" y="${posTop + 13}" text-anchor="${anchor}" font-size="9.5" font-weight="700" fill="var(--brand)">PROFITABLE TRADERS FLIP ${series.win[crossK] >= 50 ? 'LONG' : 'SHORT'}</text>`;
+      <text x="${tx}" y="${posTop + 13}" text-anchor="${anchor}" font-size="9.5" font-weight="700" fill="var(--brand)" stroke="var(--surface)" stroke-width="3" paint-order="stroke">PROFITABLE TRADERS FLIP ${series.win[crossK] >= 50 ? 'LONG' : 'SHORT'}</text>`;
   }
   const endLab = (arr, name, colorVar) => {
     const yy = y(arr[n-1]);
@@ -746,12 +742,11 @@ function renderChart(el, state){
       <text x="${W-R+21}" y="${(yy+3.5).toFixed(1)}" font-size="9.5" font-weight="600" fill="var(--ink-2)">${name} ${fmt1(arr[n-1])}</text>`;
   };
   const lastC = candles[n-1];
-  const priceEnd = `<text x="${W-R+8}" y="${(yP(lastC.c)+3.5).toFixed(1)}" font-size="9.5" font-weight="700" fill="${lastC.c >= candles[0].o ? 'var(--pos)' : 'var(--neg)'}">${fmtPrice(sym, lastC.c)}</text>`;
+  const priceEnd = `<text x="${W-R-6}" y="${(yP(lastC.c) - 6).toFixed(1)}" text-anchor="end" font-size="9.5" font-weight="700" fill="${lastC.c >= candles[0].o ? 'var(--pos)' : 'var(--neg)'}">${fmtPrice(sym, lastC.c)}</text>`;
   const svg = `<svg viewBox="0 0 ${W} ${H}" data-role="plot">
     ${grid}${ylabs}${xlabs}
-    <text x="${L}" y="3" font-size="8.5" font-weight="800" letter-spacing=".08em" fill="var(--ink-3)" dominant-baseline="hanging">${sym} PRICE · ${tf} CANDLES (DEMO)</text>
-    <text x="${L}" y="${posTop - 11}" font-size="8.5" font-weight="800" letter-spacing=".08em" fill="var(--ink-3)">POSITIONING · % OF TRADERS NET LONG</text>
-    ${candleSvg}${priceEnd}
+    <text x="${L}" y="3" font-size="8.5" font-weight="800" letter-spacing=".08em" fill="var(--ink-3)" dominant-baseline="hanging">${sym} · % OF TRADERS NET LONG + PRICE CANDLE OVERLAY (${tf} · DEMO)</text>
+    <g opacity=".78">${candleSvg}</g>${priceEnd}
     <path d="${path(series.all)}" fill="none" stroke="var(--ref)" stroke-width="1.6" stroke-dasharray="4 5" stroke-linejoin="round"/>
     <path d="${path(series.lose)}" fill="none" style="stroke:var(--lose)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
     <path d="${path(series.win)}" fill="none" style="stroke:var(--win)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
@@ -770,7 +765,7 @@ function renderChart(el, state){
       <span class="pillset sym">${symPills}</span>
       <span class="pillset" style="margin-left:0">${tfPills}</span>
     </div>
-    <div style="padding:0 16px 8px;font-size:11.5px;color:var(--ink-3)">Top pane: ${sym} price. Bottom: the share of each group positioned <b style="color:var(--ink-2)">net long</b>. Watch the flip — <b style="color:var(--ink-2)">profitable traders swapped sides before the move</b>; unprofitable traders chased it.</div>
+    <div style="padding:0 16px 8px;font-size:11.5px;color:var(--ink-3)">${sym} price candles overlay the positioning lines — each line is the share of that group positioned <b style="color:var(--ink-2)">net long</b>. Watch the flip: <b style="color:var(--ink-2)">profitable traders swapped sides before the move</b>; unprofitable traders chased it.</div>
     <div class="legend">
       <span class="li"><span class="sw" style="background:var(--win)"></span>Profitable traders (${inst.win.n})</span>
       <span class="li"><span class="sw" style="background:var(--lose)"></span>Unprofitable traders (${inst.lose.n})</span>
