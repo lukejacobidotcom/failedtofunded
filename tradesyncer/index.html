@@ -99,6 +99,17 @@
   .insight{margin:10px 16px 0;padding:9px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:9px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
   .insight b{font-weight:700}
   .insight .cl{color:var(--long)} .insight .cs{color:var(--short)}
+  /* signal card */
+  .sig-state{padding:12px 16px 0;font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+  .sig-state .side-l{color:var(--long)} .sig-state .side-s{color:var(--short)}
+  .sig-sub{padding:3px 16px 0;font-size:12px;color:var(--ink-2);font-weight:500}
+  .sig-stats{display:flex;gap:8px;padding:12px 16px 0}
+  .sig-chip{flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:8px 11px;min-width:0}
+  .sig-chip b{display:block;font-size:15.5px;font-weight:700;letter-spacing:-.01em;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .sig-chip span{display:block;font-size:9.5px;color:var(--ink-3);font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:2px;white-space:nowrap}
+  .ticks{display:inline-flex;gap:2px;align-items:center}
+  .tick{width:6px;height:13px;border-radius:2px;display:inline-block}
+  .receipts{display:flex;align-items:center;gap:8px;padding:12px 16px 0;font-size:10.5px;color:var(--ink-3);font-weight:600}
   .axis-lab{display:flex;justify-content:space-between;margin:12px 16px -3px;font-size:9.5px;font-weight:800;letter-spacing:.09em}
   .axis-lab .al{color:var(--long)} .axis-lab .as{color:var(--short)}
   .upd{font-size:10.5px;color:var(--ink-3);font-weight:600;white-space:nowrap;display:inline-block;min-width:106px}
@@ -313,10 +324,10 @@
 
 <!-- ================= SECTION 2: EDGE GAUGE SIZES ================= -->
 <div class="wrap"><section id="gauge">
-  <div class="sec-head"><span class="sec-num">02</span><h2>Widget A — Positioning Edge Gauge</h2></div>
-  <p class="sec-sub">One card per instrument, with a built-in dropdown to switch markets. Shows where <b>profitable traders</b>
-  are positioned vs. <b>unprofitable traders</b> vs. the whole crowd — with a single divergence number that says instantly when
-  the two groups are on opposite sides of the market. Three sizes for any grid slot.</p>
+  <div class="sec-head"><span class="sec-num">02</span><h2>Widget A — Live Signal Card</h2></div>
+  <p class="sec-sub">One verdict per market, not a data dump: <b>which side the profitable traders are on, how long they've
+  held it, what price has done since, and how many candles have broken their way</b>. Cohort bars are the receipts underneath.
+  Built-in dropdown to switch markets; three sizes for any grid slot.</p>
   <div class="size-row" id="gaugeSizes"></div>
 </section></div>
 
@@ -332,9 +343,10 @@
 <!-- ================= SECTION 4: CHART PANEL ================= -->
 <div class="wrap"><section id="chart">
   <div class="sec-head"><span class="sec-num">04</span><h2>Widget C — Intraday Positioning Chart</h2></div>
-  <p class="sec-sub">The deep-dive panel: price candles and cohort positioning on one chart, aligned bar-for-bar, from
-  MarketFramework's continuously-recorded 1m/5m/15m positioning candles. A trader sees in one glance when profitable
-  traders flipped — and how price followed. Hover for the crosshair; switch instrument and timeframe.</p>
+  <p class="sec-sub">The deep-dive panel: price candles and cohort positioning on one chart, aligned bar-for-bar. Flip
+  markers only fire when a cross <b>holds for 10+ candles</b>, the shaded zone shows time on the current signal, and the
+  verdict line keeps score — price move and candles-right since the flip. Hover for the crosshair; switch instrument
+  and timeframe.</p>
   <div id="chartFull"></div>
 </section></div>
 
@@ -451,20 +463,69 @@ const pctRound = lp => lp >= 50 ? `${Math.round(lp)}% long` : `${Math.round(100-
 /* Simulated price paths — price follows the profitable cohort, so every
    instrument's tape "proves the winners right". Demo only. */
 const PRICE_CACHE = {};
-const PRICE_META = { NQ:{base:23120,dp:0}, MNQ:{base:23120,dp:0}, ES:{base:6425,dp:1}, MES:{base:6425,dp:1}, MGC:{base:3388,dp:1}, SIL:{base:39.40,dp:2} };
+const PRICE_META = { NQ:{base:23120,dp:0,g:5.2e-6}, MNQ:{base:23120,dp:0,g:5.2e-6}, ES:{base:6425,dp:1,g:3.4e-6}, MES:{base:6425,dp:1,g:3.4e-6}, MGC:{base:3388,dp:1,g:1.6e-6}, SIL:{base:39.40,dp:2,g:2.2e-6} };
 function makePrice(sym){
   if (PRICE_CACHE[sym]) return PRICE_CACHE[sym];
   const s = makeSeries(sym);
   const rnd = mulberry32(900 + [...sym].reduce((a,c)=>a+c.charCodeAt(0)*13,0));
   const out = [PRICE_META[sym].base];
   for (let k = 1; k < 390; k++){
-    const drive = (s.win[k] - 50) * 5.2e-6;
+    const drive = (s.win[k] - 50) * PRICE_META[sym].g;
     const wob = (rnd() - .5) * 9e-4;
     out.push(out[k-1] * (1 + drive + wob));
   }
   return PRICE_CACHE[sym] = out;
 }
 const fmtPrice = (sym, v) => v.toLocaleString('en-US', {minimumFractionDigits: PRICE_META[sym].dp, maximumFractionDigits: PRICE_META[sym].dp});
+
+/* ================================================================
+   SIGNAL ENGINE — turns cohort series into one verdict per market.
+   Flip = last profitable/unprofitable cross that PERSISTS ≥10
+   five-minute candles. Receipts = duration, price move since flip,
+   and how many candles broke in the profitable side's direction.
+   ================================================================ */
+const SIG_CACHE = {};
+function signalFor(sym){
+  if (SIG_CACHE[sym]) return SIG_CACHE[sym];
+  const s = makeSeries(sym), p = makePrice(sym), inst = bySym[sym];
+  const MIN_PERSIST = 50; /* 10 candles × 5m */
+  let flip = -1;
+  for (let k = 1; k < 390; k++){
+    if ((s.win[k-1] - s.lose[k-1]) * (s.win[k] - s.lose[k]) < 0 && (389 - k) >= MIN_PERSIST){
+      let holds = true;
+      const sign = Math.sign(s.win[k] - s.lose[k]);
+      for (let j = k + 1; j <= Math.min(389, k + MIN_PERSIST); j++)
+        if (Math.sign(s.win[j] - s.lose[j]) !== sign && s.win[j] !== s.lose[j]) { holds = false; break; }
+      if (holds) flip = k;
+    }
+  }
+  const side = inst.win.lp >= 50 ? 'long' : 'short';
+  const start = flip > 0 ? flip : 0;
+  const mins = 389 - start;
+  const dur = mins >= 60 ? `${Math.floor(mins/60)}h ${String(mins%60).padStart(2,'0')}m` : `${mins}m`;
+  const move = p[389] - p[start];
+  const movePct = move / p[start] * 100;
+  const moveTxt = `${move >= 0 ? '+' : '−'}${fmtPrice(sym, Math.abs(move))}`;
+  /* candle receipts since flip, on 5m candles */
+  let rightK = 0, totalK = 0;
+  for (let k = start; k < 389; k += 5){
+    const o = p[k], c = p[Math.min(389, k + 5)];
+    totalK++;
+    if (side === 'short' ? c < o : c > o) rightK++;
+  }
+  const rightArr = [];
+  for (let k = Math.max(start, 389 - 28*5); k < 389; k += 5){
+    const o = p[k], c = p[Math.min(389, k + 5)];
+    rightArr.push(side === 'short' ? c < o : c > o);
+  }
+  return SIG_CACHE[sym] = { side, flip, dur, mins, move, movePct, moveTxt, rightK, totalK, rightArr,
+    opposite: (inst.win.lp - 50) * (inst.lose.lp - 50) < 0, flipped: flip > 0 };
+}
+const sideHtml = side => `<b class="${side === 'long' ? 'side-l' : 'side-s'}">${side.toUpperCase()}</b>`;
+function ticksHtml(sig, max){
+  const arr = sig.rightArr.slice(-max);
+  return `<span class="ticks">${arr.map(r => `<span class="tick" style="background:${r ? 'var(--pos)' : 'var(--neg)'}"></span>`).join('')}</span>`;
+}
 
 /* seeded RNG so the demo is stable between loads */
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -554,30 +615,35 @@ function renderGauge(sym, size){
   const d = divergence(inst);
   const width = size === 'sm' ? 270 : size === 'lg' ? 520 : 368;
   let body = '';
+  const sig = signalFor(sym);
   if (size === 'sm'){
-    /* Widget-B format per Juan: plain rows, no divergence pill, no axis labels — details on hover */
-    const row = (label, c) => `<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;font-size:11.5px;font-weight:600;color:var(--ink-2)">
+    /* mobile: one verdict + receipts, cohort detail on hover (Juan format) */
+    const row = (label, c) => `<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:9px;font-size:11px;font-weight:600;color:var(--ink-2)">
         <span>${label}</span><span style="font-weight:700;font-variant-numeric:tabular-nums;color:${c.lp>=50?'var(--long)':'var(--short)'}">${pctRound(c.lp)}</span></div>
-      <span class="sbar" style="margin-top:5px"><span class="l" data-role="${label.startsWith('Prof')?'wbar':'ubar'}" data-sym="${sym}" style="width:${c.lp}%"></span><span class="gap"></span><span class="s"></span></span>`;
-    body = `<div class="sm-hover" data-sym="${sym}" style="padding:2px 16px 6px;cursor:default">
-      ${row('Profitable traders', inst.win)}
-      ${row('Unprofitable traders', inst.lose)}
+      <span class="sbar" style="margin-top:4px;height:7px"><span class="l" data-role="${label.startsWith('Prof')?'wbar':'ubar'}" data-sym="${sym}" style="width:${c.lp}%"></span><span class="gap"></span><span class="s"></span></span>`;
+    body = `<div class="sm-hover" data-sym="${sym}" style="cursor:default">
+      <div class="sig-state" style="font-size:16.5px;padding-top:8px">Profitable traders are ${sideHtml(sig.side)}</div>
+      <div class="sig-sub">${sig.flipped ? `for ${sig.dur} · ${sig.moveTxt} since` : `all session · ${sig.moveTxt} today`}</div>
+      <div style="padding:2px 16px 4px">${row('Profitable traders', inst.win)}${row('Unprofitable traders', inst.lose)}</div>
     </div>`;
   } else {
-    const note = size === 'lg'
-      ? `<span style="margin-left:auto;font-size:11px;color:var(--ink-3);font-weight:500;white-space:nowrap">profitable ${sideWord(inst.win.lp)} · unprofitable ${sideWord(inst.lose.lp)}</span>`
-      : '';
-    const spread = `<div style="display:flex;align-items:center;gap:10px;padding:10px 16px 2px">
-      <span class="divg" data-role="divg" data-sym="${sym}" data-suffix=" pt divergence">${fmt1(d)}<small> pt divergence</small></span>
-      <span class="edge-chip ${st.cls}">${st.txt}</span>${note}
+    const stats = `<div class="sig-stats">
+      <span class="sig-chip"><b>${sig.dur}</b><span>holding</span></span>
+      <span class="sig-chip"><b style="color:${sig.move >= 0 ? 'var(--pos)' : 'var(--neg)'}">${sig.moveTxt}</b><span>${sig.flipped ? 'since flip' : 'today'}</span></span>
+      <span class="sig-chip"><b>${sig.rightK}/${sig.totalK}</b><span>candles right</span></span>
     </div>`;
-    const bars = `${axisLab}<div style="padding:0 16px">
+    const receipts = `<div class="receipts">${ticksHtml(sig, size === 'lg' ? 28 : 18)}<span>last ${Math.min(sig.rightArr.length, size === 'lg' ? 28 : 18)} candles · green = broke the profitable side's way</span></div>`;
+    const bars = `<div style="padding:4px 16px 0">
       ${sbarRow('Profitable traders', inst.win.n, inst.win.lp)}
       ${sbarRow('Unprofitable traders', inst.lose.n, inst.lose.lp)}
-      ${sbarRow('All traders', inst.all.n, inst.all.lp)}
     </div>`;
-    body = spread + `<div class="insight" data-role="insight" data-sym="${sym}">${insightHtml(inst)}</div>` + bars;
-    if (size === 'lg') body += sparkline(sym);
+    const diverge = `<div style="display:flex;align-items:center;gap:8px;padding:12px 16px 0">
+      <span class="edge-chip ${st.cls}">${st.txt} · Δ<span data-role="divg" data-sym="${sym}" data-suffix="">${fmt1(d)}</span></span>
+      <span style="font-size:10.5px;color:var(--ink-3);font-weight:500">unprofitable crowd is ${pctSide(inst.lose.lp)}</span>
+    </div>`;
+    body = `<div class="sig-state">Profitable traders are ${sideHtml(sig.side)} ${sym}</div>
+      <div class="sig-sub">${sig.flipped ? `They flipped ${sig.side} ${sig.dur} ago — ${sym} has gone ${sig.moveTxt} since.` : `They've been ${sig.side} all session — ${sym} ${sig.moveTxt} today.`}</div>
+      ${stats}${receipts}${bars}${diverge}`;
   }
   return `<div class="w-card" style="width:${width}px;max-width:100%">${gaugeHead(inst, size)}${body}${gaugeFoot(inst, size)}</div>`;
 }
@@ -612,6 +678,8 @@ function renderPulse(el, opts){
   const cells = INSTRUMENTS.map(inst => {
     const d = divergence(inst);
     const wLong = inst.win.lp >= 50;
+    const sig = signalFor(inst.sym);
+    const sideCol = sig.side === 'long' ? 'var(--long)' : 'var(--short)';
     return `<div class="p-cell" data-sym="${inst.sym}">
       <div class="r1"><span>${inst.sym}</span>
         <span class="arr ${wLong ? 'w-l' : 'w-s'}" title="profitable traders net ${sideWord(inst.win.lp)}">${wLong ? '▲' : '▼'}</span>
@@ -620,7 +688,7 @@ function renderPulse(el, opts){
         <div class="duo-row"><span class="duo-lab">P</span><span class="duo-bar"><span class="l" data-role="wbar" data-sym="${inst.sym}" style="width:${inst.win.lp}%"></span><span class="gap"></span><span class="s"></span></span></div>
         <div class="duo-row"><span class="duo-lab">U</span><span class="duo-bar"><span class="l" data-role="ubar" data-sym="${inst.sym}" style="width:${inst.lose.lp}%"></span><span class="gap"></span><span class="s"></span></span></div>
       </div>
-      <div class="r3" data-role="wu" data-sym="${inst.sym}">P ${pctRound(inst.win.lp)} · U ${pctRound(inst.lose.lp)}</div>
+      <div class="r3"><span style="color:${sideCol};font-weight:700">${sig.side === 'long' ? 'Long' : 'Short'}</span>&nbsp;${sig.dur} · ✓${sig.rightK}/${sig.totalK}</div>
     </div>`;
   }).join('');
   el.innerHTML = brand + `<div class="p-cells">${cells}</div>`;
@@ -721,18 +789,19 @@ function renderChart(el, state){
     const k = Math.round(f * (n-1));
     xlabs += `<text x="${x(k).toFixed(1)}" y="${H-8}" text-anchor="${f===0?'start':f===1?'end':'middle'}" font-size="10" fill="var(--ink-3)">${minuteLabel(idx[k])}</text>`;
   });
-  /* cohort swap annotation: last sign change of (profitable - unprofitable) */
-  let crossK = -1;
-  for (let k = 1; k < n; k++){
-    if ((series.win[k-1] - series.lose[k-1]) * (series.win[k] - series.lose[k]) < 0) crossK = k;
-  }
+  /* signal layer: qualifying flip (≥10-candle persistence) + shaded conviction zone */
+  const sig = signalFor(sym);
   let crossSvg = '';
-  if (crossK > 0){
-    const cx2 = +x(crossK).toFixed(1);
-    const anchor = crossK > n * .62 ? 'end' : 'start';
+  if (sig.flipped){
+    let kFlip = 0; while (kFlip < n - 1 && idx[kFlip] < sig.flip) kFlip++;
+    const cx2 = +x(kFlip).toFixed(1);
+    const sideVar = sig.side === 'long' ? '--long' : '--short';
+    const anchor = kFlip > n * .62 ? 'end' : 'start';
     const tx = anchor === 'end' ? cx2 - 6 : cx2 + 6;
-    crossSvg = `<line x1="${cx2}" y1="${T}" x2="${cx2}" y2="${posBot}" stroke="var(--brand)" stroke-width="1.2" stroke-dasharray="4 4" opacity=".55"/>
-      <text x="${tx}" y="${posTop + 13}" text-anchor="${anchor}" font-size="9.5" font-weight="700" fill="var(--brand)" stroke="var(--surface)" stroke-width="3" paint-order="stroke">PROFITABLE TRADERS FLIP ${series.win[crossK] >= 50 ? 'LONG' : 'SHORT'}</text>`;
+    crossSvg = `<rect x="${cx2}" y="${T}" width="${(x(n-1) - cx2).toFixed(1)}" height="${posBot - T}" style="fill:var(${sideVar})" opacity=".05"/>
+      <line x1="${cx2}" y1="${T}" x2="${cx2}" y2="${posBot}" style="stroke:var(${sideVar})" stroke-width="1.2" stroke-dasharray="4 4" opacity=".6"/>
+      <text x="${tx}" y="${posTop + 13}" text-anchor="${anchor}" font-size="9.5" font-weight="700" style="fill:var(${sideVar})" stroke="var(--surface)" stroke-width="3" paint-order="stroke">PROFITABLE TRADERS FLIP ${sig.side.toUpperCase()}</text>
+      <text x="${tx}" y="${posTop + 26}" text-anchor="${anchor}" font-size="8.5" font-weight="600" fill="var(--ink-2)" stroke="var(--surface)" stroke-width="3" paint-order="stroke">${sym} ${sig.moveTxt} · right on ${sig.rightK}/${sig.totalK} candles since</text>`;
   }
   const endLab = (arr, name, colorVar) => {
     const yy = y(arr[n-1]);
@@ -765,7 +834,7 @@ function renderChart(el, state){
       <span class="pillset sym">${symPills}</span>
       <span class="pillset" style="margin-left:0">${tfPills}</span>
     </div>
-    <div style="padding:0 16px 8px;font-size:11.5px;color:var(--ink-3)">${sym} price candles overlay the positioning lines — each line is the share of that group positioned <b style="color:var(--ink-2)">net long</b>. Watch the flip: <b style="color:var(--ink-2)">profitable traders swapped sides before the move</b>; unprofitable traders chased it.</div>
+    <div style="padding:0 16px 8px;font-size:12px;color:var(--ink-2);font-weight:500" data-role="verdict"></div>
     <div class="legend">
       <span class="li"><span class="sw" style="background:var(--win)"></span>Profitable traders (${inst.win.n})</span>
       <span class="li"><span class="sw" style="background:var(--lose)"></span>Unprofitable traders (${inst.lose.n})</span>
@@ -777,6 +846,11 @@ function renderChart(el, state){
     <div class="w-foot" style="margin-top:0"><span>${tf} positioning candles · recorded 24/7 · price &amp; positioning simulated for demo</span>
       <span class="mf-mark">${mfMark()}Powered by MarketFramework</span></div>
   </div>`;
+  /* verdict line */
+  const vd = el.querySelector('[data-role="verdict"]');
+  if (vd) vd.innerHTML = sig.flipped
+    ? `<b style="color:${sig.side === 'long' ? 'var(--long)' : 'var(--short)'}">Profitable traders flipped ${sig.side} at ${minuteLabel(sig.flip)} ET</b> — ${sym} has gone <b>${sig.moveTxt}</b> and broken their way on <b>${sig.rightK} of ${sig.totalK}</b> candles since. Shaded zone = time on the current signal.`
+    : `<b>Profitable traders have been ${sig.side} all session</b> — ${sym} ${sig.moveTxt} today.`;
   /* toolbar events */
   el.querySelectorAll('[data-sym]').forEach(b => b.addEventListener('click', () => { state.sym = b.dataset.sym; renderChart(el, state); }));
   el.querySelectorAll('[data-tf]').forEach(b => b.addEventListener('click', () => { state.tf = b.dataset.tf; renderChart(el, state); }));
@@ -874,7 +948,6 @@ setInterval(() => {
     const jl = inst.lose.lp + (tickRnd() - .5) * 1.8;
     document.querySelectorAll(`[data-role="wbar"][data-sym="${inst.sym}"]`).forEach(b => b.style.width = jw + '%');
     document.querySelectorAll(`[data-role="ubar"][data-sym="${inst.sym}"]`).forEach(b => b.style.width = jl + '%');
-    document.querySelectorAll(`[data-role="wu"][data-sym="${inst.sym}"]`).forEach(t => t.textContent = `P ${pctRound(jw)} · U ${pctRound(jl)}`);
   });
   document.querySelectorAll('[data-role="divg"]').forEach(dd => {
     const inst = bySym[dd.dataset.sym];
