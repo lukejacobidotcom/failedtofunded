@@ -136,6 +136,61 @@
   .sbar-row .vals .sq{display:inline-block;width:8px;height:8px;border-radius:2px;margin:0 3px 0 7px;vertical-align:baseline}
   .sq.lq{background:var(--long)} .sq.sq2{background:var(--short)}
 
+  /* ============ Widget A — Divergence Card (partner spec: 360 × 150) ============ */
+  .dv-card{
+    width:360px; height:150px; flex:none;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    box-shadow:var(--shadow); padding:9px 12px 7px; overflow:hidden; position:relative;
+  }
+  .dv-head{display:flex;align-items:center;gap:7px;height:17px}
+  .dv-sym{font-size:12px;font-weight:800;letter-spacing:.01em;flex:none}
+  .dv-lean{font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:4px;
+    padding:1px 7px;border-radius:6px;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .dv-lean.bull{color:var(--long);background:color-mix(in srgb,var(--long) 11%,transparent)}
+  .dv-lean.bear{color:var(--short);background:color-mix(in srgb,var(--short) 11%,transparent)}
+  .dv-live{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:9px;
+    font-weight:800;letter-spacing:.07em;color:var(--pos);flex:none}
+  .dv-plot{height:90px;margin-top:4px;position:relative}
+  .dv-plot svg{display:block;width:100%;height:90px}
+  .dv-foot{display:flex;align-items:center;gap:6px;font-size:9.5px;color:var(--ink-3);
+    font-weight:600;padding-top:4px;white-space:nowrap;line-height:1.3}
+  .dv-foot b{color:var(--ink-2);font-weight:700}
+  .dv-foot .mf{margin-left:auto;display:inline-flex;align-items:center;gap:4px}
+  .dv-ax{font-size:7px;font-weight:800;letter-spacing:.1em;opacity:.55}
+  .dv-ax.bull{fill:var(--long)} .dv-ax.bear{fill:var(--short)}
+  .dv-pin{cursor:help}
+  .dv-pin:hover circle[data-hit]{fill:var(--brand);fill-opacity:.14}
+
+  /* event legend */
+  .evt-key{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+  .evt-key .k{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
+    color:var(--ink-2);background:var(--surface);border:1px solid var(--border);
+    border-radius:999px;padding:5px 12px 5px 9px}
+  .evt-key .k svg{flex:none}
+  .rule-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+    padding:14px 16px;margin-top:14px;font-size:13px;color:var(--ink-2);box-shadow:var(--shadow)}
+  .rule-box b{color:var(--ink)}
+  .rule-box .rl{display:flex;gap:9px;padding:5px 0;align-items:baseline}
+  .rule-box .rn{font-size:10px;font-weight:800;color:var(--brand);background:var(--brand-soft);
+    border-radius:5px;padding:1px 6px;flex:none;letter-spacing:.04em}
+
+  /* ============ 1488px container demo ============ */
+  .wide{max-width:1560px;margin:0 auto;padding:0 28px}
+  .c1488-scroll{overflow-x:auto;padding-bottom:6px}
+  .c1488{width:1488px;position:relative}
+  .c1488 .ruler{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:700;
+    color:var(--ink-3);letter-spacing:.05em;margin-bottom:7px}
+  .c1488 .ruler .bar{flex:1;height:1px;background:var(--border-2);position:relative}
+  .c1488 .ruler .bar::before,.c1488 .ruler .bar::after{content:'';position:absolute;top:-4px;
+    width:1px;height:9px;background:var(--border-2)}
+  .c1488 .ruler .bar::before{left:0} .c1488 .ruler .bar::after{right:0}
+  .row4{display:flex;gap:16px}
+  .row4 .slot{position:relative}
+  .row4 .slot::after{content:attr(data-w);position:absolute;bottom:-17px;left:0;font-size:9.5px;
+    color:var(--ink-3);font-weight:600;letter-spacing:.03em}
+  .grid-math{font-size:12px;color:var(--ink-3);margin-top:26px;font-variant-numeric:tabular-nums}
+  .grid-math b{color:var(--ink-2)}
+
   /* ============ Section 1: dashboard mock ============ */
   .dash-frame{background:var(--bg-soft);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-lg);overflow:hidden}
   .dash-top{display:flex;align-items:center;gap:12px;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 18px}
@@ -157,6 +212,11 @@
   .tile .bar{height:5px;border-radius:3px;background:var(--surface-2);margin-top:8px;overflow:hidden}
   .tile .bar i{display:block;height:100%;border-radius:3px;background:var(--brand)}
   .new-tag{font-size:10px;font-weight:800;letter-spacing:.08em;color:#fff;background:var(--cta);border-radius:6px;padding:2px 7px}
+  .mock-dv-head{display:flex;align-items:center;gap:9px;margin:16px 0 8px;flex-wrap:wrap}
+  .mock-dv-head .t{font-size:12.5px;font-weight:700;color:var(--ink-2)}
+  .mock-dv-head .s{font-size:11px;color:var(--ink-3);margin-left:auto}
+  .mock-dv{overflow:hidden}
+  .mock-dv .inner{width:1488px;transform-origin:left top;display:flex;gap:16px}
   .dash-grid{display:grid;grid-template-columns:360px 1fr;gap:12px;margin-top:12px;align-items:start}
   @media(max-width:960px){.dash-grid{grid-template-columns:1fr}.tile-row{grid-template-columns:repeat(2,1fr)}}
   .mock-note{text-align:center;font-size:12px;color:var(--ink-3);margin-top:14px}
@@ -309,6 +369,14 @@
           <div class="tile"><div class="tl">Tradesyncer Score</div><div class="tv">71</div><div class="bar"><i style="width:71%"></i></div></div>
         </div>
 
+        <!-- embedded divergence row: 4 × 360px in the 1488px container -->
+        <div class="mock-dv-head">
+          <span class="new-tag">NEW</span>
+          <span class="t">Positioning Edge — profitable vs. unprofitable divergence</span>
+          <span class="s">4 × 360×150 · shown to scale in the 1488px container</span>
+        </div>
+        <div class="mock-dv"><div class="inner" id="mockDvRow"></div></div>
+
         <!-- embedded pulse strip -->
         <div class="pulse" id="pulseMock"></div>
 
@@ -322,27 +390,76 @@
   <p class="mock-note">Concept mock — Tradesyncer components recreated for illustration. All positioning values on this page are illustrative demo data; production widgets render the live MarketFramework feed.</p>
 </section></div>
 
-<!-- ================= SECTION 2: EDGE GAUGE SIZES ================= -->
+<!-- ================= SECTION 2: DIVERGENCE CARD (360×150) ================= -->
+<div class="wrap"><section id="divergence">
+  <div class="sec-head"><span class="sec-num">02</span><h2>Widget A — Divergence Card <span style="font-size:13px;font-weight:600;color:var(--ink-3);letter-spacing:0">360 × 150</span></h2></div>
+  <p class="sec-sub">Built to your spec, and stripped down to <b>one number a trader can read in a second</b>:
+  how far <b style="color:var(--long)">profitable traders</b> are leaning away from <b style="color:var(--lose)">unprofitable traders</b>,
+  plotted every minute. Above the line the winners are leaning <b style="color:var(--long)">bullish</b>; below it,
+  <b style="color:var(--short)">bearish</b>. Dots are divergence events — hover any dot for one plain sentence on what
+  happened and what price did next.</p>
+
+  <div class="row4" style="margin-bottom:8px">
+    <div id="dvA"></div><div id="dvB"></div><div id="dvC"></div><div id="dvD"></div>
+  </div>
+
+  <div class="evt-key">
+    <span class="k"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="var(--long)"/></svg>Flip bullish</span>
+    <span class="k"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="var(--short)"/></svg>Flip bearish</span>
+    <span class="k"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="var(--long)"/></svg>10 / 15 / 20&nbsp;pt divergence</span>
+    <span class="k"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="var(--long)"/></svg>Profitable 60% / 65% one side</span>
+    <span class="k"><svg width="10" height="10"><circle cx="5" cy="5" r="4" fill="var(--short)"/></svg>Rapid positioning change</span>
+    <span class="k"><svg width="10" height="10"><circle cx="5" cy="5" r="3.4" fill="none" stroke="var(--ink-3)" stroke-width="1.7"/></svg>Fired, <b style="font-weight:700">not</b>&nbsp;confirmed</span>
+  </div>
+
+  <div class="rule-box">
+    <div style="font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:4px">How a flag gets graded</div>
+    <div class="rl"><span class="rn">1</span><span>An event fires on the divergence line — a flip, a level, a conviction cross, or a rapid swing.</span></div>
+    <div class="rl"><span class="rn">2</span><span>We watch the <b>next 15 one-minute candles</b>. If at least <b>5</b> of them close on the side the divergence pointed <b>and clear it by 0.04%</b> — roughly 9 NQ points, 2.6 ES points — the flag is <b style="color:var(--pos)">confirmed</b>, a solid dot. The move requirement matters: "closed one tick the right way" is satisfied by noise alone and would put every card in the 90s.</span></div>
+    <div class="rl"><span class="rn">3</span><span>If it doesn't, the dot stays <b>hollow</b> and still shows on the card. <b>We publish the misses.</b> The footer keeps the running score — <span style="font-variant-numeric:tabular-nums">"7 flags today · 5/6 confirmed"</span> — because a widget that is never wrong is a widget nobody believes.</span></div>
+    <div class="rl"><span class="rn">4</span><span>Divergence is measured in <b>percentage points of long share</b>: profitable traders 62% long vs. unprofitable traders 42% long is a <b>20-point</b> divergence. Labelled "pts" everywhere so it can't be misread as a price move.</span></div>
+  </div>
+
+  <div style="margin-top:26px">
+    <div class="sec-head" style="margin-bottom:8px"><h2 style="font-size:17px">In your 1488px home container</h2></div>
+    <p class="sec-sub" style="margin-bottom:14px">Four cards at 360px with 16px gutters is <b>1488px exactly</b> — the row fits your
+    container edge to edge with nothing left over. Scroll the frame below if your screen is narrower than the real container.</p>
+    <div class="c1488-scroll">
+      <div class="c1488">
+        <div class="ruler"><span>1488px CONTAINER</span><span class="bar"></span><span>4 CARDS + 3 GUTTERS</span></div>
+        <div class="row4">
+          <div class="slot" data-w="360px"><div id="dvW1"></div></div>
+          <div class="slot" data-w="360px"><div id="dvW2"></div></div>
+          <div class="slot" data-w="360px"><div id="dvW3"></div></div>
+          <div class="slot" data-w="360px"><div id="dvW4"></div></div>
+        </div>
+        <div class="grid-math">(4 × <b>360</b>) + (3 × <b>16</b>) = <b>1488px</b> · card height <b>150px</b> · also drops cleanly into a 2-across or single-column stack at the same size.</div>
+      </div>
+    </div>
+  </div>
+</section></div>
+
+<!-- ================= SECTION 3: EDGE GAUGE SIZES ================= -->
 <div class="wrap"><section id="gauge">
-  <div class="sec-head"><span class="sec-num">02</span><h2>Widget A — Live Signal Card</h2></div>
+  <div class="sec-head"><span class="sec-num">03</span><h2>Widget B — Live Signal Card</h2></div>
   <p class="sec-sub">One verdict per market, not a data dump: <b>which side the profitable traders are on, how long they've
   held it, what price has done since, and how many candles have broken their way</b>. Cohort bars are the receipts underneath.
   Built-in dropdown to switch markets; three sizes for any grid slot.</p>
   <div class="size-row" id="gaugeSizes"></div>
 </section></div>
 
-<!-- ================= SECTION 3: PULSE STRIP ================= -->
+<!-- ================= SECTION 4: PULSE STRIP ================= -->
 <div class="wrap"><section id="strip">
-  <div class="sec-head"><span class="sec-num">03</span><h2>Widget B — Market Pulse Strip</h2></div>
+  <div class="sec-head"><span class="sec-num">04</span><h2>Widget C — Market Pulse Strip</h2></div>
   <p class="sec-sub">The whole futures board at a glance: paired bars per instrument — <b>P</b> for profitable traders,
   <b>U</b> for unprofitable traders — with a tilt arrow for the profitable side and a Δ divergence badge. Designed to sit
   directly under the stat tiles — the first thing a trader scans before the next copy session. Hover any cell for detail.</p>
   <div class="pulse" id="pulseFull"></div>
 </section></div>
 
-<!-- ================= SECTION 4: CHART PANEL ================= -->
+<!-- ================= SECTION 5: CHART PANEL ================= -->
 <div class="wrap"><section id="chart">
-  <div class="sec-head"><span class="sec-num">04</span><h2>Widget C — Intraday Positioning Chart</h2></div>
+  <div class="sec-head"><span class="sec-num">05</span><h2>Widget D — Intraday Positioning Chart</h2></div>
   <p class="sec-sub">The deep-dive panel: price candles and cohort positioning on one chart, aligned bar-for-bar. Flip
   markers only fire when a cross <b>holds for 10+ candles</b>, the shaded zone shows time on the current signal, and the
   verdict line keeps score — price move and candles-right since the flip. Hover for the crosshair; switch instrument
@@ -350,9 +467,9 @@
   <div id="chartFull"></div>
 </section></div>
 
-<!-- ================= SECTION 5: WHY + INTEGRATION ================= -->
+<!-- ================= SECTION 6: WHY + INTEGRATION ================= -->
 <div class="wrap"><section id="why">
-  <div class="sec-head"><span class="sec-num">05</span><h2>Why this wins for Tradesyncer</h2></div>
+  <div class="sec-head"><span class="sec-num">06</span><h2>Why this wins for Tradesyncer</h2></div>
   <div class="why-grid">
     <div class="why">
       <div class="ic"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.5 1.8"/></svg></div>
@@ -422,18 +539,27 @@ const INSTRUMENTS = [
   /* Losing cohort ~3x the winning cohort (most traders are unprofitable), so
      `all` = count-weighted average of the cohorts — internally consistent. */
   { sym:'NQ',  name:'E-mini Nasdaq-100',     all:{lp:62.0,n:1520}, win:{lp:31.8,n:390},  lose:{lp:72.4,n:1130},
-    story:{ win:[53,58,44,51,33,26,34,31.8], lose:[48,43,56,48,63,71,66,72.4], all:[50,52,55,53,58,62,60,62.0] } },
+    story:{ win:[53,58,44,51,33,26,34,29,41,31.8], lose:[48,43,56,48,63,71,66,74,58,72.4] } },
   { sym:'MNQ', name:'Micro E-mini Nasdaq',   all:{lp:58.7,n:2540}, win:{lp:30.1,n:640},  lose:{lp:68.3,n:1900},
-    story:{ win:[52,57,43,49,31,25,33,30.1], lose:[50,45,55,49,61,69,64,68.3], all:[50,52,54,53,56,59,57,58.7] } },
+    story:{ win:[52,57,43,49,31,25,33,28,42,30.1], lose:[50,45,55,49,61,69,64,73,57,68.3] } },
   { sym:'ES',  name:'E-mini S&P 500',        all:{lp:44.9,n:640},  win:{lp:63.5,n:170},  lose:{lp:38.2,n:470},
-    story:{ win:[50,42,55,66,62,63.5], lose:[52,58,47,36,40,38.2], all:[50,48,47,45,46,44.9] } },
+    story:{ win:[50,42,55,66,62,52,63.5], lose:[52,58,47,36,40,49,38.2] } },
   { sym:'MES', name:'Micro E-mini S&P 500',  all:{lp:46.6,n:885},  win:{lp:61.0,n:230},  lose:{lp:41.5,n:655},
-    story:{ win:[49,43,54,63,59,61.0], lose:[53,57,48,39,44,41.5], all:[51,49,48,46,47,46.6] } },
+    story:{ win:[49,43,54,63,59,50,61.0], lose:[53,57,48,39,44,52,41.5] } },
   { sym:'MGC', name:'Micro Gold',            all:{lp:39.2,n:410},  win:{lp:78.9,n:110},  lose:{lp:24.6,n:300},
-    story:{ win:[55,63,72,68,76,78.9], lose:[45,38,30,33,26,24.6], all:[48,45,42,40,38,39.2] } },
+    story:{ win:[55,63,72,68,76,58,78.9], lose:[45,38,30,33,26,46,24.6] } },
   { sym:'SIL', name:'Micro Silver',          all:{lp:66.4,n:180},  win:{lp:22.4,n:45},   lose:{lp:81.0,n:135},
-    story:{ win:[45,38,30,25,20,22.4], lose:[55,63,70,76,82,81.0], all:[52,56,60,63,66,66.4] } },
+    story:{ win:[45,38,30,25,20,44,22.4], lose:[55,63,70,76,82,56,81.0] } },
 ];
+/* `all traders` is never authored by hand — it is derived as the count-weighted
+   average of the two cohorts, so every number on this page reconciles with
+   every other number. Same rule the production aggregator uses. */
+INSTRUMENTS.forEach(i => {
+  const wt = i.win.n / (i.win.n + i.lose.n);
+  i.story.all = i.story.win.map((v,k) => +(v*wt + i.story.lose[k]*(1-wt)).toFixed(2));
+  i.all.n  = i.win.n + i.lose.n;
+  i.all.lp = +i.story.all[i.story.all.length-1].toFixed(1);
+});
 const bySym = Object.fromEntries(INSTRUMENTS.map(i => [i.sym, i]));
 
 /* ---------- helpers ---------- */
@@ -664,6 +790,251 @@ function sparkline(sym){
       <polyline points="${pts}" fill="none" style="stroke:var(--brand)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
       <circle cx="${x(spread.length-1).toFixed(1)}" cy="${y(spread[spread.length-1]).toFixed(1)}" r="4" style="fill:var(--brand);stroke:var(--surface)" stroke-width="2"/>
     </svg></div>`;
+}
+
+/* ================================================================
+   WIDGET A — DIVERGENCE CARD  (partner spec: 360 × 150)
+
+   ONE number, plotted every minute:
+     D(k) = profitable-trader long %  −  unprofitable-trader long %
+   D above zero  → profitable traders lean BULLISH vs the crowd
+   D below zero  → profitable traders lean BEARISH vs the crowd
+
+   Flags are pinned on the line when a divergence EVENT fires. Every
+   event is then graded against the tape: an event is CONFIRMED when
+   at least 5 of the next 15 one-minute candles close on the side the
+   divergence predicted. Confirmed = solid pin. Not confirmed =
+   hollow pin. Still inside the window = grey pin. We publish the
+   misses too — the hit rate in the footer is the product.
+   ================================================================ */
+const DIV_CACHE = {};
+function divSeries(sym){
+  if (DIV_CACHE[sym]) return DIV_CACHE[sym];
+  const s = makeSeries(sym), out = [];
+  for (let k = 0; k < 390; k++) out.push(s.win[k] - s.lose[k]);
+  return DIV_CACHE[sym] = out;
+}
+
+const PRED_MIN  = 5;     /* candles that must close the predicted way */
+const PRED_WIN  = 15;    /* ...within this many candles */
+/* A candle only counts if price actually MOVED — merely closing a tick on the
+   right side of the entry is cleared by noise alone, which would push the hit
+   rate into the 90s and make the whole widget look rigged. A candle scores
+   only once it closes this far beyond the price at the moment the flag fired. */
+const PRED_MOVE = 4e-4;  /* 0.04% ≈ 9 NQ pts / 2.6 ES pts / 1.4 gold pts */
+const EVT_GAP  = 24;     /* min minutes between pins, so they never collide */
+const EVT_COOL = 40;     /* min minutes before the SAME event type can fire again */
+const EVT_HYST = 4;      /* pts a level must be given back before it re-arms */
+const EVT_META = {
+  flipB: { pri:1, label:'Flip bullish',   glyph:'flip' },
+  flipS: { pri:1, label:'Flip bearish',   glyph:'flip' },
+  d20:   { pri:2, label:'20 pt divergence', glyph:'lvl' },
+  d15:   { pri:3, label:'15 pt divergence', glyph:'lvl' },
+  d10:   { pri:5, label:'10 pt divergence', glyph:'lvl' },
+  c65:   { pri:2, label:'Profitable 65%',   glyph:'con' },
+  c60:   { pri:4, label:'Profitable 60%',   glyph:'con' },
+  rapid: { pri:2, label:'Rapid positioning change', glyph:'fast' },
+};
+
+const EVT_CACHE = {};
+function eventsFor(sym){
+  if (EVT_CACHE[sym]) return EVT_CACHE[sym];
+  const d = divSeries(sym), s = makeSeries(sym), p = makePrice(sym);
+
+  /* --- grade one event against the next PRED_WIN one-minute closes --- */
+  const grade = (k, dir) => {
+    const p0 = p[k], end = Math.min(389, k + PRED_WIN);
+    const tgt = dir > 0 ? p0 * (1 + PRED_MOVE) : p0 * (1 - PRED_MOVE);
+    let hits = 0, n = 0;
+    for (let j = k + 1; j <= end; j++){ n++; if (dir > 0 ? p[j] >= tgt : p[j] <= tgt) hits++; }
+    const pending = (389 - k) < PRED_WIN;
+    return { p0, hits, n, pending, confirmed: !pending && hits >= PRED_MIN };
+  };
+  const mk = (k, type, dir, extra) => Object.assign(
+    { t:k, type, dir, pri:EVT_META[type].pri, label:EVT_META[type].label, glyph:EVT_META[type].glyph,
+      time:minuteLabel(k), dval:d[k] }, grade(k, dir), extra || {});
+
+  const raw = [];
+  let latch = {};
+  /* every event type carries its own cooldown clock, so a threshold that the
+     tape keeps grazing cannot machine-gun the card with near-identical pins */
+  const lastOf = { d10:-999, d15:-999, d20:-999, c60:-999, c65:-999, rapid:-999 };
+  const reset = () => latch = { d10:0, d15:0, d20:0, c60:0, c65:0 };
+  /* ONE DIRECTION RULE for the whole card: an event always predicts the side
+     the divergence itself is on at that minute. Not the direction the event
+     moved, not the cohort's raw long share — the sign of the line you are
+     looking at. That is what keeps every pin the same colour as the line
+     underneath it, so a trader never has to reconcile a blue dot sitting on
+     a red curve. It is also the honest version of the thesis: profitable
+     traders lean X, we are calling X. */
+  const fire = (k, type, extra) => {
+    if (k - lastOf[type] < EVT_COOL) return;
+    lastOf[type] = k;
+    raw.push(mk(k, type, Math.sign(d[k]) || 1, extra));
+  };
+  reset();
+
+  for (let k = 1; k < 390; k++){
+    const cur = d[k], prev = d[k-1];
+
+    /* FLIP — divergence changes sign and holds ≥10 five-minute candles */
+    if (prev * cur < 0){
+      reset();
+      const sign = Math.sign(cur);
+      let holds = true;
+      for (let j = k + 1; j <= Math.min(389, k + 50); j++)
+        if (Math.sign(d[j]) !== sign && d[j] !== 0){ holds = false; break; }
+      if (holds) raw.push(mk(k, sign > 0 ? 'flipB' : 'flipS', sign));
+    }
+
+    /* LEVELS — crossing 10 / 15 / 20 points. Latched so one crossing fires
+       once, then RE-ARMED only after divergence gives back EVT_HYST pts, so a
+       level the tape keeps grazing does not fire over and over. */
+    const a = Math.abs(cur), ap = Math.abs(prev);
+    [[10,'d10'],[15,'d15'],[20,'d20']].forEach(([lvl, key]) => {
+      if (latch[key] && a < lvl - EVT_HYST) latch[key] = 0;
+      if (!latch[key] && ap < lvl && a >= lvl){ latch[key] = 1; fire(k, key, {lvl}); }
+    });
+
+    /* CONVICTION — profitable cohort crosses 60% / 65% to either side */
+    const w = s.win[k], wp = s.win[k-1];
+    [[60,'c60'],[65,'c65']].forEach(([lvl, key]) => {
+      if (latch[key] && w < lvl - EVT_HYST && w > 100 - lvl + EVT_HYST) latch[key] = 0;
+      if (!latch[key] && ((wp < lvl && w >= lvl) || (wp > 100 - lvl && w <= 100 - lvl))){
+        latch[key] = 1; fire(k, key, {lvl, side: w >= 50 ? 'long' : 'short', pct: w});
+      }
+    });
+
+    /* RAPID — divergence moves ≥12 points in 15 minutes */
+    if (k >= 15 && Math.abs(cur - d[k-15]) >= 12)
+      fire(k, 'rapid', {delta: cur - d[k-15]});
+  }
+
+  /* spacing pass — highest priority wins any cluster inside EVT_GAP */
+  const kept = [];
+  raw.slice().sort((a,b) => a.pri - b.pri || a.t - b.t).forEach(e => {
+    if (!kept.some(x => Math.abs(x.t - e.t) < EVT_GAP)) kept.push(e);
+  });
+  kept.sort((a,b) => a.t - b.t);
+  return EVT_CACHE[sym] = kept;
+}
+
+/* plain-English hover copy — one sentence on what happened, one on what
+   price did next. No jargon, no maths on screen. */
+function evtWhat(sym, e){
+  const inst = bySym[sym];
+  const dirW = e.dir > 0 ? 'bullish' : 'bearish';
+  const sideW = e.dir > 0 ? 'long' : 'short';
+  const dcol = e.dir > 0 ? 'var(--long)' : 'var(--short)';
+  const B = t => `<b style="color:${dcol}">${t}</b>`;
+  switch (e.type){
+    case 'flipB': case 'flipS':
+      return `Profitable ${sym} traders crossed to the ${B(sideW)} side of unprofitable traders — the divergence flipped ${B(dirW)} and held.`;
+    case 'd10': case 'd15': case 'd20':
+      return `The gap between the two groups reached ${B(e.lvl + ' points')} — profitable traders are ${e.lvl} points more ${sideW} than unprofitable traders.`;
+    case 'c60': case 'c65':
+      return `Profitable traders crossed ${B(e.lvl + '% ' + e.side)} — one-sided conviction inside the winning cohort, and the divergence is ${B(dirW)}.`;
+    case 'rapid':
+      return `Positioning moved fast: the divergence swung ${B(Math.abs(e.delta).toFixed(0) + ' points')} in 15 minutes and is now ${B(dirW)}.`;
+  }
+  return '';
+}
+function evtOutcome(e){
+  if (e.pending) return `<span style="color:var(--ink-3)">Still inside the 15-candle window — not graded yet.</span>`;
+  const ok = e.confirmed;
+  const arrow = e.dir > 0 ? 'higher' : 'lower';
+  return `Price closed ${arrow} by 0.04%+ on <b>${e.hits} of the next ${e.n}</b> 1-minute candles
+    (needs ${PRED_MIN}) &rarr;
+    <b style="color:${ok ? 'var(--pos)' : 'var(--ink-3)'}">${ok ? 'Confirmed' : 'Not confirmed'}</b>`;
+}
+function showEvtTip(node, sym, e){
+  const inst = bySym[sym];
+  const dcol = e.dir > 0 ? 'var(--long)' : 'var(--short)';
+  tip.innerHTML = `<div class="tt-t" style="display:flex;align-items:center;gap:7px">
+      <span style="width:8px;height:8px;border-radius:50%;background:${e.pending ? 'var(--ink-3)' : dcol};${e.confirmed || e.pending ? '' : `background:transparent;border:2px solid ${dcol};box-sizing:border-box`}"></span>
+      ${e.label.toUpperCase()} · ${e.time}</div>
+    <div style="font-size:11.5px;color:var(--ink-2);line-height:1.55;max-width:240px">${evtWhat(sym, e)}</div>
+    <div style="font-size:11.5px;color:var(--ink-2);line-height:1.55;max-width:240px;margin-top:6px;
+      padding-top:6px;border-top:1px solid var(--border)">${evtOutcome(e)}</div>`;
+  const r = node.getBoundingClientRect();
+  tip.style.left = Math.min(window.innerWidth - 268, Math.max(8, r.left - 120)) + 'px';
+  tip.style.top = (r.bottom + 9) + 'px';
+  tip.style.opacity = 1;
+}
+
+let DV_UID = 0;
+function divCardHtml(sym, opts){
+  opts = opts || {};
+  const inst = bySym[sym], d = divSeries(sym), evts = eventsFor(sym);
+  const uid = 'dv' + (++DV_UID);
+  const now = d[389];
+  const bull = now >= 0;
+  const W = 336, H = 90, PADX = 5, MID = H / 2, AMP = 36;
+  let maxAbs = 0; for (let k = 0; k < 390; k++) maxAbs = Math.max(maxAbs, Math.abs(d[k]));
+  const M = Math.max(25, Math.ceil(maxAbs / 5) * 5);
+  const x = k => PADX + k * (W - PADX * 2) / 389;
+  const y = v => MID - (v / M) * AMP;
+
+  const line = d.map((v,k) => `${x(k).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area = `${x(0).toFixed(1)},${MID} ${line} ${x(389).toFixed(1)},${MID}`;
+
+  const pins = evts.map((e,i) => {
+    const cx = x(e.t).toFixed(1), cy = y(d[e.t]).toFixed(1);
+    const col = e.dir > 0 ? 'var(--long)' : 'var(--short)';
+    const core = e.pending
+      ? `<circle cx="${cx}" cy="${cy}" r="3.1" fill="var(--ink-3)" stroke="var(--surface)" stroke-width="1.4"/>`
+      : e.confirmed
+        ? `<circle cx="${cx}" cy="${cy}" r="3.4" fill="${col}" stroke="var(--surface)" stroke-width="1.4"/>`
+        : `<circle cx="${cx}" cy="${cy}" r="3.1" fill="var(--surface)" stroke="${col}" stroke-width="1.7"/>`;
+    return `<g class="dv-pin" data-sym="${sym}" data-i="${i}">
+      <circle data-hit cx="${cx}" cy="${cy}" r="8" fill="transparent"/>${core}</g>`;
+  }).join('');
+
+  const graded = evts.filter(e => !e.pending);
+  const okN = graded.filter(e => e.confirmed).length;
+  const leanTxt = `${bull ? 'BULLISH' : 'BEARISH'} ${bull ? '+' : '−'}${Math.abs(now).toFixed(1)} pts`;
+
+  return `<div class="dv-card" ${opts.id ? `id="${opts.id}"` : ''}>
+    <div class="dv-head">
+      <span class="dv-sym">${sym}</span>
+      <span class="dv-lean ${bull ? 'bull' : 'bear'}">
+        <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" style="transform:rotate(${bull?0:180}deg)"><path d="M5 0l5 8H0z"/></svg>
+        ${leanTxt}</span>
+      <span class="ibtn" style="width:13px;height:13px;font-size:8px;flex:none">i</span>
+      <span class="dv-live"><span class="dot" style="width:5px;height:5px"></span>LIVE</span>
+    </div>
+    <div class="dv-plot">
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:${H}px">
+        <defs>
+          <clipPath id="${uid}u"><rect x="0" y="0" width="${W}" height="${MID}"/></clipPath>
+          <clipPath id="${uid}d"><rect x="0" y="${MID}" width="${W}" height="${MID}"/></clipPath>
+        </defs>
+        <polygon points="${area}" fill="var(--long)" opacity=".13" clip-path="url(#${uid}u)"/>
+        <polygon points="${area}" fill="var(--short)" opacity=".13" clip-path="url(#${uid}d)"/>
+        <line x1="0" y1="${MID}" x2="${W}" y2="${MID}" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="2 3" opacity=".55"/>
+        <polyline points="${line}" fill="none" stroke="var(--long)" stroke-width="1.7" stroke-linejoin="round" clip-path="url(#${uid}u)"/>
+        <polyline points="${line}" fill="none" stroke="var(--short)" stroke-width="1.7" stroke-linejoin="round" clip-path="url(#${uid}d)"/>
+        <text x="4" y="9" class="dv-ax bull">BULLISH</text>
+        <text x="4" y="87" class="dv-ax bear">BEARISH</text>
+        ${pins}
+        <circle cx="${x(389).toFixed(1)}" cy="${y(now).toFixed(1)}" r="3.2" fill="${bull?'var(--long)':'var(--short)'}" stroke="var(--surface)" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="dv-foot">
+      <b>${evts.length}</b>&nbsp;flags today ·
+      <b>${okN}/${graded.length}</b>&nbsp;confirmed
+      <span class="mf">${mfMark()}<span>MarketFramework</span></span>
+    </div>
+  </div>`;
+}
+function mountDivCard(host, sym, opts){
+  host.innerHTML = divCardHtml(sym, opts);
+  const evts = eventsFor(sym);
+  host.querySelectorAll('.dv-pin').forEach(g => {
+    const e = evts[+g.dataset.i];
+    g.addEventListener('mouseenter', () => showEvtTip(g, sym, e));
+    g.addEventListener('mouseleave', hideTip);
+  });
 }
 
 /* ================================================================
@@ -903,7 +1274,19 @@ function renderChart(el, state){
 /* ================================================================
    PAGE ASSEMBLY
    ================================================================ */
-/* Section 1 mock */
+/* Section 1 mock — divergence row, scaled so the real 1488px container fits the frame */
+const MOCK_SYMS = ['NQ','MNQ','ES','MGC'];
+const mockRow = document.getElementById('mockDvRow');
+MOCK_SYMS.forEach(sym => { const h = document.createElement('div'); mockRow.appendChild(h); mountDivCard(h, sym); });
+function fitMockRow(){
+  const box = mockRow.parentElement;
+  const k = Math.min(1, box.clientWidth / 1488);
+  mockRow.style.transform = `scale(${k})`;
+  box.style.height = Math.round(150 * k) + 'px';
+}
+fitMockRow();
+window.addEventListener('resize', fitMockRow);
+
 renderPulse(document.getElementById('pulseMock'));
 document.getElementById('gaugeMock').innerHTML =
   `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="new-tag">NEW</span><span style="font-size:12px;font-weight:600;color:var(--ink-2)">Positioning Edge</span></div><div id="gaugeMockHost"></div>`;
@@ -913,7 +1296,12 @@ const chartMockHost = document.createElement('div');
 document.getElementById('chartMock').appendChild(chartMockHost);
 renderChart(chartMockHost, { sym:'NQ', tf:'5m', compact:true });
 
-/* Section 2 sizes */
+/* Section 2 — divergence cards */
+[['dvA','NQ'],['dvB','MNQ'],['dvC','ES'],['dvD','MGC'],
+ ['dvW1','NQ'],['dvW2','MNQ'],['dvW3','MES'],['dvW4','SIL']]
+  .forEach(([id, sym]) => mountDivCard(document.getElementById(id), sym));
+
+/* Section 3 sizes */
 document.getElementById('gaugeSizes').innerHTML = `
   <div class="size-col"><span class="size-tag">Small · <b>270px</b> — mobile / grid filler · hover for detail</span><div id="gs1"></div></div>
   <div class="size-col"><span class="size-tag">Medium · <b>368px</b> — standard card</span><div id="gs2"></div></div>
@@ -922,10 +1310,10 @@ mountGauge(document.getElementById('gs1'), 'MGC', 'sm');
 mountGauge(document.getElementById('gs2'), 'NQ', 'md');
 mountGauge(document.getElementById('gs3'), 'MNQ', 'lg');
 
-/* Section 3 strip */
+/* Section 4 strip */
 renderPulse(document.getElementById('pulseFull'));
 
-/* Section 4 chart */
+/* Section 5 chart */
 renderChart(document.getElementById('chartFull'), { sym:'NQ', tf:'5m', compact:false });
 
 /* ================================================================
