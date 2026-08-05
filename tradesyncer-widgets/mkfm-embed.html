@@ -19,15 +19,14 @@
             title="Profitable trader positioning"></iframe>
 
   Query parameters:
-    w        card | rail | chart          (default: card)
+    w        card | rail                  (default: card)
     symbol   NQ MNQ ES MES MGC SIL        (default: MNQ, ignored by rail)
     symbols  comma list, rail only        (default: all six)
-    mode     session | intraday | demo    (chart only, default: session)
     endpoint absolute https URL           (optional feed override)
 
   Height:
     The card is a fixed 360x150 — size the iframe and you are done.
-    The rail and chart are fluid. This page posts its own height to the parent
+    The rail is fluid. This page posts its own height to the parent
     on load and on resize:
 
       window.addEventListener('message', function (e) {
@@ -43,7 +42,7 @@
 <style>
   html,body{margin:0;padding:0;background:transparent}
   body{display:flex;align-items:flex-start;justify-content:flex-start}
-  mkfm-positioning-rail,mkfm-positioning-chart{width:100%}
+  mkfm-positioning-rail{width:100%}
 </style>
 <script src="mkfm-snapshot.js"></script>
 <script src="mkfm-widgets.js"></script>
@@ -56,9 +55,8 @@
   // Whitelist everything that comes off the query string. A parameter is a URL
   // an attacker can hand a user, so nothing here is written into the DOM as
   // markup and nothing unrecognised is passed through.
-  var WIDGETS = { card: 'mkfm-positioning-card', rail: 'mkfm-positioning-rail', chart: 'mkfm-positioning-chart' };
+  var WIDGETS = { card: 'mkfm-positioning-card', rail: 'mkfm-positioning-rail' };
   var SYMBOLS = ['NQ', 'MNQ', 'ES', 'MES', 'MGC', 'SIL'];
-  var MODES = ['session', 'intraday', 'demo'];
 
   var tag = WIDGETS[q.get('w')] || WIDGETS.card;
   var node = document.createElement(tag);
@@ -71,11 +69,6 @@
       .map(function (s) { return s.trim(); })
       .filter(function (s) { return SYMBOLS.indexOf(s) > -1; });
     if (list.length) node.setAttribute('symbols', list.join(','));
-  }
-
-  if (tag === WIDGETS.chart) {
-    var mode = q.get('mode');
-    if (MODES.indexOf(mode) > -1) node.setAttribute('mode', mode);
   }
 
   // Only an absolute https endpoint is accepted, so the parameter cannot be
