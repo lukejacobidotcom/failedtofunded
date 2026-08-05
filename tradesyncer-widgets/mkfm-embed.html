@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>MarketFramework positioning widget</title>
+<!--
+  IFRAME FALLBACK ROUTER — MarketFramework positioning widgets
+  ============================================================
+  Use this only if you cannot add a script tag to the dashboard. The custom
+  element route is better in every measurable way (no height guessing, no extra
+  document, events reach your analytics directly). This exists so a strict CSP
+  or a locked-down template is never a blocker.
+
+  Usage:
+    <iframe src="/vendor/mkfm-embed.html?w=card&symbol=MNQ"
+            width="360" height="150" style="border:0" loading="lazy"
+            title="Profitable trader positioning"></iframe>
+
+  Query parameters:
+    w        card | rail | chart          (default: card)
+    symbol   NQ MNQ ES MES MGC SIL        (default: MNQ, ignored by rail)
+    symbols  comma list, rail only        (default: all six)
+    mode     session | intraday | demo    (chart only, default: session)
+    endpoint absolute https URL           (optional feed override)
+
+  Height:
+    The card is a fixed 360x150 — size the iframe and you are done.
+    The rail and chart are fluid. This page posts its own height to the parent
+    on load and on resize:
+
+      window.addEventListener('message', function (e) {
+        if (e.origin !== 'https://YOUR-CDN-ORIGIN') return;   // pin this
+        if (e.data && e.data.type === 'mkfm:height') {
+          document.getElementById('mkfm-frame').style.height = e.data.height + 'px';
+        }
+      });
+
+    The message payload is a single integer height. This page never reads
+    inbound messages, so the iframe cannot be driven from the parent page.
+-->
+<style>
+  html,body{margin:0;padding:0;background:transparent}
+  body{display:flex;align-items:flex-start;justify-content:flex-start}
+  mkfm-positioning-rail,mkfm-positioning-chart{width:100%}
+</style>
+<script src="mkfm-snapshot.js"></script>
+<script src="mkfm-widgets.js"></script>
+</head>
+<body>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+
+  // Whitelist everything that comes off the query string. A parameter is a URL
+  // an attacker can hand a user, so nothing here is written into the DOM as
+  // markup and nothing unrecognised is passed through.
+  var WIDGETS = { card: 'mkfm-positioning-card', rail: 'mkfm-positioning-rail', chart: 'mkfm-positioning-chart' };
+  var SYMBOLS = ['NQ', 'MNQ', 'ES', 'MES', 'MGC', 'SIL'];
+  var MODES = ['session', 'intraday', 'demo'];
+
+  var tag = WIDGETS[q.get('w')] || WIDGETS.card;
+  var node = document.createElement(tag);
+
+  var sym = (q.get('symbol') || '').toUpperCase();
+  node.setAttribute('symbol', SYMBOLS.indexOf(sym) > -1 ? sym : 'MNQ');
+
+  if (tag === WIDGETS.rail) {
+    var list = (q.get('symbols') || '').toUpperCase().split(',')
+      .map(function (s) { return s.trim(); })
+      .filter(function (s) { return SYMBOLS.indexOf(s) > -1; });
+    if (list.length) node.setAttribute('symbols', list.join(','));
+  }
+
+  if (tag === WIDGETS.chart) {
+    var mode = q.get('mode');
+    if (MODES.indexOf(mode) > -1) node.setAttribute('mode', mode);
+  }
+
+  // Only an absolute https endpoint is accepted, so the parameter cannot be
+  // used to point the widget at http or at a javascript: URL.
+  var ep = q.get('endpoint');
+  if (ep && /^https:\/\//i.test(ep)) node.setAttribute('endpoint', ep);
+
+  document.body.appendChild(node);
+
+  /* height reporting ---------------------------------------------------- */
+  var last = 0;
+  function report() {
+    var h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h && h !== last) {
+      last = h;
+      // '*' because the embedding origin is not known here. The payload is a
+      // single integer; pin the origin on the receiving side instead.
+      try { parent.postMessage({ type: 'mkfm:height', height: h }, '*'); } catch (e) {}
+    }
+  }
+  if (window.ResizeObserver) new ResizeObserver(report).observe(document.body);
+  window.addEventListener('resize', report);
+  node.addEventListener('mkfm:ready', report);
+  node.addEventListener('mkfm:error', report);
+  node.addEventListener('mkfm:symbolchange', function () { setTimeout(report, 0); });
+  setTimeout(report, 0);
+  setTimeout(report, 400);
+})();
+</script>
+</body>
+</html>
