@@ -15,7 +15,10 @@
   'use strict';
   if (window.MKFM && window.MKFM.version) return; // already loaded
 
-  var VERSION = '1.0.0';
+  // 2.0.0, not 1.1.0. The price layer is gone and the rail's DOM and class
+  // names changed wholesale, so anything a host wrote against v1 internals
+  // breaks. The custom-element names and attributes are unchanged.
+  var VERSION = '2.0.0';
 
   /* ============================================================
    * 1. CONFIG
@@ -44,57 +47,38 @@
     // 5-minute bucket carries enough trades that one order cannot move it.
     interval: '5m',
 
-    // Price feed for the rail. Separate endpoint, ~900 bytes, fetched in
-    // parallel with positioning and never allowed to block or break it.
-    quotesEndpoint: 'https://www.marketframework.com/api/aggregator/delayed-quotes',
+    // ---------------------------------------------------------------------
+    // NO PRICE LAYER. This is a compliance boundary, not an omission.
+    //
+    // TradeSyncer's review (Rodin Kadri, 2026-08-06, changelog v2) removed all
+    // prices and % change from these components: redistributing CME price data
+    // onto a third party's surface needs a licence that this widget is not
+    // covered by. Cohort positioning is MarketFramework's own first-party
+    // measurement of its own traders, so it carries no such restriction — it
+    // is the only thing here that can be shown, and it is the whole product.
+    //
+    // What was deleted with it, all of which existed only to defend a price:
+    // the delayed-quotes endpoint, the MGC->GC / SIL->SI quote aliases, the
+    // reference-close drift band, the prior-close gate, the session-move gate
+    // and the changePercent cross-check. Do not reintroduce any of them
+    // without a licence in hand.
+    // ---------------------------------------------------------------------
 
-    // The quotes feed does not carry the micro/mini contracts, but it does
-    // carry the full-size ones, which quote the same price per ounce off the
-    // same underlying. Measured: MGC and SIL both return "—", GC returns
-    // 4,187.20 and SI returns 61.08. So the rail asks for the full-size
-    // symbol and labels the cell with the instrument the user selected.
-    priceAliases: { MGC: 'GC', SIL: 'SI' },
-
-    // Sanity gate on the session move. The upstream quotes feed intermittently
-    // emits a broken prior-close basis — measured live, seconds apart: ES at
-    // -99.10% (price 69.00 against a 7,644 prior) and GC at -37,485.71%. Both
-    // self-corrected on the next read. Any instrument printing a session move
-    // larger than this is treated as a bad tick and shows no price at all
-    // rather than a number that would be alarming and wrong on a dashboard.
-    maxSessionPct: 25,
-
-    // Plausibility bands for the rest of the numbers. Nothing here tries to
+    // Plausibility bands for the numbers that remain. Nothing here tries to
     // decide whether a value is *right* — only whether it is possible. A value
     // that fails one of these is not drawn at all: the widget omits that one
     // readout and keeps everything else. Blank is recoverable; a wrong number
     // on a trading dashboard is not.
     sanity: {
-      // A live price is checked against the newest close for the same
-      // instrument in the bundled snapshot. 40% is far wider than any real
-      // session and far narrower than a decimal shift (10x), a symbol mix-up
-      // (ES 7,717 vs NQ 29,579 is 3.8x) or a zero — which are the failures
-      // actually seen. Expressed as a ratio band, so it is symmetric.
-      driftBasePct: 40,
-      // The snapshot ages the moment it ships. A reference from six months
-      // ago must not blank a price that genuinely rallied, so the band widens
-      // with the reference's age instead of going stale and wrong.
-      driftPerDayPct: 3,
-      driftMaxPct: 200,
-      // The session move is computed here from price and prior close AND
-      // reported by the feed as changePercent. Two independent paths to one
-      // number: if they disagree by more than this, one of the inputs is
-      // broken and neither result is worth drawing. Both are display-rounded
-      // strings, so real rounding noise is ~0.001pp — this only fires on a
-      // genuine break.
-      pctAgreePp: 1.0,
       // Cohort shares are a percentage of a population. Outside 0-100 they
       // are definitionally broken. The half point absorbs float noise from
       // the x100 fraction scaling in the adapter.
       cohortMin: -0.5,
       cohortMax: 100.5,
-      // A derived point move ("MNQ +621.25 since") is only printed when the
-      // percentage it implies is a move a future can actually make.
-      maxMovePct: 25,
+      // The divergence between the two cohorts, in percentage points. Both
+      // sides are already gated to 0-100, so the spread is bounded to ±100 by
+      // construction; this is a belt-and-braces guard on the printed value.
+      maxSpreadPp: 100,
       // Rejections are kept for inspection via MKFM.rejects(). Capped so a
       // feed stuck in a bad state cannot grow the array without bound.
       logCap: 100
@@ -113,6 +97,19 @@
     symbols: ['NQ', 'MNQ', 'ES', 'MES', 'MGC', 'SIL'],
     tradesPerDayLabel: '250K trades/day',
 
+    // Rail paging. TradeSyncer's changelog v4 specifies three cards per view
+    // with arrow paging and disabled ends. Kept configurable because three is
+    // their layout decision for a 1488px container, not a property of the data.
+    railPerView: 3,
+
+    // Monogram badges (changelog v5). Deliberately NOT unique: NQ/MNQ both
+    // resolve to N and ES/MES both to S, which is how TradeSyncer specced it.
+    // Micro and full-size contracts are different products with different
+    // trader bases, so the badge alone cannot identify the instrument — the
+    // symbol beside it does that, and every badge carries the full name as a
+    // title for anyone reading with assistive tech.
+    monograms: { NQ: 'N', MNQ: 'N', ES: 'S', MES: 'S', MGC: 'Au', SIL: 'Ag' },
+
     // Bars are drawn on a 30–70% window rather than 0–100%. Real cohort
     // positioning almost never leaves that band, so a full-width track wastes
     // ~60% of its pixels and makes a 53/47 split look like a dead heat. The
@@ -121,8 +118,7 @@
     scaleMax: 70
   };
   var SANITY_DEFAULTS = {
-    driftBasePct: 40, driftPerDayPct: 3, driftMaxPct: 200, pctAgreePp: 1.0,
-    cohortMin: -0.5, cohortMax: 100.5, maxMovePct: 25, logCap: 100
+    cohortMin: -0.5, cohortMax: 100.5, maxSpreadPp: 100, logCap: 100
   };
   if (window.MKFM_CONFIG) for (var k in window.MKFM_CONFIG) CFG[k] = window.MKFM_CONFIG[k];
   // The override above is a shallow copy, so a host that sets one sanity key
@@ -135,17 +131,36 @@
 
   /* ============================================================
    * 2. DESIGN TOKENS
-   * Sampled directly from the TradeSyncer dashboard screenshot:
-   * shadcn/ui zinc scale with primary overridden to #146aff.
+   *
+   * Aligned to TradeSyncer's own codebase tokens, per Rodin Kadri's changelog
+   * v6 ("blue pixel-verified against your dashboard"). His value supersedes the
+   * #146aff this widget previously carried, which was sampled by eye from a
+   * screenshot — a value read out of their stylesheet beats a value read off a
+   * PNG, so their number wins wherever the two disagree.
+   *
+   * ONE DELIBERATE DEPARTURE, and it is the only place this file knowingly
+   * differs from his spec. v6 sends every bar to chart-negative #ef4444. Both
+   * cohort bars rendering in the same colour destroys the single reading the
+   * widget exists to deliver — that profitable traders are positioned one way
+   * while unprofitable traders are positioned the other. Red-on-red forces the
+   * viewer to read two numbers and difference them mentally, which nobody does
+   * on a dashboard they came to for something else. So long is green (#10b981,
+   * already in his own token set) and short is red (#ef4444, his chart-negative).
+   * Flipping back is a one-token edit: set --mkfm-long to #ef4444.
    * ========================================================== */
   var TOKENS = [
     '--mkfm-font: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;',
-    '--mkfm-primary:#146aff;',
-    '--mkfm-primary-soft:#eaf1ff;',
-    '--mkfm-primary-soft-b:#d6e4ff;',
-    '--mkfm-long:#146aff;',
-    '--mkfm-short:#e11d1d;',
-    '--mkfm-short-soft:#fdeded;',
+    '--mkfm-primary:#156bff;',
+    '--mkfm-primary-soft:#e9f0ff;',
+    '--mkfm-primary-soft-b:#d4e2ff;',
+    '--mkfm-long:#10b981;',
+    '--mkfm-long-soft:#e7f8f1;',
+    '--mkfm-short:#ef4444;',
+    '--mkfm-short-soft:#fdeceb;',
+    // The error pill only. shadcn keeps `destructive` a step darker than
+    // `chart-negative` so a failure state does not read as a data value.
+    '--mkfm-destructive:#dc2626;',
+    '--mkfm-destructive-soft:#fdeceb;',
     '--mkfm-ink:#09090b;',
     '--mkfm-muted:#71717a;',
     '--mkfm-faint:#a1a1aa;',
@@ -154,20 +169,24 @@
     '--mkfm-border:#e8e8ea;',
     '--mkfm-hair:#f1f1f2;',
     '--mkfm-tick:#9ca3af;',
-    '--mkfm-live:#04a36d;',
+    '--mkfm-live:#10b981;',
     '--mkfm-warn:#b45309;',
     '--mkfm-warn-soft:#fff7ed;',
     '--mkfm-radius:12px;',
-    '--mkfm-shadow:0 1px 2px rgba(9,9,11,.05);'
+    '--mkfm-shadow:0 1px 2px rgba(9,9,11,.05);',
+    '--mkfm-shadow-pop:0 1px 3px rgba(9,9,11,.10),0 1px 2px rgba(9,9,11,.06);'
   ].join('');
 
   var DARK = [
     '--mkfm-primary:#4d8cff;',
     '--mkfm-primary-soft:#16233d;',
     '--mkfm-primary-soft-b:#24365c;',
-    '--mkfm-long:#4d8cff;',
-    '--mkfm-short:#f2555a;',
+    '--mkfm-long:#34d399;',
+    '--mkfm-long-soft:#0d2620;',
+    '--mkfm-short:#f87171;',
     '--mkfm-short-soft:#2a1618;',
+    '--mkfm-destructive:#f87171;',
+    '--mkfm-destructive-soft:#2a1618;',
     '--mkfm-ink:#fafafa;',
     '--mkfm-muted:#a1a1aa;',
     '--mkfm-faint:#71717a;',
@@ -176,7 +195,7 @@
     '--mkfm-border:#27272a;',
     '--mkfm-hair:#1f1f23;',
     '--mkfm-tick:#52525b;',
-    '--mkfm-live:#12b981;',
+    '--mkfm-live:#34d399;',
     '--mkfm-warn:#fbbf24;',
     '--mkfm-warn-soft:#251c0c;',
     '--mkfm-shadow:0 1px 2px rgba(0,0,0,.4);'
@@ -219,36 +238,22 @@
     if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'K';
     return String(n);
   }
-  function decimalsFor(px) { return px == null ? 2 : (px < 10 ? 3 : px < 1000 ? 2 : 2); }
-
-  // Format a futures price for the rail. Takes the whole quote object, not a
-  // number, on purpose: the live feed already returns a pre-formatted string
-  // at the contract's own tick precision ("30,165", "7,787.75", "61.08"), and
-  // that is more trustworthy than any decimals-by-magnitude rule invented
-  // here — tick size is a contract property, not a function of price. Only
-  // the snapshot fallback, which carries a bare number, needs the rule.
-  function fmtPx(q) {
-    if (q && q.raw) return q.raw;
-    var v = q ? q.px : null;
-    if (v == null || !isFinite(v)) return '—';
-    return fmtNum(v, v % 1 === 0 ? 0 : 2);
-  }
-
   /* ============================================================
    * 3b. SANITY GATES
    *
    * The upstream feed is intermittently wrong in ways that are obvious to a
-   * human and invisible to a renderer. Measured live, seconds apart: ES
-   * printed a -99.10% session move (price 69.00 against a 7,644 prior close)
-   * and GC printed -37,485.71%. Both self-corrected on the next poll. In both
-   * cases the failure was a broken PRIOR-CLOSE BASIS, not a broken market.
+   * human and invisible to a renderer. The worst cases measured live were in
+   * the price fields — ES printing a -99.10% session move, GC printing
+   * -37,485.71%, both self-correcting on the next poll — and those fields are
+   * now gone on compliance grounds, taking four of the original six gates with
+   * them. What remains guards the cohort shares, which is what the widget
+   * actually draws.
    *
    * Every number that reaches the DOM passes through one of these. The rule
-   * is the same everywhere: a value that cannot be true is not drawn. The
-   * widget omits that one readout and renders everything else it still
+   * is the same as it always was: a value that cannot be true is not drawn.
+   * The widget omits that one readout and renders everything else it still
    * trusts — it does not clamp the value into range (which turns "4000%"
-   * into a confident full bar), and it does not throw away good neighbours
-   * (a broken prior close must not cost the user a perfectly good price).
+   * into a confident full bar), and it does not throw away good neighbours.
    *
    * Rejections are recorded rather than swallowed. Silent blanking is close
    * to undebuggable in the field, so MKFM.rejects() returns the log and
@@ -274,69 +279,6 @@
 
   function inRange(v, lo, hi) {
     return v != null && typeof v === 'number' && isFinite(v) && v >= lo && v <= hi;
-  }
-
-  // A real, positive, finite number. Written out because the obvious guard is
-  // wrong: isFinite(null) is true (null coerces to 0), so `isFinite(x)` alone
-  // waves nulls straight through into arithmetic.
-  function posNum(v) {
-    return v != null && typeof v === 'number' && isFinite(v) && v > 0;
-  }
-
-  // Newest real close per instrument from the bundled snapshot. This is the
-  // free reference dataset: it ships with the widget, needs no network, and
-  // is a real settlement price for every one of the six instruments.
-  var refCache = null;
-  function refCloses() {
-    if (refCache) return refCache;
-    var s = bundled();
-    if (!s || !s.instruments) return {};   // not loaded yet — do not cache a miss
-    var m = {};
-    for (var k in s.instruments) {
-      var rows = rowsOf(s.instruments[k]);
-      for (var i = rows.length - 1; i >= 0; i--) {
-        if (rows[i].c != null && isFinite(rows[i].c) && rows[i].c > 0) {
-          m[k] = { c: rows[i].c, d: rows[i].d };
-          break;
-        }
-      }
-    }
-    // The quotes feed answers in full-size symbols (GC, SI); the snapshot is
-    // keyed by the cohort symbol (MGC, SIL). Mirror each entry onto its price
-    // alias so a GC quote can find its own reference close.
-    for (var c in CFG.priceAliases) {
-      var a = CFG.priceAliases[c];
-      if (m[c] && !m[a]) m[a] = m[c];
-    }
-    refCache = m;
-    return refCache;
-  }
-
-  // Snapshot rows are dated 'YYYY-MM-DD'; live rows carry a unix timestamp.
-  function ageDays(d) {
-    var t = null;
-    if (typeof d === 'number') t = d > 1e11 ? d : d * 1000;
-    else if (typeof d === 'string') { var p = Date.parse(d); if (!isNaN(p)) t = p; }
-    if (t == null) return 0;
-    var days = (Date.now() - t) / 86400000;
-    return days > 0 ? days : 0;
-  }
-
-  // Is this a possible price for this instrument? Judged as a ratio against
-  // the reference close, because price error is multiplicative — a decimal
-  // shift, a symbol mix-up and a zero are all ratio failures. The band widens
-  // with the reference's age and then stops widening, so an old snapshot
-  // relaxes the check rather than invalidating it.
-  function priceSane(sym, px) {
-    if (px == null || !isFinite(px) || px <= 0) return false;
-    var refs = refCloses();
-    var r = refs[sym] || refs[priceSym(sym)];
-    if (!r) return true;          // nothing to compare against — do not block
-    var S = CFG.sanity;
-    var band = Math.min(S.driftMaxPct, S.driftBasePct + S.driftPerDayPct * ageDays(r.d));
-    var hi = 1 + band / 100;
-    var ratio = px / r.c;
-    return ratio <= hi && ratio >= 1 / hi;
   }
 
   /* ============================================================
@@ -498,7 +440,6 @@
     if (store.promise && !force) return store.promise;
     var url = CFG.endpoint +
       (CFG.endpoint.indexOf('?') > -1 ? '&' : '?') + 'interval=' + CFG.interval;
-    loadQuotes(force);          // fire in parallel; never blocks positioning
     store.promise = fetchJSON(url, CFG.fetchTimeoutMs).then(function (raw) {
       var j = adapt(raw);
       if (!j || !j.instruments) throw new Error('shape');
@@ -513,164 +454,6 @@
       return res;
     });
     return store.promise;
-  }
-
-  /* ------------------------------------------------------------
-   * PRICE LAYER — /api/aggregator/delayed-quotes
-   *
-   * Verified shape:
-   *   { quotes: [ { symbol, name, price, change, changePercent,
-   *                 priorPrice, priorTimestamp } ] }
-   *
-   * price / change / priorPrice arrive as PRE-FORMATTED STRINGS with thousands
-   * separators ("30,165", "7,787.75") and "—" when the feed has nothing, so
-   * every one of them has to be parsed rather than used directly.
-   *
-   * changePercent is a real number but is NOT trustworthy: measured live,
-   * seconds apart, GC returned -37485.71 and ES returned -99.10, both of which
-   * self-corrected on the next read. The break is in the prior-close basis,
-   * not the price. So the session move is recomputed here from price and
-   * priorPrice and then sanity-gated; anything past CFG.maxSessionPct is
-   * dropped entirely instead of being drawn.
-   *
-   * This runs completely independently of positioning. If it fails — including
-   * the CORS failure that is the current state on a third-party origin — the
-   * rail simply renders without a price line. Positioning never waits on it.
-   * ---------------------------------------------------------- */
-  var qstore = { promise: null, map: null, fetchedAt: 0 };
-
-  function parseNum(v) {
-    if (v == null) return null;
-    if (typeof v === 'number') return isFinite(v) ? v : null;
-    var s = String(v).replace(/,/g, '').trim();
-    if (!s || s === '—' || s === '-' || s === 'N/A') return null;
-    var n = parseFloat(s);
-    return isFinite(n) ? n : null;
-  }
-
-  // Which symbol to ASK the price feed for. The cohort feed's micro contracts
-  // have no quote of their own; the full-size sibling quotes the same price.
-  function priceSym(sym) {
-    return (CFG.priceAliases && CFG.priceAliases[sym]) || sym;
-  }
-
-  function adaptQuotes(j) {
-    if (!j || !j.quotes || !j.quotes.length) return null;
-    var S = CFG.sanity, m = {}, any = false;
-    for (var i = 0; i < j.quotes.length; i++) {
-      var q = j.quotes[i];
-      if (!q || !q.symbol) continue;
-      var sym = q.symbol;
-
-      // GATE 1 — the price. Nothing in the cell survives a bad price, so this
-      // is the one gate that drops the whole quote: the rail renders that
-      // instrument with no quote line rather than with a wrong one.
-      var px = parseNum(q.price);
-      if (px == null) continue;                      // "—" — feed has nothing
-      if (!priceSane(sym, px)) { reject('quotes', sym, 'price', px, 'implausible vs reference close'); continue; }
-
-      // GATE 2 — the prior close, judged INDEPENDENTLY and by the same band,
-      // because a prior close is just yesterday's price. This is the field
-      // that actually breaks upstream, and gating it here is what stops a
-      // bad basis from manufacturing a -37,485% move downstream.
-      var prior = parseNum(q.priorPrice);
-      if (prior != null && !priceSane(sym, prior)) {
-        prior = reject('quotes', sym, 'priorPrice', prior, 'implausible vs reference close');
-      }
-
-      // GATE 3 — the derived move. Recomputed from price and prior rather
-      // than taken from the feed, then bounded by what a session can do.
-      var pct = (prior != null && prior !== 0) ? ((px - prior) / prior) * 100 : null;
-      if (pct != null && Math.abs(pct) > CFG.maxSessionPct) {
-        pct = reject('quotes', sym, 'sessionPct', pct, 'exceeds ' + CFG.maxSessionPct + '% session bound');
-      }
-
-      // GATE 4 — cross-check against the feed's own changePercent. Two
-      // independent routes to one number; disagreement means an input is
-      // wrong and there is no way to tell which, so neither is drawn.
-      var feedPct = parseNum(q.changePercent);
-      if (pct != null && feedPct != null && Math.abs(pct - feedPct) > S.pctAgreePp) {
-        pct = reject('quotes', sym, 'sessionPct', pct, 'disagrees with feed changePercent ' + feedPct);
-      }
-
-      // A blanked pct does NOT blank the price. The two are separately
-      // sourced and separately trustworthy: the rail then shows the last
-      // price on its own line and simply omits the percentage.
-      m[sym] = { px: px, pct: pct, raw: String(q.price) };
-      any = true;
-    }
-    // Every quote rejected is indistinguishable from a broken response, and
-    // should fall through to the snapshot rather than paint an empty rail.
-    return any ? m : null;
-  }
-
-  // Fallback price built from the bundled snapshot's last two settlement
-  // closes. Used when the live quotes feed is unreachable. It is a real close
-  // and a real session move, just not a live one — the widget already signals
-  // cached state elsewhere, so this stays honest.
-  function snapshotQuotes() {
-    var s = bundled();
-    if (!s || !s.instruments) return null;
-    var m = {}, any = false;
-    for (var k in s.instruments) {
-      var rows = rowsOf(s.instruments[k]);
-      if (!rows || rows.length < 2) continue;
-      var a = rows[rows.length - 1].c, b = rows[rows.length - 2].c;
-      // Both must be real positive numbers. `b` is a divisor, and the old
-      // truthiness guard let a negative or a NaN through to produce -Infinity.
-      if (!posNum(a) || !posNum(b)) continue;
-      var pct = ((a - b) / b) * 100;
-      // Deliberately harsher than the identical-looking check in adaptQuotes,
-      // and for a reason worth stating. There, price and prior close arrive as
-      // two independently sourced fields, so a broken prior can only discredit
-      // the percentage — the price is still trustworthy on its own. Here both
-      // closes come from the same series, so an impossible move between them
-      // means one of the two closes is wrong, and the one being drawn is the
-      // newer of the pair. Blanking only the percentage would leave the bad
-      // number on screen as a price. Drop the whole entry: the rail renders
-      // that instrument's positioning with no price line.
-      if (Math.abs(pct) > CFG.maxSessionPct) {
-        reject('snapshot', k, 'close', a, 'implies a ' + pct.toFixed(1) + '% move from the prior close');
-        continue;
-      }
-      m[k] = { px: a, pct: pct, raw: null };
-      any = true;
-    }
-    return any ? m : null;
-  }
-
-  function loadQuotes(force) {
-    if (qstore.promise && !force) return qstore.promise;
-    var want = [];
-    for (var i = 0; i < CFG.symbols.length; i++) want.push(priceSym(CFG.symbols[i]));
-    var url = CFG.quotesEndpoint +
-      (CFG.quotesEndpoint.indexOf('?') > -1 ? '&' : '?') + 'symbols=' + want.join(',');
-    qstore.promise = fetchJSON(url, CFG.fetchTimeoutMs).then(function (raw) {
-      var m = adaptQuotes(raw);
-      if (!m) throw new Error('shape');
-      qstore.map = m; qstore.fetchedAt = Date.now();
-      return m;
-    }).catch(function () {
-      qstore.map = snapshotQuotes();
-      qstore.fetchedAt = Date.now();
-      return qstore.map;
-    }).then(function (m) {
-      // Prices usually land after positioning has already painted. Re-notify
-      // subscribers with the positioning result they already have so the rail
-      // fills its price line in, without re-fetching anything.
-      if (store.data) {
-        var res = { data: store.data, source: store.source, error: null };
-        for (var i = 0; i < store.subs.length; i++) { try { store.subs[i](res); } catch (e) {} }
-      }
-      return m;
-    });
-    return qstore.promise;
-  }
-
-  // Look up a drawable price for a cohort symbol, following the alias.
-  function quoteFor(sym) {
-    if (!qstore.map) return null;
-    return qstore.map[sym] || qstore.map[priceSym(sym)] || null;
   }
 
   function subscribe(fn) {
@@ -716,7 +499,6 @@
     var rows = rowsOf(inst);
     if (!rows.length) return null;
     var last = rows[rows.length - 1];
-    if (last.w == null || last.l == null) return null;
 
     // GATE — the cohort shares themselves. These drive the bars, the headline
     // side, and the printed percentages, so a broken pair poisons the whole
@@ -725,9 +507,18 @@
     // cell. This deliberately replaces a clamp(0,100) that used to sit at the
     // bottom of this function, which turned a feed value of 4,000 into a
     // confidently full bar — exactly the failure mode worth preventing.
+    //
+    // The missing-value case is folded in here rather than returned early
+    // above it, which is where it used to sit. An early `return null` withdrew
+    // the instrument with no entry in the rejection log, so a null share and a
+    // healthy-but-absent instrument were indistinguishable from the console —
+    // and the log exists precisely so that "the card is empty" and "the card
+    // is empty because the feed sent null at 14:03" are different tickets.
+    // inRange() already rejects null, so one gate now covers both.
     var S = CFG.sanity;
     if (!inRange(last.w, S.cohortMin, S.cohortMax) || !inRange(last.l, S.cohortMin, S.cohortMax)) {
-      reject('cohort', sym, 'winners/losers', last.w + ' / ' + last.l, 'outside 0-100%');
+      reject('cohort', sym, 'winners/losers', last.w + ' / ' + last.l,
+        (last.w == null || last.l == null) ? 'missing from the feed' : 'outside 0-100%');
       return null;
     }
 
@@ -746,35 +537,20 @@
       }
     }
 
-    // Price move since the stance began (close before the run started -> now).
-    // GATE — the derived point move. This prints into the card subline as
-    // "MNQ +621.25 since", which reads as authoritative, so it is only drawn
-    // when the percentage it implies is a move a future can actually make.
-    // Past that bound the basis is broken, not the market.
-    var basis = startIdx > 0 ? rows[startIdx - 1].c : rows[startIdx].c;
-    var move = null, movePct = null;
-    if (posNum(last.c) && posNum(basis)) {
-      move = last.c - basis;
-      movePct = (move / basis) * 100;
-      if (Math.abs(movePct) > S.maxMovePct) {
-        reject('cohort', sym, 'move', movePct, 'implies a ' + movePct.toFixed(1) + '% move');
-        move = null; movePct = null;
-      }
-    }
+    // The derived point move that used to live here ("MNQ +621.25 since") was
+    // computed from the cohort feed's close column. It is a price, so it went
+    // out with the rest of the price layer on the same compliance grounds, and
+    // the m5 intraday move with it. `rows[].c` is deliberately left unread by
+    // this file now — see the CFG note. The spread below replaces it, and is a
+    // better subline anyway: it is the actual signal rather than context for it.
 
-    // Intraday move from the 5m series, when the feed carries it. Same gate.
-    var m5 = inst.m5, dayMove = null, dayPct = null;
-    if (m5 && m5.c && m5.c.length && posNum(m5.o)) {
-      var lastPx = m5.c[m5.c.length - 1];
-      if (posNum(lastPx)) {
-        dayMove = lastPx - m5.o;
-        dayPct = (dayMove / m5.o) * 100;
-        if (Math.abs(dayPct) > S.maxMovePct) {
-          reject('cohort', sym, 'dayMove', dayPct, 'implies a ' + dayPct.toFixed(1) + '% move');
-          dayMove = null; dayPct = null;
-        }
-      }
-    }
+    // GATE — the divergence. dv is already bounded by construction because both
+    // sides passed the 0-100 gate above, so this only fires if the gate bounds
+    // are reconfigured incoherently. Cheap, and it keeps the printed headline
+    // number from ever being the one thing on the card nobody checked.
+    var spread = inRange(dv, -S.maxSpreadPp, S.maxSpreadPp)
+      ? dv
+      : reject('cohort', sym, 'spread', dv, 'outside ±' + S.maxSpreadPp + 'pp');
 
     // How long the profitable cohort has held this side, phrased in the units
     // the feed actually resolves. A daily feed can only honestly say
@@ -794,8 +570,8 @@
     }
 
     return {
-      sym: sym, name: inst.name || sym, rows: rows, last: last, m5: m5,
-      dv: dv, side: side, grain: grain, bucketSeconds: bs,
+      sym: sym, name: inst.name || sym, rows: rows, last: last,
+      dv: dv, spread: spread, side: side, grain: grain, bucketSeconds: bs,
       // The gate above already rejected anything genuinely out of range, so
       // these clamps now only absorb the ±0.5 float noise the gate tolerates.
       // They are kept because bar geometry divides by the track width and a
@@ -807,8 +583,7 @@
       allLong: inRange(last.a, S.cohortMin, S.cohortMax) ? clamp(last.a, 0, 100) : null,
       run: run, runMs: runMs, runLabel: runLabel,
       runStart: rows[startIdx] ? rows[startIdx].d : null,
-      move: move, movePct: movePct, dayMove: dayMove, dayPct: dayPct,
-      trades: last.v, dp: decimalsFor(last.c),
+      trades: last.v,
       sig: inst.sig, hits: inst.hits,
       tradeDate: data.tradeDate
     };
@@ -875,8 +650,51 @@
   }
 
   function sideLabel(pctLong) {
-    if (pctLong >= 50) return { txt: Math.round(pctLong) + '% long', cls: 'up' };
-    return { txt: Math.round(100 - pctLong) + '% short', cls: 'dn' };
+    if (pctLong >= 50) return { txt: Math.round(pctLong) + '% long', cls: 'up', num: Math.round(pctLong) + '%', word: 'long' };
+    return { txt: Math.round(100 - pctLong) + '% short', cls: 'dn', num: Math.round(100 - pctLong) + '%', word: 'short' };
+  }
+
+  /* ------------------------------------------------------------
+   * THE SPREAD
+   *
+   * The gap between the two cohorts, in percentage points, printed as its own
+   * number rather than left for the reader to difference. Two 53%-ish bars
+   * three points apart and two bars thirteen points apart look nearly
+   * identical on a 6px track at rail scale, and the difference between them is
+   * the entire signal — a wide spread means the profitable and unprofitable
+   * cohorts genuinely disagree, which is the only thing here worth acting on.
+   *
+   * Signed, because direction matters: positive means the profitable cohort is
+   * further long than the unprofitable one. Coloured on the same green/red
+   * axis as the bars so the spread and the bars cannot contradict each other
+   * at a glance. Returns null when the gate withdrew the value.
+   * ---------------------------------------------------------- */
+  function spreadLabel(d) {
+    if (!d || d.spread == null) return null;
+    var v = d.spread;
+    var mag = Math.abs(v);
+    // Under half a point there is no divergence worth signing. Printing
+    // "+0.2pt" in green implies a direction the data does not support, so the
+    // sign and the colour are both dropped below that threshold.
+    return {
+      txt: mag < 0.5 ? '0pt' : fmtSigned(v, mag < 10 ? 1 : 0) + 'pt',
+      cls: v > 0.5 ? 'up' : v < -0.5 ? 'dn' : 'nu',
+      title: mag < 0.5
+        ? 'Both cohorts are positioned the same way — no divergence to read.'
+        : 'Profitable traders are ' + mag.toFixed(1) + ' points more ' +
+          (v > 0 ? 'long' : 'short') + ' than unprofitable traders.'
+    };
+  }
+
+  // Instrument monogram badge (changelog v5). The letters are not unique by
+  // design — see CFG.monograms. The full instrument name rides along as a
+  // title so the badge is never the only thing identifying the cell.
+  function monogram(d) {
+    var m = (CFG.monograms && CFG.monograms[d.sym]) || d.sym.slice(0, 2);
+    var b = el('span', 'mkfm-mono mono-' + m.toLowerCase(), m);
+    b.title = d.name;
+    b.setAttribute('aria-hidden', 'true');
+    return b;
   }
 
   /* ============================================================
@@ -922,6 +740,12 @@
     };
     Cls.prototype.disconnectedCallback = function () {
       if (this._unsub) this._unsub();
+      // A renderer may have attached a ResizeObserver or a window listener of
+      // its own (the rail does, to re-measure its page width). Those outlive
+      // the shadow tree unless something tears them down, and a dashboard that
+      // mounts and unmounts widgets on route changes would otherwise leak one
+      // observer per mount, each still firing against a detached element.
+      if (this._mkfmCleanup) { this._mkfmCleanup(); this._mkfmCleanup = null; }
       this._mounted = false;
     };
     Cls.prototype.attributeChangedCallback = function (n, o, v) {
@@ -1038,22 +862,24 @@
       'color:var(--mkfm-primary);background:var(--mkfm-primary-soft);' +
       'border:1px solid var(--mkfm-primary-soft-b);cursor:pointer;' +
       'text-overflow:ellipsis;white-space:nowrap;overflow:hidden;' +
-      'background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'8\' height=\'5\' viewBox=\'0 0 8 5\'%3E%3Cpath d=\'M1 1l3 3 3-3\' fill=\'none\' stroke=\'%23146aff\' stroke-width=\'1.6\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/%3E%3C/svg%3E");' +
+      'background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'8\' height=\'5\' viewBox=\'0 0 8 5\'%3E%3Cpath d=\'M1 1l3 3 3-3\' fill=\'none\' stroke=\'%23156bff\' stroke-width=\'1.6\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/%3E%3C/svg%3E");' +
       'background-repeat:no-repeat;background-position:right 8px center}' +
     ':host([theme="dark"]) .mkfm-sel,:host([theme="auto"]) .mkfm-sel{background-image:none}' +
     '@media (prefers-color-scheme:light){:host([theme="auto"]) .mkfm-sel{' +
-      'background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'8\' height=\'5\' viewBox=\'0 0 8 5\'%3E%3Cpath d=\'M1 1l3 3 3-3\' fill=\'none\' stroke=\'%23146aff\' stroke-width=\'1.6\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/%3E%3C/svg%3E");' +
+      'background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'8\' height=\'5\' viewBox=\'0 0 8 5\'%3E%3Cpath d=\'M1 1l3 3 3-3\' fill=\'none\' stroke=\'%23156bff\' stroke-width=\'1.6\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/%3E%3C/svg%3E");' +
       'background-repeat:no-repeat;background-position:right 8px center}}' +
     '.mkfm-sel:focus-visible{outline:2px solid var(--mkfm-primary);outline-offset:1px}' +
     '.mkfm-sel option{color:#09090b;background:#fff}' +
 
     '.mkfm-chip{flex:none;display:inline-flex;align-items:center;gap:3px;height:16px;padding:0 6px;' +
-      'border-radius:999px;font:700 8.5px/1 var(--mkfm-font);letter-spacing:.055em;' +
+      'border-radius:999px;font:600 8.5px/1 var(--mkfm-font);letter-spacing:.055em;' +
       'background:var(--mkfm-hair);color:var(--mkfm-muted);cursor:default}' +
     '.mkfm-chip i{width:5px;height:5px;border-radius:50%;background:currentColor;display:block}' +
-    '.mkfm-chip.live{background:rgba(4,163,109,.1);color:var(--mkfm-live)}' +
+    '.mkfm-chip.live{background:var(--mkfm-long-soft);color:var(--mkfm-live)}' +
     /* no .stale rule — chipFor() returns null for that state, by design */
-    '.mkfm-chip.err{background:var(--mkfm-short-soft);color:var(--mkfm-short)}' +
+    /* destructive, not chart-negative: a failure pill must not read as a data
+       value sitting on the same red as a short bar three lines below it. */
+    '.mkfm-chip.err{background:var(--mkfm-destructive-soft);color:var(--mkfm-destructive)}' +
 
     '.mkfm-i{flex:none;width:17px;height:17px;border-radius:50%;border:1px solid var(--mkfm-border);' +
       'color:var(--mkfm-faint);font:600 10px/15px var(--mkfm-font);text-align:center;' +
@@ -1061,21 +887,32 @@
     '.mkfm-i:hover{color:var(--mkfm-muted);border-color:var(--mkfm-tick)}' +
     '.mkfm-i:focus-visible{outline:2px solid var(--mkfm-primary);outline-offset:1px}' +
 
-    '.mkfm-hl{margin-top:6px;height:19px;flex:none;font:700 15.5px/19px var(--mkfm-font);' +
+    /* Weights 500/600 only, per changelog v3/v6. The headline used to sit at
+       700 with an 800 emphasis inside it; at 15.5px on a white card that was
+       heavier than anything in TradeSyncer's own type scale. */
+    '.mkfm-hl{margin-top:6px;height:19px;flex:none;font:500 15.5px/19px var(--mkfm-font);' +
       'letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-    '.mkfm-hl b{font-weight:800}' +
+    '.mkfm-hl b{font-weight:600}' +
     '.mkfm-hl .up{color:var(--mkfm-long)}.mkfm-hl .dn{color:var(--mkfm-short)}' +
     '.mkfm-hl .nu{color:var(--mkfm-muted)}' +
-    '.mkfm-sub{height:14px;flex:none;font:400 11px/14px var(--mkfm-font);color:var(--mkfm-muted);' +
-      'white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '.mkfm-sub{height:14px;flex:none;font:500 11px/14px var(--mkfm-font);color:var(--mkfm-muted);' +
+      'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;' +
+      'font-variant-numeric:tabular-nums}' +
+    /* The spread leads the subline, so it carries the emphasis the price move
+       used to. Same green/red axis as the bars, never the primary blue —
+       a divergence number that matched the brand colour would read as chrome. */
+    '.mkfm-sub b{font-weight:600;font-variant-numeric:tabular-nums}' +
+    '.mkfm-sub b.up{color:var(--mkfm-long)}.mkfm-sub b.dn{color:var(--mkfm-short)}' +
+    '.mkfm-sub b.nu{color:var(--mkfm-muted)}' +
 
     '.mkfm-bars{margin-top:7px;flex:none}' +
     '.mkfm-row{height:20px}' +
     '.mkfm-row+.mkfm-row{margin-top:4px}' +
     '.mkfm-rl{height:12px;display:flex;align-items:baseline;justify-content:space-between;gap:8px}' +
-    '.mkfm-rl span:first-child{font:500 10.5px/12px var(--mkfm-font);color:var(--mkfm-ink);' +
+    '.mkfm-rl span:first-child{font:500 10.5px/12px var(--mkfm-font);color:var(--mkfm-muted);' +
       'white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-    '.mkfm-rl b{font:700 10.5px/12px var(--mkfm-font);white-space:nowrap;flex:none}' +
+    '.mkfm-rl b{font:600 11.5px/12px var(--mkfm-font);white-space:nowrap;flex:none;' +
+      'font-variant-numeric:tabular-nums}' +
     '.mkfm-rl b.up{color:var(--mkfm-long)}.mkfm-rl b.dn{color:var(--mkfm-short)}' +
     '.mkfm-track{--h:6px;position:relative;margin-top:2px;height:var(--h)}' +
     '.mkfm-fill{position:absolute;inset:0;border-radius:calc(var(--h)/2);overflow:hidden;' +
@@ -1103,7 +940,7 @@
     '.mkfm-info{position:absolute;inset:0;background:var(--mkfm-surface);padding:11px 12px;' +
       'display:none;flex-direction:column;z-index:3;overflow-y:auto}' +
     '.mkfm-card.open .mkfm-info{display:flex}' +
-    '.mkfm-info h4{font:700 11px/14px var(--mkfm-font);margin-bottom:4px}' +
+    '.mkfm-info h4{font:600 11px/14px var(--mkfm-font);margin-bottom:4px}' +
     '.mkfm-info p{font:400 10px/13.5px var(--mkfm-font);color:var(--mkfm-muted);margin-bottom:4px}' +
     '.mkfm-info p b{color:var(--mkfm-ink);font-weight:600}' +
     '.mkfm-x{position:absolute;top:7px;right:8px;width:18px;height:18px;border-radius:50%;' +
@@ -1201,13 +1038,26 @@
     var bEl = el('b', wcls, word); hl.appendChild(bEl);
     b.appendChild(hl);
 
-    /* subline: real numbers only --------------------------------------- */
+    /* subline: the spread first, then the run ---------------------------
+       This slot used to carry the derived point move ("MNQ +621.25 today"),
+       which is gone on compliance grounds. The spread is a better tenant: the
+       move described what price did, whereas the spread describes what the two
+       cohorts disagree about, which is the thing this widget alone can say. */
+    var sub = el('div', 'mkfm-sub');
+    var sp = spreadLabel(d);
+    if (sp) {
+      var spb = el('b', sp.cls, sp.txt);
+      sub.appendChild(spb);
+      sub.appendChild(document.createTextNode(' spread'));
+      sub.title = sp.title;
+    }
     var bits = [];
     if (d.run > 0) bits.push(d.grain === 'intraday' ? d.runLabel + ' on this side' : (d.run === 1 ? 'this session' : d.runLabel));
-    if (d.move != null && d.run > 1) bits.push(d.sym + ' ' + fmtSigned(d.move, d.dp) + ' since');
-    else if (d.dayMove != null) bits.push(d.sym + ' ' + fmtSigned(d.dayMove, d.dp) + ' today');
-    if (!bits.length) bits.push('Session of ' + (d.tradeDate || ''));
-    b.appendChild(el('div', 'mkfm-sub', bits.join(' · ')));
+    if (!bits.length && !sp) bits.push('Session of ' + (d.tradeDate || ''));
+    if (bits.length) {
+      sub.appendChild(document.createTextNode((sp ? ' · ' : '') + bits.join(' · ')));
+    }
+    b.appendChild(sub);
 
     /* two bars --------------------------------------------------------- */
     var bars = el('div', 'mkfm-bars');
@@ -1247,10 +1097,16 @@
     // window, and that the printed number is the true one, is what keeps the
     // compressed scale honest rather than merely flattering.
     var p2i = el('p'); p2i.innerHTML =
-      'The colour split marks each cohort; the grey tick is the 50/50 line. The track spans ' +
+      'Green is the long share, red the short share; the grey tick is the 50/50 line. The track spans ' +
       '<b>' + CFG.scaleMin + '–' + CFG.scaleMax + '%</b>, the band positioning actually occupies, ' +
       'so a real edge is visible. The printed percentages are the true values.';
     info.appendChild(p2i);
+    if (sp) {
+      var p4i = el('p'); p4i.innerHTML =
+        'The <b>spread</b> is the gap between the two cohorts in percentage points. ' +
+        'A wide spread means they genuinely disagree; near zero means there is no edge to read.';
+      info.appendChild(p4i);
+    }
     var p3i = el('p'); p3i.innerHTML =
       'Positioning, not advice. <b>' + d.runLabel + '</b> on the current side, from <b>' +
       fmtCount(d.trades) + '</b> trades, bucketed ' +
@@ -1266,87 +1122,143 @@
   });
 
   /* ============================================================
-   * 11. WIDGET B — SIX-INSTRUMENT RAIL
+   * 11. WIDGET B — INSTRUMENT RAIL
+   *
+   * Rebuilt to TradeSyncer's spec (Rodin Kadri, changelog v2/v4/v5/v7/v8).
+   * The old shape was one bordered box with six flush cells divided by
+   * hairlines and a lead panel welded to the left. The new shape is separate
+   * cards on a paged track: CFG.railPerView at a time, arrows straddling the
+   * outer border of the first and last visible card, disabled at the ends.
+   *
+   * Two things about the paging are worth knowing before changing it.
+   *
+   * First, paging is done with a transform on a track inside an overflow-hidden
+   * viewport, NOT by re-rendering the visible subset. Re-rendering would
+   * rebuild the DOM on every arrow click, which drops focus, restarts the
+   * skeleton shimmer, and would fight the 60s poll for control of the same
+   * nodes. The transform leaves every card mounted and simply moves them.
+   *
+   * Second, the page index is deliberately NOT stored on the host element. A
+   * poll lands every 60 seconds and calls this renderer again from scratch; an
+   * index kept in a closure resets to 0 on each poll, which is wrong — a user
+   * reading page 2 would be yanked back to page 1 once a minute. It is stored
+   * on the host as _mkfmPage and clamped on re-render in case the instrument
+   * count shrank underneath it.
    * ========================================================== */
   var RAIL_CSS =
     ':host{display:block;width:100%}' +
-    '.mkfm-railbox{background:var(--mkfm-surface);border:1px solid var(--mkfm-border);' +
-      'border-radius:var(--mkfm-radius);box-shadow:var(--mkfm-shadow);overflow:hidden}' +
-    '.mkfm-rail{display:flex;align-items:stretch}' +
-    '.mkfm-lead{flex:none;width:158px;padding:12px 14px;background:var(--mkfm-surface-2);' +
-      'border-right:1px solid var(--mkfm-hair);display:flex;flex-direction:column;justify-content:center;gap:5px}' +
-    '.mkfm-lead .t{display:flex;align-items:center;gap:6px;font:700 11px/1 var(--mkfm-font);' +
-      'letter-spacing:.06em;color:var(--mkfm-primary)}' +
-    '.mkfm-lead .t i{width:6px;height:6px;border-radius:50%;background:var(--mkfm-live);flex:none}' +
-    '.mkfm-lead .t.off i{background:var(--mkfm-faint)}' +
-    '.mkfm-lead .t.off{color:var(--mkfm-muted)}' +
-    '.mkfm-lead .s{font:400 11px/1.3 var(--mkfm-font);color:var(--mkfm-faint)}' +
-    '.mkfm-lead .mkfm-pb{font-size:11px}' +
-    '.mkfm-scroll{flex:1 1 auto;min-width:0;display:flex;overflow-x:auto;overflow-y:hidden;' +
-      'scrollbar-width:thin;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}' +
-    '.mkfm-scroll::-webkit-scrollbar{height:5px}' +
-    '.mkfm-scroll::-webkit-scrollbar-thumb{background:var(--mkfm-border);border-radius:3px}' +
-    /* 6 cells fit from ~950px of track width; below that the row scrolls
-       horizontally rather than crushing the labels. */
-    '.mkfm-cell{flex:1 1 0;min-width:132px;scroll-snap-align:start;padding:12px 13px;' +
-      'border-left:1px solid var(--mkfm-hair);display:flex;flex-direction:column;gap:7px}' +
-    '.mkfm-cell:first-child{border-left:0}' +
-    /* Two lines, not one. `NQ 29,579.75 +2.38%` needs ~140-158px of content
-       and the narrowest cell gives it 105px of padded width, so a single row
-       overflowed into the neighbouring cell. Row 1 carries the symbol and the
-       session move; row 2 carries the price on its own. Nothing is shrunk and
-       no digits are dropped — ES trades to the quarter point, so rounding
-       7,717.50 to 7718 would be wrong for this audience. */
-    /* The header reserves both of its lines whether or not the price renders.
-       The sanity gates can withdraw a price line at any moment, and without
-       this the cell collapses to one line and every row beneath it rides up
-       out of alignment with its neighbours — which reads as broken layout
-       rather than as a deliberately omitted number. 13.5 + 3 + 12 = the two
-       line boxes and the gap declared immediately below. */
-    '.mkfm-ct{display:flex;flex-direction:column;gap:3px;min-width:0;' +
-      'min-height:calc(13.5px + 3px + 12px)}' +
-    '.mkfm-ct .r1{display:flex;align-items:baseline;gap:6px;min-width:0}' +
-    '.mkfm-ct .sym{min-width:0;font:700 13.5px/1 var(--mkfm-font);letter-spacing:-.01em;' +
+    /* The arrows hang outside the first and last card, so the component needs
+       side room of its own. Without this they clip against whatever container
+       the host drops the rail into. */
+    '.mkfm-railwrap{position:relative;padding:0 14px}' +
+    '.mkfm-viewport{overflow:hidden}' +
+    '.mkfm-rtrack{display:flex;gap:12px;transition:transform .28s cubic-bezier(.4,0,.2,1);' +
+      'will-change:transform}' +
+    '@media (prefers-reduced-motion:reduce){.mkfm-rtrack{transition:none}}' +
+
+    /* Each instrument is its own card now — own border, own radius, own
+       shadow. `flex:0 0 auto` with a computed width rather than `flex:1` so
+       the track can be translated by an exact page width. */
+    '.mkfm-card{flex:0 0 auto;background:var(--mkfm-surface);' +
+      'border:1px solid var(--mkfm-border);border-radius:var(--mkfm-radius);' +
+      'box-shadow:var(--mkfm-shadow);padding:14px 16px 12px;' +
+      'display:flex;flex-direction:column;gap:10px;min-width:0}' +
+
+    /* head: monogram badge + symbol. v7 puts the symbol at 24/32 semibold. */
+    '.mkfm-ch{display:flex;align-items:center;gap:9px;min-width:0}' +
+    '.mkfm-mono{flex:none;width:30px;height:30px;border-radius:9px;' +
+      'display:flex;align-items:center;justify-content:center;' +
+      'font:600 12px/1 var(--mkfm-font);letter-spacing:-.01em;' +
+      'background:var(--mkfm-hair);color:var(--mkfm-muted)}' +
+    '.mkfm-mono.mono-n{background:var(--mkfm-primary-soft);color:var(--mkfm-primary)}' +
+    '.mkfm-mono.mono-s{background:#efeaff;color:#6d43d9}' +
+    '.mkfm-mono.mono-au{background:#fdf3e2;color:#a86a12}' +
+    '.mkfm-mono.mono-ag{background:#eef1f5;color:#5b6675}' +
+    '.mkfm-csym{min-width:0;font:600 24px/32px var(--mkfm-font);letter-spacing:-.02em;' +
       'white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-    /* Session % hard right on row 1; direction is carried by the sign and the
-       colour, so there is no arrow glyph. */
-    '.mkfm-ct .pct{margin-left:auto;flex:none;font:600 10.5px/1 var(--mkfm-font);' +
-      'font-variant-numeric:tabular-nums}' +
-    /* Tabular so the six cells align down the column instead of jittering with
-       digit width. Ellipsis is a backstop: no realistic quote reaches it, but a
-       bad feed value must not be able to spill into the next cell again. */
-    '.mkfm-ct .px{font:600 12px/1 var(--mkfm-font);font-variant-numeric:tabular-nums;' +
-      'color:var(--mkfm-ink);letter-spacing:-.01em;' +
+    '.mkfm-cname{margin-left:auto;flex:none;font:500 11px/1 var(--mkfm-font);' +
+      'color:var(--mkfm-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;' +
+      'max-width:45%}' +
+
+    /* cohort rows. v8 sets labels at 14/20 medium muted. The VALUE departs
+       from v8's 16/20: it is the only number left on the card after the price
+       strip, and at 16px it sat below the 24px symbol — which put the loudest
+       type on the least informative element. 26px keeps it above the symbol
+       while staying inside the two weights the spec allows. */
+    '.mkfm-crow{display:flex;flex-direction:column;gap:5px}' +
+    '.mkfm-crow+.mkfm-crow{margin-top:2px}' +
+    '.mkfm-clab{display:flex;align-items:baseline;justify-content:space-between;gap:10px}' +
+    '.mkfm-clab span{font:500 14px/20px var(--mkfm-font);color:var(--mkfm-muted);' +
       'white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-    /* Green/red, NOT the long/short palette. Two reasons. Semantically, the
-       bars mean positioning and this number means price — reusing the long
-       colour for "price up" conflates them. Mechanically, `--mkfm-long` is
-       overwritten by the host's `accent` attribute, so a TradeSyncer brand
-       colour would silently repaint the price change. `--mkfm-live` is fixed. */
-    '.mkfm-ct .pct.up{color:var(--mkfm-live)}.mkfm-ct .pct.dn{color:var(--mkfm-short)}' +
-    '.mkfm-ct .pct.nu{color:var(--mkfm-faint)}' +
-    '.mkfm-mini{display:flex;align-items:center;gap:7px}' +
-    '.mkfm-mini span{width:7px;flex:none;font:600 8.5px/1 var(--mkfm-font);color:var(--mkfm-faint)}' +
-    '.mkfm-mini .mkfm-track{flex:1 1 auto;margin-top:0}' +
-    '.mkfm-cf{font:400 10.5px/1.25 var(--mkfm-font);color:var(--mkfm-muted);' +
-      'white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-    '.mkfm-cf b{font-weight:700}' +
-    '.mkfm-cf b.up{color:var(--mkfm-long)}.mkfm-cf b.dn{color:var(--mkfm-short)}' +
-    '.mkfm-cf b.nu{color:var(--mkfm-muted)}' +
+    /* The direction word rides at label size, not value size. Two cards' worth
+       of "51% long" all set at 26px turned the rail into a wall of green type
+       with no internal hierarchy — the eye had nothing to land on first. The
+       number is the measurement and carries the size and the colour; "long" is
+       a unit, and units do not get to shout. Baseline-aligned so the pair still
+       reads as one phrase. */
+    '.mkfm-clab b{flex:none;font:600 26px/28px var(--mkfm-font);letter-spacing:-.02em;' +
+      'font-variant-numeric:tabular-nums;white-space:nowrap;' +
+      'display:inline-flex;align-items:baseline;gap:5px}' +
+    '.mkfm-clab b em{font:500 14px/20px var(--mkfm-font);font-style:normal;' +
+      'letter-spacing:0;color:var(--mkfm-muted)}' +
+    '.mkfm-clab b.up{color:var(--mkfm-long)}.mkfm-clab b.dn{color:var(--mkfm-short)}' +
+    '.mkfm-clab b.nu{color:var(--mkfm-muted)}' +
+
     '.mkfm-track{--h:6px;position:relative;height:var(--h)}' +
-    '.mkfm-fill{position:absolute;inset:0;border-radius:calc(var(--h)/2);overflow:hidden;background:var(--mkfm-hair)}' +
+    '.mkfm-fill{position:absolute;inset:0;border-radius:calc(var(--h)/2);overflow:hidden;' +
+      'background:var(--mkfm-hair)}' +
     '.mkfm-fill.clamp-hi{border-top-right-radius:1px;border-bottom-right-radius:1px}' +
     '.mkfm-fill.clamp-lo{border-top-left-radius:1px;border-bottom-left-radius:1px}' +
     '.mkfm-track i.mkfm-tick{position:absolute;left:50%;top:-2px;bottom:-2px;width:1.5px;' +
       'margin-left:-.75px;background:var(--mkfm-tick);border-radius:1px}' +
-    '.mkfm-pb{display:inline-flex;align-items:center;gap:5px;font:500 11px/1 var(--mkfm-font);color:var(--mkfm-muted)}' +
+
+    /* card footer: the spread leads, then run and sample size */
+    '.mkfm-cf{margin-top:2px;padding-top:9px;border-top:1px solid var(--mkfm-hair);' +
+      'font:500 12px/16px var(--mkfm-font);color:var(--mkfm-muted);' +
+      'font-variant-numeric:tabular-nums;' +
+      'white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '.mkfm-cf b{font-weight:600}' +
+    '.mkfm-cf b.up{color:var(--mkfm-long)}.mkfm-cf b.dn{color:var(--mkfm-short)}' +
+    '.mkfm-cf b.nu{color:var(--mkfm-muted)}' +
+
+    /* arrows: centred on the vertical, sitting on the outer border of the
+       first and last card, soft shadow (v7). */
+    '.mkfm-arrow{position:absolute;top:50%;width:28px;height:28px;margin-top:-14px;' +
+      'border-radius:50%;border:1px solid var(--mkfm-border);background:var(--mkfm-surface);' +
+      'box-shadow:var(--mkfm-shadow-pop);color:var(--mkfm-ink);cursor:pointer;z-index:2;' +
+      'display:flex;align-items:center;justify-content:center;padding:0}' +
+    '.mkfm-arrow svg{width:9px;height:9px;fill:none;stroke:currentColor;stroke-width:2;' +
+      'stroke-linecap:round;stroke-linejoin:round}' +
+    '.mkfm-arrow.prev{left:0}' +
+    '.mkfm-arrow.next{right:0}' +
+    '.mkfm-arrow:hover:not(:disabled){border-color:var(--mkfm-tick)}' +
+    '.mkfm-arrow:focus-visible{outline:2px solid var(--mkfm-primary);outline-offset:2px}' +
+    /* Disabled ends stay visible rather than disappearing: an arrow that
+       vanishes at the end of the track reads as a rendering fault, and its
+       absence also shifts nothing back into place. */
+    '.mkfm-arrow:disabled{color:var(--mkfm-faint);cursor:default;box-shadow:none;opacity:.55}' +
+    ':host([single]) .mkfm-arrow{display:none}' +
+    ':host([single]) .mkfm-railwrap{padding:0}' +
+
+    /* header line above the track: micro-label, sample size, attribution */
+    '.mkfm-rhead{display:flex;align-items:center;gap:10px;margin:0 0 10px;min-width:0}' +
+    '.mkfm-rhead .t{display:flex;align-items:center;gap:6px;flex:none;' +
+      'font:600 11px/1 var(--mkfm-font);letter-spacing:.06em;color:var(--mkfm-primary)}' +
+    '.mkfm-rhead .t i{width:6px;height:6px;border-radius:50%;background:var(--mkfm-live);flex:none}' +
+    '.mkfm-rhead .t.off i{background:var(--mkfm-faint)}' +
+    '.mkfm-rhead .t.off{color:var(--mkfm-muted)}' +
+    '.mkfm-rhead .s{min-width:0;font:500 11px/1 var(--mkfm-font);color:var(--mkfm-faint);' +
+      'white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '.mkfm-rhead .mkfm-pb{margin-left:auto;flex:none}' +
+    '.mkfm-pb{display:inline-flex;align-items:center;gap:5px;font:500 11px/1 var(--mkfm-font);' +
+      'color:var(--mkfm-muted)}' +
     '.mkfm-pb:hover{color:var(--mkfm-primary)}' +
+    '.mkfm-pb:focus-visible{outline:2px solid var(--mkfm-primary);outline-offset:2px;border-radius:3px}' +
     '.mkfm-logo{width:12px;height:10px;fill:var(--mkfm-primary);flex:none}' +
-    /* Neutral, not amber. This band now only ever says "market closed",
-       which is a schedule fact, not a fault — an alert colour would imply
-       something is wrong with the widget when nothing is. */
-    '.mkfm-note{padding:7px 14px;border-top:1px solid var(--mkfm-hair);background:var(--mkfm-surface-2);' +
-      'font:500 10.5px/1.3 var(--mkfm-font);color:var(--mkfm-muted)}' +
+
+    '.mkfm-note{margin-top:10px;padding:8px 12px;border:1px solid var(--mkfm-border);' +
+      'border-radius:10px;background:var(--mkfm-surface-2);' +
+      'font:500 11px/1.35 var(--mkfm-font);color:var(--mkfm-muted)}' +
     '.mkfm-sk{background:linear-gradient(90deg,var(--mkfm-hair) 25%,var(--mkfm-surface-2) 37%,var(--mkfm-hair) 63%);' +
       'background-size:400% 100%;animation:mkfmsk 1.4s ease infinite;border-radius:4px}' +
     '@keyframes mkfmsk{0%{background-position:100% 50%}100%{background-position:0 50%}}' +
@@ -1354,10 +1266,31 @@
       'background:var(--mkfm-surface);padding:20px;display:flex;align-items:center;' +
       'justify-content:center;gap:10px;flex-wrap:wrap}' +
     '.mkfm-fb-msg{font:500 12px/1.4 var(--mkfm-font);color:var(--mkfm-muted)}' +
-    '@media (max-width:640px){.mkfm-rail{flex-direction:column}' +
-      '.mkfm-lead{width:100%;border-right:0;border-bottom:1px solid var(--mkfm-hair);' +
-      'flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px}' +
-      '.mkfm-lead .s{margin-right:auto}}';
+    /* Below this width three cards cannot hold a 26px value and a 24px symbol
+       without crushing both, so the page size drops to one and the arrows keep
+       working unchanged — the per-view count is read from the DOM, not assumed. */
+    '@media (max-width:760px){.mkfm-rhead{flex-wrap:wrap}' +
+      '.mkfm-rhead .mkfm-pb{margin-left:0}}';
+
+  var CHEV_L = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M6.5 1.5 2.5 5l4 3.5"/></svg>';
+  var CHEV_R = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 1.5 7.5 5l-4 3.5"/></svg>';
+
+  // How many cards fit a page at the current width. Three is TradeSyncer's
+  // spec for their 1488px content container; below that this steps down rather
+  // than letting the cards squash.
+  //
+  // The breakpoints are derived from the widest line a card has to hold, not
+  // guessed: "Unprofitable" at 14px is ~78px and "56% long" at 26px is ~105px,
+  // plus a 10px gap and 32px of horizontal padding — about 225px of hard
+  // minimum. Three cards therefore need 3*225 + 2*12 of gap = ~700px of
+  // viewport, and 940 is that with enough headroom that a wider font stack or
+  // a longer label does not start clipping. Returns at least 1 in every case.
+  function perView(px) {
+    var n = CFG.railPerView || 3;
+    if (px < 680) n = 1;
+    else if (px < 940) n = Math.min(n, 2);
+    return Math.max(1, n);
+  }
 
   defineBase('mkfm-positioning-rail', RAIL_CSS, function (body, data, status, res) {
     var host = this;
@@ -1366,23 +1299,27 @@
 
     if (status === 'loading') {
       body.innerHTML = '';
-      var wbox = el('div', 'mkfm-railbox');
-      var w = el('div', 'mkfm-rail');
-      var ld = el('div', 'mkfm-lead');
-      var t0 = el('div', 'mkfm-sk'); t0.style.cssText = 'width:120px;height:12px';
-      var t1 = el('div', 'mkfm-sk'); t1.style.cssText = 'width:86px;height:10px';
-      ld.appendChild(t0); ld.appendChild(t1); w.appendChild(ld);
-      var sc = el('div', 'mkfm-scroll');
-      for (var i = 0; i < 6; i++) {
-        var c = el('div', 'mkfm-cell');
-        var a = el('div', 'mkfm-sk'); a.style.cssText = 'width:56px;height:13px';
-        var b1 = el('div', 'mkfm-sk'); b1.style.cssText = 'height:6px';
+      var lw = el('div', 'mkfm-railwrap');
+      var lh = el('div', 'mkfm-rhead');
+      var t0 = el('div', 'mkfm-sk'); t0.style.cssText = 'width:120px;height:11px';
+      var t1 = el('div', 'mkfm-sk'); t1.style.cssText = 'width:86px;height:11px';
+      lh.appendChild(t0); lh.appendChild(t1); lw.appendChild(lh);
+      var lv = el('div', 'mkfm-viewport');
+      var lt = el('div', 'mkfm-rtrack');
+      for (var i = 0; i < 3; i++) {
+        var c = el('div', 'mkfm-card');
+        c.style.cssText = 'flex:1 1 0';
+        var a = el('div', 'mkfm-sk'); a.style.cssText = 'width:120px;height:30px';
+        var b1 = el('div', 'mkfm-sk'); b1.style.cssText = 'height:28px';
         var b2 = el('div', 'mkfm-sk'); b2.style.cssText = 'height:6px';
-        var b3 = el('div', 'mkfm-sk'); b3.style.cssText = 'width:100px;height:10px';
-        c.appendChild(a); c.appendChild(b1); c.appendChild(b2); c.appendChild(b3);
-        sc.appendChild(c);
+        var b3 = el('div', 'mkfm-sk'); b3.style.cssText = 'height:28px';
+        var b4 = el('div', 'mkfm-sk'); b4.style.cssText = 'height:6px';
+        var b5 = el('div', 'mkfm-sk'); b5.style.cssText = 'width:70%;height:12px';
+        c.appendChild(a); c.appendChild(b1); c.appendChild(b2);
+        c.appendChild(b3); c.appendChild(b4); c.appendChild(b5);
+        lt.appendChild(c);
       }
-      w.appendChild(sc); wbox.appendChild(w); body.appendChild(wbox);
+      lv.appendChild(lt); lw.appendChild(lv); body.appendChild(lw);
       return;
     }
 
@@ -1397,100 +1334,159 @@
     }
 
     body.innerHTML = '';
-    // outer = the bordered card; wrap = the horizontal flex row inside it.
-    // The degradation note must live in `outer`, below the row — appending it to
-    // `wrap` would make it a flex sibling of the cells and eat instrument slots.
-    var outer = el('div', 'mkfm-railbox');
-    var wrap = el('div', 'mkfm-rail');
+    var wrapper = el('div', 'mkfm-railwrap');
 
-    var lead = el('div', 'mkfm-lead');
-    var title = el('div', 'mkfm-t');
+    /* header line ------------------------------------------------------- */
+    var head = el('div', 'mkfm-rhead');
+    var title = el('div', 't');
     title.className = 't' + (status === 'ok' ? '' : ' off');
     title.appendChild(el('i'));
     // No 'DELAYED DATA' branch. `stale` falls through to the neutral
-    // 'POSITIONING' title for the same reason the chip was dropped: a delay
-    // flag on a partner dashboard reads as a broken product, and the reading
-    // itself is unchanged. The footer still dates the data.
+    // 'POSITIONING' title: a delay flag on a partner dashboard reads as a
+    // broken product, and the reading itself is unchanged.
     title.appendChild(document.createTextNode(
       status === 'ok' ? 'LIVE POSITIONING'
         : status === 'closed' ? 'LAST SESSION' : 'POSITIONING'));
-    lead.appendChild(title);
-    lead.appendChild(el('div', 's', status === 'closed'
+    head.appendChild(title);
+    head.appendChild(el('div', 's', status === 'closed'
       ? 'Session of ' + (data.tradeDate || '')
       : CFG.tradesPerDayLabel));
-    lead.appendChild(poweredBy(host));
-    wrap.appendChild(lead);
+    head.appendChild(poweredBy(host));
+    wrapper.appendChild(head);
 
-    var scroll = el('div', 'mkfm-scroll');
+    /* track ------------------------------------------------------------- */
+    var viewport = el('div', 'mkfm-viewport');
+    var track = el('div', 'mkfm-rtrack');
+
     ds.forEach(function (d) {
-      var cell = el('div', 'mkfm-cell');
+      var card = el('div', 'mkfm-card');
 
-      var arCls = d.side === 'long' ? 'up' : d.side === 'short' ? 'dn' : 'nu';
+      var ch = el('div', 'mkfm-ch');
+      ch.appendChild(monogram(d));
+      ch.appendChild(el('span', 'mkfm-csym', d.sym));
+      ch.appendChild(el('span', 'mkfm-cname', d.name));
+      card.appendChild(ch);
 
-      // Header: symbol on the left, last price + session move on the right.
-      // No arrow glyph and no delta badge — the sign on the percentage already
-      // carries direction, and the cohort delta is redundant with the two bars
-      // directly beneath it.
-      var top = el('div', 'mkfm-ct');
-      var r1 = el('div', 'r1');
-      r1.appendChild(el('span', 'sym', d.sym));
-      top.appendChild(r1);
-      var q = quoteFor(d.sym);
-      if (q) {
-        if (q.pct != null) {
-          var pcls = q.pct > 0 ? 'up' : q.pct < 0 ? 'dn' : 'nu';
-          var pc = el('span', 'pct ' + pcls, fmtSigned(q.pct, 2) + '%');
-          pc.title = d.name + ' — session change against the prior settlement.';
-          r1.appendChild(pc);
-        }
-        var px = el('span', 'px', fmtPx(q));
-        px.title = d.name + ' — last price' +
-          (priceSym(d.sym) !== d.sym
-            ? '. Quoted from ' + priceSym(d.sym) + ', which trades the same underlying at the same price.'
-            : '.');
-        top.appendChild(px);
-      }
-      cell.appendChild(top);
-
-      [['P', d.pctLong, 'Profitable traders'], ['U', d.unprofLong, 'Unprofitable traders']]
-        .forEach(function (p) {
-          var m = el('div', 'mkfm-mini');
-          m.appendChild(el('span', null, p[0]));
-          var tr = barTrack(p[1], 6);
-          tr.title = p[2] + ': ' + sideLabel(p[1]).txt;
-          m.appendChild(tr);
-          cell.appendChild(m);
-        });
+      [['Profitable', d.pctLong, 'Profitable traders'],
+       ['Unprofitable', d.unprofLong, 'Unprofitable traders']].forEach(function (p) {
+        var row = el('div', 'mkfm-crow');
+        var lab = el('div', 'mkfm-clab');
+        lab.appendChild(el('span', null, p[0]));
+        var sl = sideLabel(p[1]);
+        var val = el('b', sl.cls);
+        val.appendChild(document.createTextNode(sl.num));
+        val.appendChild(el('em', null, sl.word));
+        lab.appendChild(val);
+        row.appendChild(lab);
+        var tr = barTrack(p[1], 6);
+        tr.title = p[2] + ': ' + sl.txt;
+        row.appendChild(tr);
+        card.appendChild(row);
+      });
 
       var f = el('div', 'mkfm-cf');
-      var sideTxt = d.side === 'long' ? 'Long' : d.side === 'short' ? 'Short' : 'Split';
-      f.appendChild(el('b', arCls, sideTxt));
-      var tail = ' · ' + d.runLabel +
-        ' · ' + fmtCount(d.trades);
-      f.appendChild(document.createTextNode(tail));
-      f.title = d.name + ' — profitable cohort ' + sideLabel(d.pctLong).txt +
-        ', ' + (d.grain === 'intraday' ? d.runLabel : (d.run > 1 ? d.runLabel + ' consecutive' : 'first session')) +
+      var sp = spreadLabel(d);
+      if (sp) {
+        f.appendChild(el('b', sp.cls, sp.txt));
+        f.appendChild(document.createTextNode(' spread · '));
+      }
+      f.appendChild(document.createTextNode(d.runLabel + ' · ' + fmtCount(d.trades)));
+      f.title = (sp ? sp.title + ' ' : '') +
+        d.name + ' — ' +
+        (d.grain === 'intraday' ? d.runLabel : (d.run > 1 ? d.runLabel + ' consecutive' : 'first session')) +
         ' on this side, from ' + fmtCount(d.trades) + ' trades read.';
-      cell.appendChild(f);
-      scroll.appendChild(cell);
-    });
-    wrap.appendChild(scroll);
-    outer.appendChild(wrap);
+      card.appendChild(f);
 
-    // The note band is now reserved for market-closed, which is genuine,
-    // useful information a trader wants ("reopens in 4h 12m"). The two
-    // warning variants it used to carry — "live feed unreachable" and "feed
-    // has not updated recently" — were the loudest of the delayed flags: a
-    // full-width yellow band across a partner dashboard announcing that the
-    // data behind it is suspect. That is what made the rail look broken when
-    // it was rendering the same values as the card. Removed.
+      track.appendChild(card);
+    });
+
+    viewport.appendChild(track);
+    wrapper.appendChild(viewport);
+
+    /* arrows ------------------------------------------------------------ */
+    var prev = el('button', 'mkfm-arrow prev');
+    prev.type = 'button'; prev.innerHTML = CHEV_L;
+    prev.setAttribute('aria-label', 'Previous instruments');
+    var next = el('button', 'mkfm-arrow next');
+    next.type = 'button'; next.innerHTML = CHEV_R;
+    next.setAttribute('aria-label', 'More instruments');
+    wrapper.appendChild(prev);
+    wrapper.appendChild(next);
+
+    body.appendChild(wrapper);
+
+    /* paging ------------------------------------------------------------
+       Runs after the nodes are in the document, because every width below is
+       measured rather than assumed — the host controls this component's width
+       and there is no reliable way to guess it. */
+    var GAP = 12;
+
+    function layout() {
+      var vw = viewport.clientWidth;
+      if (!vw) return;                       // display:none or not yet laid out
+      var n = ds.length;
+      var per = Math.min(perView(vw), n);
+      var cardW = (vw - GAP * (per - 1)) / per;
+      for (var i = 0; i < track.children.length; i++) {
+        track.children[i].style.width = cardW + 'px';
+      }
+      var pages = Math.max(1, Math.ceil(n / per));
+      // Clamp: the instrument count can shrink between polls if the cohort
+      // gate withdraws one, which would otherwise strand the view on a page
+      // that no longer exists and render an empty track.
+      var page = Math.min(host._mkfmPage || 0, pages - 1);
+      host._mkfmPage = page;
+      if (pages <= 1) host.setAttribute('single', '');
+      else host.removeAttribute('single');
+      track.style.transform = 'translateX(' + (-page * (vw + GAP)) + 'px)';
+      prev.disabled = page <= 0;
+      next.disabled = page >= pages - 1;
+      return { pages: pages, page: page };
+    }
+
+    function go(delta) {
+      var st = layout();
+      if (!st) return;
+      var p = Math.min(Math.max(st.page + delta, 0), st.pages - 1);
+      if (p === st.page) return;
+      host._mkfmPage = p;
+      layout();
+      host.emit('page', { page: p, pages: st.pages });
+    }
+
+    prev.addEventListener('click', function () { go(-1); });
+    next.addEventListener('click', function () { go(1); });
+
+    layout();
+
+    // Re-measure on resize. ResizeObserver watches the element itself, which
+    // matters because a dashboard can resize this component without the window
+    // changing at all — a collapsing sidebar is the obvious case. The window
+    // listener is the fallback for browsers without it, and both are torn down
+    // by the base element's disconnect hook via _mkfmCleanup.
+    if (host._mkfmCleanup) { host._mkfmCleanup(); host._mkfmCleanup = null; }
+    if (typeof ResizeObserver === 'function') {
+      var ro = new ResizeObserver(function () { layout(); });
+      ro.observe(host);
+      host._mkfmCleanup = function () { ro.disconnect(); };
+    } else {
+      var onR = function () { layout(); };
+      window.addEventListener('resize', onR);
+      host._mkfmCleanup = function () { window.removeEventListener('resize', onR); };
+    }
+
+    /* degradation note --------------------------------------------------
+       Reserved for market-closed, which is genuine information a trader wants
+       ("reopens in 4h 12m"). It does not carry feed warnings: a full-width
+       band announcing that the data behind it is suspect is what made the old
+       rail look broken while it was rendering exactly the same values as the
+       card. */
     if (status === 'closed') {
       var ms = marketState();
-      outer.appendChild(el('div', 'mkfm-note',
+      wrapper.appendChild(el('div', 'mkfm-note',
         'Market closed — showing the last completed session.' +
         (ms.minutesToOpen != null ? ' Reopens in ' + humanDur(ms.minutesToOpen) + '.' : '')));
     }
-    body.appendChild(outer);
   });
 
   /* ============================================================
