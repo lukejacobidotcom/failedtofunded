@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MyFunded Club — Invite Only | MyFundedFutures</title>
-<meta name="description" content="MyFunded Club is invite-only. 1,000 founding members. Earn points, open packs, redeem rewards. Join the waitlist before the doors open August 18.">
+<meta name="description" content="MyFunded Club is invite-only. 1,000 traders are already members. Earn points, open packs, redeem rewards. Get on the list and your welcome pack is reserved.">
 <meta name="robots" content="noindex, follow">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="MyFunded Club — Invite Only">
-<meta property="og:description" content="1,000 founding members. Everyone else needs an invite. Doors open August 18.">
+<meta property="og:description" content="1,000 traders are already members. Everyone else needs an invite from one of them.">
 <meta property="og:image" content="https://myfundedfutures.com/images/loyalty/packs/foil-gold.webp">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -134,18 +134,18 @@ main,header,footer{position:relative;z-index:1}
 .ghost-link:hover{color:var(--cream)}
 
 /* ---------- hero ---------- */
-.hero{padding-top:clamp(26px,4vw,44px);text-align:center}
+.hero{padding-top:clamp(18px,2.6vw,30px);text-align:center}
 .hero h1{
-  font-size:clamp(46px,10.5vw,124px);
+  font-size:clamp(42px,9vw,104px);
   font-weight:800;
-  margin:26px 0 0;
+  margin:18px 0 0;
   background:linear-gradient(178deg,#FFFDF8 12%,var(--cream) 42%,rgba(216,174,94,.82) 116%);
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
   filter:drop-shadow(0 12px 44px rgba(216,174,94,.16));
 }
 .hero .sub{
-  margin:20px auto 0;max-width:640px;
+  margin:16px auto 0;max-width:640px;
   font-size:clamp(16px,2.05vw,21px);font-weight:300;line-height:1.5;
   color:rgba(247,243,233,.74);
 }
@@ -157,9 +157,10 @@ main,header,footer{position:relative;z-index:1}
    ============================================================ */
 .stage{
   position:relative;
-  margin-top:clamp(30px,5vw,54px);
-  padding-block:clamp(24px,4vw,44px);
-  width:100vw;margin-inline:calc(50% - 50vw);
+  margin-top:clamp(14px,2vw,24px);
+  padding-block:clamp(10px,1.6vw,20px);
+  /* already full-bleed: .stage sits directly in <main>, outside .wrap.
+     A 100vw full-bleed hack here would overflow by the scrollbar width. */
   overflow:hidden;
 }
 /* light bloom behind the rail */
@@ -268,10 +269,9 @@ main,header,footer{position:relative;z-index:1}
 
 /* ---------- form ---------- */
 .form-shell{
-  max-width:560px;margin:clamp(30px,4.5vw,44px) auto 0;
+  max-width:560px;margin:clamp(20px,2.8vw,30px) auto 0;
 }
 .club-form{display:flex;flex-direction:column;gap:11px}
-.row-2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .field{position:relative}
 .field input{
   width:100%;padding:15px 17px;
@@ -333,8 +333,8 @@ main,header,footer{position:relative;z-index:1}
 /* ---------- trust strip ---------- */
 .strip{
   display:flex;flex-wrap:wrap;justify-content:center;gap:10px 30px;
-  margin-top:clamp(30px,4vw,44px);
-  padding-top:26px;border-top:1px solid var(--hair);
+  margin-top:clamp(8px,1.4vw,16px);
+  padding-top:24px;border-top:1px solid var(--hair);
 }
 .strip span{
   font-size:11.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;
@@ -460,7 +460,6 @@ footer{border-top:1px solid var(--hair);padding-block:40px 56px;margin-top:20px}
   .ladder .rung:last-child{border-bottom:none}
 }
 @media (max-width:560px){
-  .row-2{grid-template-columns:1fr}
   .rewards{grid-template-columns:1fr 1fr}
   .topbar .right .ghost-link{display:none}
   .foot-top{justify-content:center;text-align:center}
@@ -497,23 +496,17 @@ footer{border-top:1px solid var(--hair);padding-block:40px 56px;margin-top:20px}
     <h1>MyFunded&nbsp;Club</h1>
 
     <p class="sub">
-      <strong>1,000 founding members.</strong> Everyone else needs an invite from one of them.
-      Get on the list before the doors open — and <span class="hl">your welcome pack is reserved.</span>
+      <strong>1,000 traders are already members.</strong> Everyone else needs an invite from one
+      of them. Get on the list — and <span class="hl">your welcome pack is reserved.</span>
     </p>
 
     <div class="form-shell" id="join">
       <div class="form-slot">
         <form class="club-form" novalidate>
-          <div class="row-2">
             <div class="field">
-              <input name="firstname" type="text" autocomplete="given-name"
-                     aria-label="First name" placeholder="First name" required>
+              <input name="fullname" type="text" autocomplete="name"
+                     aria-label="Full name" placeholder="Full name" required>
             </div>
-            <div class="field">
-              <input name="lastname" type="text" autocomplete="family-name"
-                     aria-label="Last name" placeholder="Last name" required>
-            </div>
-          </div>
           <div class="field">
             <input name="email" type="email" autocomplete="email" inputmode="email"
                    aria-label="Email address" placeholder="Email address" required>
@@ -523,20 +516,13 @@ footer{border-top:1px solid var(--hair);padding-block:40px 56px;margin-top:20px}
         </form>
 
         <p class="form-note">
-          Free to join — no purchase necessary. 18+. Founding member packs open 18 August 2026.
+          Free to join — no purchase necessary. 18+. Welcome packs open 18 August 2026.
           <br>
           <a href="https://myfundedfutures.com/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>
           &nbsp;·&nbsp;
           <a href="https://myfundedfutures.com/terms" target="_blank" rel="noopener">Terms</a>
         </p>
       </div>
-    </div>
-
-    <div class="strip">
-      <span>Free to join</span>
-      <span>No purchase necessary</span>
-      <span>Odds disclosed on every pack</span>
-      <span>Leave any time</span>
     </div>
   </section>
 
@@ -584,6 +570,15 @@ footer{border-top:1px solid var(--hair);padding-block:40px 56px;margin-top:20px}
       </div>
     </div>
     <p class="stage-caption">Every pack shows its contents and odds before you spend a single point.</p>
+  </section>
+
+  <section class="wrap strip-wrap">
+    <div class="strip">
+      <span>Free to join</span>
+      <span>No purchase necessary</span>
+      <span>Odds disclosed on every pack</span>
+      <span>Leave any time</span>
+    </div>
   </section>
 
   <!-- ============ HOW IT WORKS ============ -->
@@ -674,24 +669,18 @@ footer{border-top:1px solid var(--hair);padding-block:40px 56px;margin-top:20px}
   <!-- ============ CLOSER ============ -->
   <section class="section wrap">
     <div class="closer rv">
-      <span class="eyebrow"><span class="dot"></span>1,000 founding spots</span>
+      <span class="eyebrow"><span class="dot"></span>Invite only</span>
       <h2 style="margin-top:20px">Get in before the invites&nbsp;run&nbsp;out</h2>
       <p class="lede" style="margin:0 auto 6px;text-align:center">
-        Founding members get their welcome pack reserved and two invites a day to hand out.
-        After that, the only way in is through someone who's already inside.
+        Members get two invites a day to hand out. Get on the list now and your welcome
+        pack is reserved — otherwise the only way in is through someone already inside.
       </p>
       <div class="form-shell">
         <div class="form-slot">
           <form class="club-form" novalidate>
-            <div class="row-2">
-              <div class="field">
-                <input name="firstname" type="text" autocomplete="given-name"
-                       aria-label="First name" placeholder="First name" required>
-              </div>
-              <div class="field">
-                <input name="lastname" type="text" autocomplete="family-name"
-                       aria-label="Last name" placeholder="Last name" required>
-              </div>
+            <div class="field">
+              <input name="fullname" type="text" autocomplete="name"
+                     aria-label="Full name" placeholder="Full name" required>
             </div>
             <div class="field">
               <input name="email" type="email" autocomplete="email" inputmode="email"
@@ -765,7 +754,7 @@ footer{border-top:1px solid var(--hair);padding-block:40px 56px;margin-top:20px}
         '<div class="success">' +
           '<div class="tick">&#10003;</div>' +
           '<h3>You\'re on the list</h3>' +
-          '<p>Your founding-member spot is held and your welcome pack is reserved. ' +
+          '<p>Your spot is held and your welcome pack is reserved. ' +
           'Watch your inbox — we\'ll send your invite the moment the doors open.</p>' +
         '</div>';
       if (window.dataLayer) {
@@ -777,11 +766,19 @@ footer{border-top:1px solid var(--hair);padding-block:40px 56px;margin-top:20px}
       e.preventDefault();
       errBox.textContent = "";
 
-      var first = form.firstname, last = form.lastname, mail = form.email;
-      [first, last, mail].forEach(function (f) { f.removeAttribute("aria-invalid"); });
+      var name = form.fullname, mail = form.email;
+      [name, mail].forEach(function (f) { f.removeAttribute("aria-invalid"); });
 
-      if (!first.value.trim()) return fail("Please enter your first name.", first);
-      if (!last.value.trim())  return fail("Please enter your last name.", last);
+      // One visible field, but HubSpot requires firstname AND lastname and
+      // rejects a blank one — so split on the last space.
+      var parts = name.value.trim().replace(/\s+/g, " ").split(" ");
+      if (!parts[0]) return fail("Please enter your name.", name);
+      if (parts.length < 2)
+        return fail("Please enter your first and last name.", name);
+
+      var lastName  = parts.pop();
+      var firstName = parts.join(" ");
+
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail.value.trim()))
         return fail("Please enter a valid email address.", mail);
 
@@ -790,9 +787,9 @@ footer{border-top:1px solid var(--hair);padding-block:40px 56px;margin-top:20px}
 
       var payload = {
         fields: [
-          { objectTypeId: "0-1", name: "firstname", value: first.value.trim() },
-          { objectTypeId: "0-1", name: "lastname",  value: last.value.trim()  },
-          { objectTypeId: "0-1", name: "email",     value: mail.value.trim()  }
+          { objectTypeId: "0-1", name: "firstname", value: firstName },
+          { objectTypeId: "0-1", name: "lastname",  value: lastName  },
+          { objectTypeId: "0-1", name: "email",     value: mail.value.trim() }
         ],
         context: {
           pageUri:  window.location.href,
