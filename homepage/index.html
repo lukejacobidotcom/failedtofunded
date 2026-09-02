@@ -158,11 +158,11 @@ ul{margin:0;padding:0;list-style:none}
 
 /* ---------- header ---------- */
 .hdr{position:sticky;top:0;z-index:60;background:rgba(2,4,14,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.hdr-in{display:flex;align-items:center;gap:22px;min-height:84px}
+.hdr-in{display:flex;align-items:center;gap:16px;min-height:84px}
 .hdr-logo{display:flex;align-items:center;height:38px;flex:none}
 .hdr-logo svg{height:100%;width:auto}
 .nav{display:flex;align-items:center;gap:26px;margin-inline:auto}
-.nav a,.nav button{display:flex;align-items:center;gap:6px;font-weight:700;font-size:15px;color:var(--fg);transition:color .16s}
+.nav a,.nav button{display:flex;align-items:center;gap:6px;font-weight:700;font-size:15px;color:var(--fg);transition:color .16s;white-space:nowrap}
 .nav a:hover,.nav button:hover{color:var(--blue)}
 .nav .chev{width:16px;height:16px;opacity:.85}
 /* Nav stays MFFU white like its siblings. The dot is the only green,
@@ -180,6 +180,50 @@ ul{margin:0;padding:0;list-style:none}
 .hdr-act .lgn:hover{color:var(--blue)}
 @media(max-width:1080px){.nav{display:none}.hdr-in{min-height:70px;justify-content:space-between}}
 @media(max-width:520px){.hdr-act .lgn{display:none}.hdr-logo{height:30px}}
+
+
+/* ---------- market switch (header) ----------------------------------------
+   A link that looks and behaves like a physical toggle. The raised gold knob
+   on Futures says "you are here"; the Perps side carries the live cube, a
+   ticker and an arrow, so it reads as a destination, not a readout. */
+.msw{
+  display:inline-flex;align-items:center;height:40px;padding:3px;border-radius:999px;flex:none;
+  border:1px solid rgba(47,190,126,.36);background:rgba(4,9,8,.92);color:#fff;position:relative;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 0 1px rgba(0,0,0,.45),0 0 22px -8px rgba(47,190,126,.55);
+  animation:mswPulse 3s ease-in-out infinite;transition:border-color .2s,box-shadow .2s
+}
+.msw:hover{border-color:rgba(47,190,126,.66)}
+.msw:focus-visible{outline:2px solid var(--green-hi);outline-offset:3px}
+.msw-knob{
+  display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 13px 0 9px;border-radius:999px;position:relative;z-index:2;
+  background:linear-gradient(180deg,rgba(216,174,94,.3),rgba(216,174,94,.12));border:1px solid rgba(216,174,94,.6);
+  box-shadow:0 2px 6px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.2);
+  font-weight:700;font-size:13px;color:#fff;white-space:nowrap;
+  transition:transform .42s cubic-bezier(.2,.8,.2,1)
+}
+.msw-knob svg{width:14px;height:17px;flex:none}
+.msw-side{display:inline-flex;align-items:center;gap:8px;padding:0 11px 0 9px;font-weight:600;font-size:13px;color:#BFE9D2;white-space:nowrap;transition:color .2s,opacity .3s}
+.msw:hover .msw-side{color:#fff}
+.msw .vid{width:26px;height:26px;border-radius:50%;overflow:hidden;position:relative;flex:none}
+.msw .vid video{display:block;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;transform:scale(1.35)}
+.msw-tick{overflow:hidden;width:130px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.msw-tick-in{display:flex;gap:16px;white-space:nowrap;width:max-content;animation:mswTick 16s linear infinite;font-family:var(--f-mono);font-size:10.5px;font-weight:500;color:#9FE3BA}
+.msw-tick-in b{color:#fff;font-weight:600}
+.msw-tick-in i{font-style:normal;font-variant-numeric:tabular-nums}
+.msw-tick-in u{text-decoration:none;color:var(--green-hi)}
+.msw-arrow{width:16px;height:16px;color:var(--green-hi);flex:none;margin-left:1px;transition:transform .2s}
+.msw:hover .msw-arrow{transform:translateX(3px)}
+.msw:hover .msw-knob{transform:translateX(5px)}
+.msw.go .msw-side{opacity:.3}
+@keyframes mswPulse{0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 0 1px rgba(0,0,0,.45),0 0 22px -8px rgba(47,190,126,.5)}50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 0 1px rgba(0,0,0,.45),0 0 0 4px rgba(47,190,126,.1),0 0 30px -4px rgba(47,190,126,.85)}}
+@keyframes mswTick{to{transform:translateX(-50%)}}
+@media(max-width:1249px){.msw-tick{display:none}}
+@media(max-width:1080px){.msw{margin-left:auto}}
+@media(max-width:520px){.msw-lbl{display:none}.msw-knob{padding:0 9px}.msw-side{padding:0 9px 0 6px;gap:6px}}
+/* logo: wordmark on desktop, shield alone on small phones so the switch fits */
+.hdr-logo .sh{display:none;height:100%;width:auto}
+@media(max-width:520px){.hdr-logo .wm{display:none}.hdr-logo .sh{display:block}.hdr-logo{height:34px}}
+@media(prefers-reduced-motion:reduce){.msw,.msw-tick-in{animation:none !important}}
 
 /* ---------- footer ---------- */
 .ftr{border-top:1px solid var(--line);background:var(--ink-2);margin-top:0}
@@ -275,8 +319,26 @@ ul{margin:0;padding:0;list-style:none}
 <header class="hdr">
   <div class="wrap hdr-in">
     <a class="hdr-logo" href="/" aria-label="My Funded Futures home">
-      <svg viewBox="0 0 638 112" role="img" aria-label="My Funded Futures"><use href="#wm-mffu"></use></svg>
+      <svg viewBox="0 0 638 112" class="wm" role="img" aria-label="My Funded Futures"><use href="#wm-mffu"></use></svg>
+      <svg viewBox="0 0 92 112" class="sh" aria-hidden="true"><use href="#sh-mffu"></use></svg>
     </a>
+
+    <!-- Market switch. A link styled as a physical toggle: the raised knob sits on
+         Futures (you are here); the Perps side is the destination. Click slides the
+         knob across, then navigates to the Perps site. -->
+    <a class="msw" href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=header-switch" data-cta="header-switch" aria-label="Switch to MyFundedPerps, trade crypto and stocks">
+      <span class="msw-knob"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg><span class="msw-lbl">Futures</span></span>
+      <span class="msw-side">
+        <span class="vid" aria-hidden="true"><video autoplay muted loop playsinline preload="auto" disablepictureinpicture><source src="https://cube.fundingperpetuals.com/cube-512-30-v1.webm" type="video/webm"></video></span>
+        <span class="msw-lbl">Perps</span>
+        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
+          <span><b>BTC</b> <i id="msw-btc">77,722</i> <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
+          <span><b>BTC</b> 77,722 <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
+        </span></span>
+        <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+      </span>
+    </a>
+
     <nav class="nav" aria-label="Primary">
       <button type="button" aria-expanded="false">About us
         <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg>
@@ -284,7 +346,6 @@ ul{margin:0;padding:0;list-style:none}
       <button type="button" aria-expanded="false">How it works
         <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg>
       </button>
-      <a class="nav-perps" href="/perpslander" data-cta="nav-perps"><span class="dot" aria-hidden="true"></span>Perps<span class="tag-new">NEW</span></a>
       <button type="button" aria-expanded="false">More
         <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg>
       </button>
@@ -295,6 +356,29 @@ ul{margin:0;padding:0;list-style:none}
     </div>
   </div>
 </header>
+<script>
+(function(){
+  var sw=document.querySelector('.msw'); if(!sw) return;
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* slide the knob across, then leave for the Perps site */
+  sw.addEventListener('click',function(e){
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return;   /* let new-tab gestures through */
+    if(reduce||sw.classList.contains('go')) return;
+    e.preventDefault();
+    var knob=sw.querySelector('.msw-knob');
+    var travel=sw.clientWidth-knob.offsetWidth-knob.offsetLeft-4;
+    knob.style.transform='translateX('+travel+'px)';
+    sw.classList.add('go');
+    setTimeout(function(){ window.location.href=sw.href; },420);
+  });
+  /* hold the cube on a frame if the visitor prefers reduced motion */
+  var v=sw.querySelector('video');
+  if(reduce&&v){ v.removeAttribute('autoplay'); v.pause(); try{v.currentTime=0.9;}catch(err){} }
+  /* a gentle BTC tick so the ticker feels alive */
+  var btc=document.getElementById('msw-btc');
+  if(btc&&!reduce){ var base=77722; setInterval(function(){ var n=base+Math.sin(Date.now()/2600)*34+(Math.random()-.5)*12; btc.textContent=Math.round(n).toLocaleString('en-US'); },1500); }
+})();
+</script>
 
 <main id="top">
 <style>
