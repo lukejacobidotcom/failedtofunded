@@ -183,43 +183,55 @@ ul{margin:0;padding:0;list-style:none}
 
 
 /* ---------- market switch (header) ----------------------------------------
-   A link that looks and behaves like a physical toggle. The raised gold knob
-   on Futures says "you are here"; the Perps side carries the live cube, a
-   ticker and an arrow, so it reads as a destination, not a readout. */
+   Reads as a physical toggle: a recessed track, a raised gold knob parked on
+   Futures (you are here), and a Perps position the knob visibly has room to
+   slide into. The Perps side carries the live cube with the label stacked over
+   a ticker, so the extra height earns its keep. Hover previews the slide;
+   click completes it, then leaves for the Perps site. */
 .msw{
-  display:inline-flex;align-items:center;height:40px;padding:3px;border-radius:999px;flex:none;
-  border:1px solid rgba(47,190,126,.36);background:rgba(4,9,8,.92);color:#fff;position:relative;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 0 1px rgba(0,0,0,.45),0 0 22px -8px rgba(47,190,126,.55);
-  animation:mswPulse 3s ease-in-out infinite;transition:border-color .2s,box-shadow .2s
+  display:inline-flex;align-items:center;gap:4px;height:52px;padding:4px;border-radius:999px;flex:none;
+  border:1px solid rgba(47,190,126,.34);background:#04090A;color:#fff;position:relative;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 24px -8px rgba(47,190,126,.5);
+  animation:mswPulse 3s ease-in-out infinite;transition:border-color .2s
 }
-.msw:hover{border-color:rgba(47,190,126,.66)}
+.msw:hover{border-color:rgba(47,190,126,.7)}
 .msw:focus-visible{outline:2px solid var(--green-hi);outline-offset:3px}
 .msw-knob{
-  display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 13px 0 9px;border-radius:999px;position:relative;z-index:2;
-  background:linear-gradient(180deg,rgba(216,174,94,.3),rgba(216,174,94,.12));border:1px solid rgba(216,174,94,.6);
-  box-shadow:0 2px 6px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.2);
-  font-weight:700;font-size:13px;color:#fff;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px 0 12px;border-radius:999px;position:relative;z-index:2;
+  background:linear-gradient(180deg,rgba(216,174,94,.34),rgba(216,174,94,.14));border:1px solid rgba(216,174,94,.65);
+  box-shadow:0 3px 8px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.12) inset,0 -1px 0 rgba(0,0,0,.35) inset;
+  font-weight:700;font-size:14px;color:#fff;white-space:nowrap;
   transition:transform .42s cubic-bezier(.2,.8,.2,1)
 }
-.msw-knob svg{width:14px;height:17px;flex:none}
-.msw-side{display:inline-flex;align-items:center;gap:8px;padding:0 11px 0 9px;font-weight:600;font-size:13px;color:#BFE9D2;white-space:nowrap;transition:color .2s,opacity .3s}
+.msw-knob svg{width:17px;height:21px;flex:none}
+.msw-side{
+  display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 14px 0 5px;border-radius:999px;position:relative;
+  font-weight:700;font-size:14px;color:#BFE9D2;white-space:nowrap;transition:color .2s,opacity .3s
+}
+/* the empty seat: shows on hover, so the knob visibly has somewhere to go */
+.msw-side::before{content:"";position:absolute;inset:0;border-radius:999px;border:1px dashed rgba(47,190,126,.45);background:rgba(47,190,126,.05);opacity:0;transition:opacity .2s}
+.msw:hover .msw-side::before{opacity:1}
 .msw:hover .msw-side{color:#fff}
-.msw .vid{width:26px;height:26px;border-radius:50%;overflow:hidden;position:relative;flex:none}
-.msw .vid video{display:block;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;transform:scale(1.35)}
-.msw-tick{overflow:hidden;width:130px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
-.msw-tick-in{display:flex;gap:16px;white-space:nowrap;width:max-content;animation:mswTick 16s linear infinite;font-family:var(--f-mono);font-size:10.5px;font-weight:500;color:#9FE3BA}
+.msw .vid{width:40px;height:40px;border-radius:50%;overflow:hidden;position:relative;flex:none;z-index:1}
+.msw .vid video{display:block;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;transform:scale(1.32)}
+.msw-col{display:flex;flex-direction:column;justify-content:center;line-height:1.1;position:relative;z-index:1}
+.msw-tick{overflow:hidden;width:126px;margin-top:3px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.msw-tick-in{display:flex;gap:14px;white-space:nowrap;width:max-content;animation:mswTick 16s linear infinite;font-family:var(--f-mono);font-size:10px;font-weight:500;color:#9FE3BA}
 .msw-tick-in b{color:#fff;font-weight:600}
 .msw-tick-in i{font-style:normal;font-variant-numeric:tabular-nums}
 .msw-tick-in u{text-decoration:none;color:var(--green-hi)}
-.msw-arrow{width:16px;height:16px;color:var(--green-hi);flex:none;margin-left:1px;transition:transform .2s}
+.msw-arrow{width:18px;height:18px;color:var(--green-hi);flex:none;position:relative;z-index:1;transition:transform .2s}
 .msw:hover .msw-arrow{transform:translateX(3px)}
-.msw:hover .msw-knob{transform:translateX(5px)}
+.msw:hover .msw-knob{transform:translateX(10px)}
 .msw.go .msw-side{opacity:.3}
-@keyframes mswPulse{0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 0 1px rgba(0,0,0,.45),0 0 22px -8px rgba(47,190,126,.5)}50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 0 1px rgba(0,0,0,.45),0 0 0 4px rgba(47,190,126,.1),0 0 30px -4px rgba(47,190,126,.85)}}
+@keyframes mswPulse{0%,100%{box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 24px -8px rgba(47,190,126,.45)}50%{box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(47,190,126,.1),0 0 32px -4px rgba(47,190,126,.85)}}
 @keyframes mswTick{to{transform:translateX(-50%)}}
-@media(max-width:1249px){.msw-tick{display:none}}
+@media(max-width:1189px){.msw-tick{display:none}}
 @media(max-width:1080px){.msw{margin-left:auto}}
-@media(max-width:520px){.msw-lbl{display:none}.msw-knob{padding:0 9px}.msw-side{padding:0 9px 0 6px;gap:6px}}
+@media(max-width:520px){
+  .msw{height:46px;padding:3px}.msw-knob{height:38px;padding:0 10px}.msw-side{height:38px;padding:0 10px 0 4px;gap:6px}
+  .msw-lbl{display:none}.msw .vid{width:34px;height:34px}
+}
 /* logo: wordmark on desktop, shield alone on small phones so the switch fits */
 .hdr-logo .sh{display:none;height:100%;width:auto}
 @media(max-width:520px){.hdr-logo .wm{display:none}.hdr-logo .sh{display:block}.hdr-logo{height:34px}}
@@ -330,11 +342,11 @@ ul{margin:0;padding:0;list-style:none}
       <span class="msw-knob"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg><span class="msw-lbl">Futures</span></span>
       <span class="msw-side">
         <span class="vid" aria-hidden="true"><video autoplay muted loop playsinline preload="auto" disablepictureinpicture><source src="https://cube.fundingperpetuals.com/cube-512-30-v1.webm" type="video/webm"></video></span>
-        <span class="msw-lbl">Perps</span>
+        <span class="msw-col"><span class="msw-lbl">Perps</span>
         <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
           <span><b>BTC</b> <i id="msw-btc">77,722</i> <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
           <span><b>BTC</b> 77,722 <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-        </span></span>
+        </span></span></span>
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
       </span>
     </a>
