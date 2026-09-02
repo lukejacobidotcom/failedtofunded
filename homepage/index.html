@@ -208,9 +208,9 @@ ul{margin:0;padding:0;list-style:none}
   display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 14px 0 5px;border-radius:999px;position:relative;
   font-weight:700;font-size:14px;color:#BFE9D2;white-space:nowrap;transition:color .2s,opacity .3s
 }
-/* the empty seat: shows on hover, so the knob visibly has somewhere to go */
-.msw-side::before{content:"";position:absolute;inset:0;border-radius:999px;border:1px dashed rgba(47,190,126,.45);background:rgba(47,190,126,.05);opacity:0;transition:opacity .2s}
-.msw:hover .msw-side::before{opacity:1}
+/* the empty seat: always outlined, so the knob visibly has somewhere to go; hover brightens it */
+.msw-side::before{content:"";position:absolute;inset:0;border-radius:999px;border:1px dashed rgba(47,190,126,.5);background:rgba(47,190,126,.05);transition:border-color .2s,background .2s}
+.msw:hover .msw-side::before{border-color:rgba(47,190,126,.85);background:rgba(47,190,126,.1)}
 .msw:hover .msw-side{color:#fff}
 .msw .vid{width:40px;height:40px;border-radius:50%;overflow:hidden;position:relative;flex:none;z-index:1}
 .msw .vid video{display:block;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;transform:scale(1.32)}
