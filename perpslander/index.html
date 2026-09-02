@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyFundedPerps | My Funded Futures</title>
+<meta name="description" content="MyFundedPerps is a new prop firm from the team behind My Funded Futures. Trade perpetuals on digital assets with up to $500K in simulated capital and keep up to 90% of profits.">
+<link rel="canonical" href="https://failedtofunded.com/perpslander">
+<meta name="theme-color" content="#02040E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="My Funded Futures">
+<meta property="og:title" content="Trade perpetuals with up to $500K | MyFundedPerps">
+<meta property="og:description" content="MyFundedPerps is a new prop firm from the team behind My Funded Futures. Trade perpetuals on digital assets with up to $500K in simulated capital and keep up to 90% of profits.">
+<meta property="og:url" content="https://failedtofunded.com/perpslander">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@MyFundedFutures">
+<meta name="twitter:title" content="Trade perpetuals with up to $500K | MyFundedPerps">
+<meta name="twitter:description" content="MyFundedPerps is a new prop firm from the team behind My Funded Futures. Trade perpetuals on digital assets with up to $500K in simulated capital and keep up to 90% of profits.">
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* ============================================================
+   MyFundedFutures x MyFundedPerps
+   Tokens pulled live from production 2026-09-01.
+   MFFU  : Lexend  · #02040E ground · gold #D8AE5E · blue #3A82F7
+   PERPS : Geist   · #0A0C10 ground · green #34C759
+   Single-theme by design: MFFU ships dark only.
+   ============================================================ */
+:root{
+  /* --- MFFU ground + neutrals (hue-biased toward the blue) --- */
+  --ink:#02040E;
+  --ink-2:#070913;
+  --ink-3:#0F172A;
+  --card:#101320;
+  --card-2:#1A1C24;
+  --line:rgba(255,255,255,.08);
+  --line-2:rgba(255,255,255,.14);
+  --fg:#FFFFFF;
+  --fg-2:#B9C0CE;
+  --fg-3:#8A93A6;
+  --fg-4:#5D6679;
+
+  /* --- MFFU accents --- */
+  --gold:#D8AE5E;
+  --gold-lt:#F2CB80;
+  --gold-dp:#DEB25F;
+  --blue:#3A82F7;
+  --blue-2:#2563EB;
+  --blue-3:#1D4ED8;
+  --blue-4:#1E40AF;
+  --grad-cta:linear-gradient(90deg,#D8AE5E,#3A82F7);
+  --grad-cta-r:linear-gradient(90deg,#3A82F7,#D8AE5E);
+
+  /* --- PERPS channel ---------------------------------------------------
+     The ground NEVER leaves the MFFU navy family: Perps zones only lift it.
+     Green is a signal, not a theme. Saturation is rationed by surface area:
+       large  -> gold->green gradient, or navy + green edge/glow <=15%
+       medium -> --green-fill (deepened emerald, sits with the gold)
+       small  -> --green (true brand green: logo crown, dots, ticks)
+     -------------------------------------------------------------------- */
+  --void:#04070F;
+  --void-2:#070B16;
+  --green:#34C759;        /* brand mark + small marks only */
+  --green-fill:#22A55C;   /* solid fills at card scale */
+  --green-hi:#4FD98A;     /* text + hover on dark, cooled toward the blue */
+  --green-dp:#178A4A;
+  --green-line:rgba(47,190,126,.32);
+  --green-glow:rgba(47,190,126,.13);
+  --grad-perps:linear-gradient(90deg,#D8AE5E,#2FBE7E);
+  --grad-perps-r:linear-gradient(90deg,#2FBE7E,#D8AE5E);
+
+  /* --- type --- */
+  --f-mffu:'Lexend',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-perps:'Geist','Lexend',system-ui,-apple-system,sans-serif;
+  --f-mono:'Geist Mono','SF Mono',ui-monospace,Menlo,monospace;
+
+  --wrap:1216px;
+  --r:12px;
+  --r-lg:20px;
+  --r-xl:28px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--fg);
+  font-family:var(--f-mffu);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+h1,h2,h3,h4{margin:0;font-weight:700;text-wrap:balance;line-height:1.12}
+p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:6px}
+.perps :focus-visible,.perps-zone :focus-visible{outline-color:var(--green)}
+
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:24px}
+/* Any class combined with .wrap that sets a margin shorthand would reset the
+   inline margins and de-centre the container, so pin them back. */
+.wrap{margin-left:auto;margin-right:auto}
+@media(max-width:640px){.wrap{padding-inline:18px}}
+
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ---------- shared type scale ---------- */
+.eyebrow{
+  font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--fg-3);
+}
+.h-sec{font-size:clamp(30px,4.4vw,48px);letter-spacing:-.02em}
+.h-sub{font-size:clamp(15px,1.6vw,18px);color:var(--fg-2);font-weight:400;line-height:1.6;max-width:62ch}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:13px 26px;border-radius:var(--r);font-weight:600;font-size:15px;
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;
+  white-space:nowrap;border:1px solid transparent;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-mffu{background:var(--grad-cta);color:#1C1C1C}
+.btn-mffu:hover{box-shadow:0 10px 30px -10px rgba(216,174,94,.5)}
+.btn-ghost{border-color:var(--line-2);color:var(--fg)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04)}
+/* Every Perps CTA is solid MFFU gold, the same fill their pricing cards
+   already use. Green never carries a large surface: the two colors have
+   separate jobs, green says whose product this is, gold says you get paid. */
+.btn-green{background:var(--gold-lt);color:#241B08}
+.btn-green:hover{background:#FFF0CE;box-shadow:0 12px 32px -12px rgba(242,203,128,.5)}
+.btn-green-ghost{border-color:var(--line-2);color:#E3E8EE;background:rgba(255,255,255,.035)}
+.btn-green-ghost:hover{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.075);color:#fff}
+.btn-lg{padding:15px 30px;font-size:16px}
+
+/* ---------- brand marks ---------- */
+.mark{height:1em;width:auto;flex:none}
+
+/* ---------- challenge tier faces (shared by the homepage unit and the
+   landing page, so they must live above both) ---------- */
+.f-silver{background:linear-gradient(115deg,#F1F2F4 0%,#D3D5D9 46%,#AFB2B9 100%)}
+.f-green{background:linear-gradient(115deg,#4FD98A 0%,#22A55C 48%,#116534 100%)}
+.f-gold{background:linear-gradient(115deg,#F2DCA9 0%,#D8AE5E 48%,#A9762A 100%)}
+.f-graphite{background:linear-gradient(115deg,#4E535A 0%,#2E323A 48%,#171A1F 100%)}
+
+/* Display numerals: Geist, not Geist Mono. Monospace gives the comma a full
+   character advance, which reads as "$200 , 000". Mono stays on tickers,
+   labels and the order book, where columns align and there are no commas. */
+.num{font-family:var(--f-perps);font-variant-numeric:tabular-nums;letter-spacing:-.025em}
+
+/* ---------- header ---------- */
+.hdr{position:sticky;top:0;z-index:60;background:rgba(2,4,14,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hdr-in{display:flex;align-items:center;gap:22px;min-height:84px}
+.hdr-logo{display:flex;align-items:center;height:38px;flex:none}
+.hdr-logo svg{height:100%;width:auto}
+.nav{display:flex;align-items:center;gap:26px;margin-inline:auto}
+.nav a,.nav button{display:flex;align-items:center;gap:6px;font-weight:700;font-size:15px;color:var(--fg);transition:color .16s}
+.nav a:hover,.nav button:hover{color:var(--blue)}
+.nav .chev{width:16px;height:16px;opacity:.85}
+/* Nav stays MFFU white like its siblings. The dot is the only green,
+   which is exactly the amount a "new product" cue needs. */
+.nav-perps{display:flex;align-items:center;gap:7px}
+.nav-perps:hover{color:var(--green-hi) !important}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(47,190,126,.18);flex:none}
+.tag-new{
+  font-size:9.5px;font-weight:700;letter-spacing:.1em;padding:2.5px 6px;border-radius:5px;
+  background:rgba(47,190,126,.13);color:var(--green-hi);border:1px solid rgba(47,190,126,.26);
+  font-family:var(--f-mono);
+}
+.hdr-act{display:flex;align-items:center;gap:14px;flex:none}
+.hdr-act .lgn{font-weight:600;padding:10px 12px}
+.hdr-act .lgn:hover{color:var(--blue)}
+@media(max-width:1080px){.nav{display:none}.hdr-in{min-height:70px;justify-content:space-between}}
+@media(max-width:520px){.hdr-act .lgn{display:none}.hdr-logo{height:30px}}
+
+/* ---------- footer ---------- */
+.ftr{border-top:1px solid var(--line);background:var(--ink-2);margin-top:0}
+.ftr-grid{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:44px 30px;padding:64px 0 44px}
+.ftr h4{font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--fg-3);margin-bottom:16px}
+.ftr li+li{margin-top:11px}
+.ftr li a{font-size:14px;color:var(--fg-2);transition:color .15s}
+.ftr li a:hover{color:var(--fg)}
+.ftr-brand svg{height:34px;width:auto;margin-bottom:18px}
+.ftr-soc{display:flex;gap:11px;margin-top:20px}
+.ftr-soc a{
+  width:36px;height:36px;border-radius:9px;border:1px solid var(--line);
+  display:grid;place-items:center;color:var(--fg-3);transition:.16s
+}
+.ftr-soc a:hover{color:var(--fg);border-color:var(--line-2);background:rgba(255,255,255,.05)}
+.ftr-soc svg{width:16px;height:16px}
+.ftr-legal{border-top:1px solid var(--line);padding:26px 0 40px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.ftr-legal p{font-size:12.5px;color:var(--fg-4);line-height:1.7;max-width:78ch}
+@media(max-width:900px){.ftr-grid{grid-template-columns:1fr 1fr;gap:36px 24px}.ftr-brand{grid-column:1/-1}}
+@media(max-width:520px){.ftr-grid{grid-template-columns:1fr}}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+<style>
+/* ============================================================
+   Bitcoin cube: the actual MyFundedPerps hero render
+   (cube-512-30-v1.webm, 512x512, 12s loop).
+   The source is matted on pure black, so mix-blend-mode:screen
+   drops the matte and composites the glass and coin straight
+   onto our navy ground. No alpha channel required.
+   ============================================================ */
+.blkw{position:relative;flex:none;line-height:0;isolation:isolate}
+.blkw .glow{
+  position:absolute;left:50%;top:52%;width:130%;aspect-ratio:1;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(216,174,94,.24),rgba(216,174,94,.06) 44%,transparent 68%);
+  filter:blur(16px);pointer-events:none;z-index:0
+}
+.blkw video{
+  position:relative;z-index:1;display:block;width:100%;height:100%;
+  object-fit:contain;mix-blend-mode:screen;pointer-events:none;background:transparent
+}
+</style>
+<script>
+(function(){
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var hold=function(){
+    document.querySelectorAll('.blkw video').forEach(function(v){
+      v.removeAttribute('autoplay'); v.pause(); try{v.currentTime=0.9;}catch(e){}
+    });
+  };
+  if(document.readyState!=='loading') hold(); else document.addEventListener('DOMContentLoaded',hold);
+})();
+</script>
+
+<style>
+/* ============================================================
+   MyFundedPerps landing page, hosted on the MFFU site.
+   MFFU chrome (header/footer) stays Lexend + navy.
+   Between them the Perps channel: same navy family lifted, Geist type,
+   and green rationed by surface area (see tokens in the shared head).
+   ============================================================ */
+.perps{background:var(--void);font-family:var(--f-perps);position:relative}
+.perps h1,.perps h2,.perps h3,.perps h4{font-family:var(--f-perps);letter-spacing:-.032em}
+.perps .h-sec{font-size:clamp(30px,4.4vw,50px);font-weight:600;letter-spacing:-.035em}
+.perps .h-sub{color:#A9B2BE}
+.perps .eyebrow{font-family:var(--f-mono);color:#7FD9A5;font-weight:500;letter-spacing:.16em;font-size:11px}
+.perps .sec{padding:96px 0}
+@media(max-width:700px){.perps .sec{padding:64px 0}}
+.perps .sec-hd{margin-bottom:48px}
+.perps .sec-hd.split{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:end}
+@media(max-width:820px){.perps .sec-hd.split{grid-template-columns:1fr;gap:14px}}
+
+/* ---------- hero ---------- */
+/* Hero keeps the MFFU navy ground. Green lifts it from the left, MFFU blue
+   answers from the right, and a low gold wash keeps the parent in frame. */
+.phero{position:relative;overflow:hidden;padding:78px 0 0;background:var(--ink)}
+.phero-bg{position:absolute;inset:0;pointer-events:none}
+.phero-bg::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(78% 60% at 12% -8%,rgba(47,190,126,.19),transparent 58%),
+    radial-gradient(68% 58% at 94% 16%,rgba(58,130,247,.12),transparent 60%),
+    radial-gradient(52% 46% at 58% 102%,rgba(216,174,94,.055),transparent 68%);
+}
+.phero-bg::after{
+  content:"";position:absolute;inset:0;opacity:.6;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(110% 78% at 50% 6%,#000 12%,transparent 76%);
+  mask-image:radial-gradient(110% 78% at 50% 6%,#000 12%,transparent 76%);
+}
+.phero-in{position:relative;z-index:2;display:grid;grid-template-columns:1.14fr .86fr;gap:44px;align-items:center;padding-bottom:56px}
+@media(max-width:980px){.phero-in{grid-template-columns:1fr;gap:44px}}
+.phero-wm{height:46px;width:auto;margin-bottom:20px}
+@media(max-width:560px){.phero-wm{height:34px}}
+.phero-from{display:inline-flex;align-items:center;gap:9px;font-size:13px;color:#8B94A2;margin-bottom:26px}
+.phero-from svg{height:22px;width:auto}
+.phero h1{font-size:clamp(38px,5.6vw,64px);font-weight:600;line-height:1.02;letter-spacing:-.04em}
+.phero h1 em{font-style:normal;color:var(--green-hi)}
+.phero-sub{margin-top:24px;font-size:clamp(16px,1.8vw,19px);color:#A9B2BE;line-height:1.6;max-width:48ch}
+.phero-cta{display:flex;gap:13px;margin-top:34px;flex-wrap:wrap}
+.phero-note{margin-top:18px;font-size:12.5px;color:#818A97;max-width:50ch;line-height:1.6}
+
+/* hero right: the coin block floats above and over the terminal */
+.phero-right{position:relative;padding-top:186px}
+.phero-blk{position:absolute;top:-38px;right:2px;z-index:4}
+@media(max-width:980px){.phero-right{padding-top:132px}.phero-blk{width:172px !important;height:172px !important;right:auto;left:50%;transform:translateX(-50%)}}
+@media(max-width:560px){.phero-right{padding-top:106px}.phero-blk{width:140px !important;height:140px !important}}
+
+/* stat bar */
+.pstats{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid rgba(47,190,126,.28);border-bottom:1px solid var(--line)}
+@media(max-width:760px){.pstats{grid-template-columns:1fr 1fr}}
+.pstat{padding:26px 8px 26px 0}
+.pstat+.pstat{padding-left:28px;border-left:1px solid var(--line)}
+@media(max-width:760px){.pstat{padding:20px 8px 20px 0}.pstat:nth-child(3){padding-left:0;border-left:0;border-top:1px solid var(--line)}.pstat:nth-child(4){border-top:1px solid var(--line)}}
+.pstat span{display:block;font-size:12.5px;color:#818A97;margin-bottom:7px}
+.pstat b{font-family:var(--f-perps);font-size:clamp(20px,2.6vw,27px);font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+
+/* ---------- generic perps card ---------- */
+.pcard{border:1px solid var(--line);border-radius:var(--r-lg);background:linear-gradient(170deg,rgba(255,255,255,.04),rgba(255,255,255,.012));padding:28px 26px}
+.pcard h3{font-size:19px;font-weight:600;margin-bottom:10px}
+.pcard p{font-size:14.5px;color:#A9B2BE;line-height:1.62}
+
+/* ---------- lineage (shield pair, full scale) ---------- */
+.lineage{display:grid;grid-template-columns:.94fr 1.06fr;gap:56px;align-items:center}
+@media(max-width:940px){.lineage{grid-template-columns:1fr;gap:40px}}
+.lin-stage{
+  border:1px solid var(--line);border-radius:var(--r-xl);padding:30px 26px 26px;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.008));
+}
+.lin-stage::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(70% 58% at 22% 0%,rgba(216,174,94,.13),transparent 58%),radial-gradient(70% 58% at 78% 0%,rgba(47,190,126,.14),transparent 58%)}
+.lin-row{position:relative;z-index:2;display:flex;align-items:flex-start;justify-content:center;gap:0}
+.lin-cell{display:flex;flex-direction:column;align-items:center;gap:11px;flex:1;min-width:0}
+.lin-plate{width:72px;height:72px;border-radius:19px;display:grid;place-items:center;border:1px solid var(--line-2);position:relative}
+.lin-plate svg{width:35px;height:43px}
+.lin-plate.gold{background:radial-gradient(120% 120% at 50% 0%,rgba(216,174,94,.22),rgba(216,174,94,.04));box-shadow:0 18px 44px -20px rgba(216,174,94,.6)}
+.lin-plate.green{background:radial-gradient(120% 120% at 50% 0%,rgba(47,190,126,.22),rgba(47,190,126,.04));box-shadow:0 18px 44px -20px rgba(47,190,126,.6)}
+.lin-nm{text-align:center}
+.lin-nm b{display:block;font-size:14px;font-weight:600;letter-spacing:-.015em}
+.lin-nm span{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:#818A97;margin-top:5px}
+.lin-join{flex:none;width:52px;margin-top:36px;height:1px;background:linear-gradient(90deg,rgba(216,174,94,.6),rgba(47,190,126,.6));position:relative}
+.lin-join::after{content:"";position:absolute;left:50%;top:-3px;width:7px;height:7px;border-radius:50%;background:#fff;opacity:.55;transform:translateX(-50%)}
+@media(max-width:420px){.lin-join{width:26px}.lin-plate{width:60px;height:60px;border-radius:16px}.lin-plate svg{width:29px;height:36px}}
+.lin-cap{position:relative;z-index:2;margin-top:22px;padding-top:17px;border-top:1px solid var(--line);text-align:center;font-size:14px;color:#A9B2BE;line-height:1.55}
+.lin-cap b{color:#fff;font-weight:600}
+.lin-pts{display:flex;flex-direction:column;gap:22px;margin-top:30px}
+.lin-pt{display:flex;gap:15px;align-items:flex-start}
+.lin-pt svg{width:20px;height:20px;color:#3FCE7C;flex:none;margin-top:2px}
+.lin-pt b{display:block;font-size:16px;font-weight:600;margin-bottom:5px}
+.lin-pt p{font-size:14.5px;color:#A9B2BE;line-height:1.6}
+.lin-record{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:34px;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.lin-record div{padding:20px 18px}
+.lin-record div+div{border-left:1px solid var(--line)}
+.lin-record b{display:block;font-family:var(--f-perps);font-size:24px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.lin-record span{display:block;font-size:11.5px;color:#818A97;margin-top:5px;line-height:1.4}
+
+/* ---------- markets ---------- */
+.mkt-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
+.mkt-tab{padding:9px 18px;border-radius:999px;border:1px solid var(--line-2);font-size:13.5px;font-weight:500;color:#A9B2BE;transition:.16s;background:rgba(255,255,255,.02)}
+.mkt-tab:hover{color:#fff;border-color:rgba(255,255,255,.28)}
+.mkt-tab[aria-pressed="true"]{background:var(--green-fill);color:#03150A;border-color:transparent;font-weight:600}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+.chip{
+  display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:13px;
+  padding:11px 13px;background:rgba(255,255,255,.022);transition:.18s
+}
+.chip:hover{border-color:rgba(47,190,126,.4);background:rgba(47,190,126,.07);transform:translateY(-2px)}
+.chip i{
+  width:29px;height:29px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-family:var(--f-mono);font-size:10.5px;font-weight:600;font-style:normal;color:#04140A
+}
+.chip b{font-family:var(--f-mono);font-size:12.5px;font-weight:600;letter-spacing:-.01em;display:block;line-height:1.25}
+.chip s{display:block;font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;color:#6F7885;text-decoration:none;margin-top:2px}
+.mkt-note{margin-top:22px;font-size:12.5px;color:#818A97;line-height:1.65;max-width:74ch}
+
+/* ---------- tiers ---------- */
+.tier-tabs{display:inline-flex;gap:3px;padding:4px;border-radius:999px;border:1px solid var(--line-2);background:rgba(255,255,255,.03);flex-wrap:wrap}
+.tier-tab{padding:9px 19px;border-radius:999px;font-size:13.5px;font-weight:500;color:#A9B2BE;transition:.16s;position:relative}
+.tier-tab:hover{color:#fff}
+.tier-tab[aria-pressed="true"]{background:rgba(255,255,255,.1);color:#fff;font-weight:600}
+.tier-tab s{display:block;font-size:8.5px;letter-spacing:.09em;color:#6F7885;text-decoration:none;font-family:var(--f-mono);margin-top:1px}
+.tier-tab[disabled]{opacity:.45;cursor:not-allowed}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media(max-width:1040px){.tgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.tgrid{grid-template-columns:1fr}}
+.tcell{border:1px solid var(--line);border-radius:var(--r-lg);background:rgba(255,255,255,.022);padding:15px;transition:.2s;display:flex;flex-direction:column}
+.tcell:hover{transform:translateY(-4px);border-color:var(--line-2)}
+.tcell.pick{border-color:rgba(216,174,94,.45);box-shadow:0 26px 60px -34px rgba(216,174,94,.45)}
+.tcell-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:2px 4px 13px}
+.tcell-top b{font-family:var(--f-perps);font-size:22px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.tcell-top span{font-family:var(--f-mono);font-size:11px;color:#818A97}
+.tcell-face{border-radius:13px;aspect-ratio:1/1.16;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:17px 16px}
+.tcell-face::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.3),transparent 42%);mix-blend-mode:overlay}
+.tcell-face .sz{position:relative;z-index:2;font-family:var(--f-perps);font-size:clamp(20px,2.2vw,25px);font-weight:600;letter-spacing:-.035em;line-height:1.05;font-variant-numeric:tabular-nums}
+.tcell-face .sel{position:relative;z-index:2;font-size:13px;font-weight:500;margin-top:3px;opacity:.72}
+.face-dark .sz,.face-dark .sel{color:#0B0D10}
+.face-lite .sz{color:#fff}.face-lite .sel{color:rgba(255,255,255,.8)}
+.face-grn .sz{color:var(--green-hi)}.face-grn .sel{color:rgba(255,255,255,.72)}
+.tcell-badge{position:absolute;top:13px;right:13px;z-index:3;width:26px;height:32px;opacity:.9}
+.tcell-earn{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+.tcell-earn s{text-decoration:none;font-size:11.5px;color:#818A97;line-height:1.3}
+.tcell-earn b{font-family:var(--f-perps);font-size:19px;font-weight:600;letter-spacing:-.03em;color:var(--gold-lt);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tcell-btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.tbtn{text-align:center;padding:11px;border-radius:10px;font-size:13.5px;font-weight:600;border:1px solid var(--line-2);color:#D5DBE3;transition:.16s;background:rgba(255,255,255,.03)}
+.tbtn:hover{background:rgba(255,255,255,.08);color:#fff}
+.tbtn.go{background:var(--gold-lt);color:#241B08;border-color:transparent}
+.tbtn.go:hover{background:#FFF0CE}
+.tier-fine{margin-top:24px;font-size:12.5px;color:#818A97;line-height:1.65;max-width:76ch}
+
+/* ---------- get started CTA (replaces the tier cards; pricing and
+     purchase live on the MyFundedPerps site) ---------- */
+.golive{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center;border:1px solid var(--line-2);border-radius:var(--r-xl);padding:48px 46px;position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(47,190,126,.1),rgba(255,255,255,.014) 48%,rgba(255,255,255,.01))}
+.golive::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(70% 90% at 100% 0%,rgba(58,130,247,.09),transparent 60%)}
+.golive>*{position:relative;z-index:2}
+@media(max-width:940px){.golive{grid-template-columns:1fr;gap:34px;padding:36px 26px}}
+.golive-cta{display:flex;align-items:center;gap:20px;margin-top:30px;flex-wrap:wrap}
+.golive-dom{font-family:var(--f-mono);font-size:13px;color:#9AA3AF;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:2px}
+.golive-dom:hover{color:#fff;border-color:rgba(255,255,255,.5)}
+.golive-list{display:flex;flex-direction:column;gap:20px}
+.golive-list li{display:flex;gap:14px;align-items:flex-start}
+.golive-list svg{width:19px;height:19px;color:#3FCE7C;flex:none;margin-top:2px}
+.golive-list b{display:block;font-size:15.5px;font-weight:600;margin-bottom:4px;letter-spacing:-.015em}
+.golive-list p{font-size:14px;color:#A9B2BE;line-height:1.55}
+
+/* ---------- terminal ---------- */
+.term-grid{display:grid;grid-template-columns:1.28fr .72fr;gap:20px}
+@media(max-width:940px){.term-grid{grid-template-columns:1fr}}
+.term{border:1px solid var(--line);border-radius:var(--r-lg);background:#08090C;overflow:hidden}
+.term-hd{display:flex;align-items:center;gap:16px;padding:12px 15px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.term-sym{display:flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:13px;font-weight:600}
+.term-sym i{width:19px;height:19px;border-radius:50%;background:linear-gradient(140deg,#F7931A,#B45E06);font-style:normal;display:grid;place-items:center;font-size:10px;color:#fff}
+.term-lev{font-family:var(--f-mono);font-size:10px;padding:2px 6px;border-radius:5px;background:rgba(47,190,126,.13);color:var(--green-hi);border:1px solid rgba(47,190,126,.26)}
+.term-kv{display:flex;flex-direction:column;gap:1px}
+.term-kv s{font-size:9.5px;color:#6F7885;text-decoration:none;letter-spacing:.04em}
+.term-kv b{font-family:var(--f-mono);font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
+.up{color:#3FCE7C}.down{color:#F1566B}
+.term-body{display:grid;grid-template-columns:1fr 218px}
+@media(max-width:620px){.term-body{grid-template-columns:1fr}}
+.term-chart{position:relative;padding:10px 4px 4px 10px}
+.term-chart canvas{width:100%;height:216px;display:block}
+.term-tf{display:flex;gap:3px;padding:0 0 8px 4px}
+.term-tf button{font-family:var(--f-mono);font-size:10px;padding:3px 8px;border-radius:5px;color:#6F7885}
+.term-tf button[aria-pressed="true"]{background:rgba(255,255,255,.1);color:#fff}
+.term-ob{border-left:1px solid var(--line);padding:10px 12px;font-family:var(--f-mono);font-size:10.5px}
+@media(max-width:620px){.term-ob{border-left:0;border-top:1px solid var(--line)}}
+.term-ob-h{display:flex;justify-content:space-between;color:#6F7885;font-size:9px;letter-spacing:.06em;padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.ob-r{display:flex;justify-content:space-between;padding:2.5px 0;position:relative;font-variant-numeric:tabular-nums}
+.ob-r em{position:absolute;inset:0 auto 0 0;height:100%;font-style:normal;border-radius:2px;z-index:0}
+.ob-r span{position:relative;z-index:1}
+.ob-ask em{background:rgba(241,86,107,.14)}
+.ob-bid em{background:rgba(47,190,126,.14)}
+.ob-spread{display:flex;justify-content:space-between;color:#818A97;padding:7px 0;margin:5px 0;border-block:1px solid var(--line);font-size:10px}
+.term-depth{display:flex;justify-content:space-between;font-size:9.5px;margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
+
+/* feature trio */
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+@media(max-width:880px){.trio{grid-template-columns:1fr}}
+.tro-ic{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;margin-bottom:18px;background:linear-gradient(160deg,rgba(47,190,126,.2),rgba(47,190,126,.03));border:1px solid rgba(47,190,126,.26);box-shadow:0 14px 32px -20px rgba(47,190,126,.75)}
+.tro-ic svg{width:24px;height:24px;color:var(--green-hi)}
+
+/* how it works */
+.hgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:820px){.hgrid{grid-template-columns:1fr}}
+.hstep{border:1px solid var(--line);border-radius:var(--r-lg);background:linear-gradient(170deg,rgba(255,255,255,.04),rgba(255,255,255,.01));padding:28px 26px;transition:.2s}
+.hstep:hover{border-color:rgba(47,190,126,.34);transform:translateY(-3px)}
+.hstep-n{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--green);margin-bottom:14px}
+.hstep h3{font-size:20px;font-weight:600;margin-bottom:11px}
+.hstep p{font-size:14.5px;color:#A9B2BE;line-height:1.62}
+.hstep p+p{margin-top:11px}
+
+/* Agents band. Was a full-bleed green wall, which broke the MFFU palette.
+   Now a deep navy band with a green wash rising from the floor and a lit
+   top edge. The green lives in the code syntax, where terminal green is
+   native rather than decorative. */
+.agents{position:relative;overflow:hidden;padding:88px 0 96px;text-align:center;
+  background:linear-gradient(180deg,#061019 0%,#050C14 46%,var(--void) 100%);
+  border-block:1px solid var(--line)}
+.agents::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(72% 62% at 50% 104%,rgba(47,190,126,.2),transparent 66%),
+    radial-gradient(60% 50% at 50% -6%,rgba(58,130,247,.09),transparent 62%)}
+.agents::after{content:"";position:absolute;inset:0;opacity:.42;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(90% 70% at 50% 0%,#000,transparent 72%);mask-image:radial-gradient(90% 70% at 50% 0%,#000,transparent 72%)}
+.agents-edge{position:absolute;top:0;left:22%;right:22%;height:1px;z-index:2;
+  background:linear-gradient(90deg,transparent,rgba(47,190,126,.7),transparent)}
+.agents>*{position:relative;z-index:3}
+.agents h2{font-size:clamp(29px,4.4vw,50px);font-weight:600;letter-spacing:-.035em}
+.agents .lead{margin:20px auto 0;max-width:60ch;font-size:16.5px;color:#A9B7C2;line-height:1.62}
+.code{
+  margin:40px auto 0;max-width:760px;text-align:left;border:1px solid rgba(255,255,255,.13);border-radius:var(--r-lg);
+  background:rgba(4,10,6,.72);overflow:hidden;backdrop-filter:blur(6px)
+}
+.code-hd{display:flex;align-items:center;gap:7px;padding:11px 15px;border-bottom:1px solid rgba(255,255,255,.1)}
+.code-hd u{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.2);text-decoration:none}
+.code-hd b{margin-left:8px;font-family:var(--f-mono);font-size:11px;color:#9FBFAA;font-weight:400}
+.code pre{margin:0;padding:19px 20px;overflow-x:auto;font-family:var(--f-mono);font-size:12.5px;line-height:1.75;color:#CFE6D7}
+.code .c{color:#5F8A6E}.code .k{color:#7CC5F2}.code .s{color:#9EE8B4}.code .n{color:#E8C98A}.code .f{color:#D9B8F0}
+.agent-logos{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:34px}
+.agent-logos span{font-family:var(--f-mono);font-size:11.5px;color:#A9C9B4;border:1px solid rgba(255,255,255,.14);padding:8px 15px;border-radius:999px;background:rgba(255,255,255,.04)}
+
+/* compare */
+.cmp-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-lg)}
+.cmp{width:100%;min-width:660px;border-collapse:collapse;font-size:14.5px}
+.cmp th,.cmp td{padding:17px 20px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.cmp tr:last-child th,.cmp tr:last-child td{border-bottom:0}
+.cmp thead th{font-size:12px;font-family:var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#818A97;font-weight:500;background:rgba(255,255,255,.028)}
+.cmp thead th b{display:flex;align-items:center;gap:9px;font-family:var(--f-perps);font-size:15px;letter-spacing:-.015em;text-transform:none;color:#fff;font-weight:600;margin-top:0}
+.cmp thead th svg{width:17px;height:21px;flex:none}
+.cmp tbody th{font-weight:500;color:#A9B2BE;width:23%;background:rgba(255,255,255,.014)}
+.cmp td{color:#E3E8EE}
+.cmp .cf{background:rgba(216,174,94,.045)}
+.cmp .cp{background:rgba(47,190,126,.045)}
+.cmp td b{font-weight:600;color:#fff}
+
+/* faq */
+.faq-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:52px;align-items:start}
+@media(max-width:880px){.faq-grid{grid-template-columns:1fr;gap:32px}}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{
+  list-style:none;cursor:pointer;padding:20px 0;display:flex;justify-content:space-between;gap:20px;align-items:center;
+  font-size:16.5px;font-weight:600;letter-spacing:-.015em;transition:color .16s
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:hover{color:var(--green-hi)}
+.faq summary i{flex:none;width:19px;height:19px;position:relative;font-style:normal}
+.faq summary i::before,.faq summary i::after{content:"";position:absolute;background:#8A93A6;transition:transform .2s ease,background .2s}
+.faq summary i::before{inset:9px 0 auto 0;height:1.5px}
+.faq summary i::after{inset:0 9px auto auto;width:1.5px;height:19px}
+.faq details[open] summary{color:var(--green-hi)}
+.faq details[open] summary i::after{transform:rotate(90deg)}
+.faq details[open] summary i::before,.faq details[open] summary i::after{background:var(--green-hi)}
+.faq-a{padding:0 0 22px;font-size:15px;color:#A9B2BE;line-height:1.68;max-width:66ch}
+.faq-a p+p{margin-top:12px}
+
+/* final band */
+.pband{position:relative;overflow:hidden;text-align:center;padding:96px 0 104px;border-top:1px solid var(--line)}
+.pband::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(64% 100% at 50% 108%,rgba(47,190,126,.2),transparent 64%),radial-gradient(50% 70% at 50% -10%,rgba(58,130,247,.07),transparent 60%)}
+.pband>*{position:relative;z-index:2}
+.pband svg.mk{width:58px;height:70px;margin:0 auto 28px}
+.pband h2{font-size:clamp(30px,4.6vw,52px);font-weight:600;letter-spacing:-.035em}
+.pband p{margin:20px auto 0;max-width:54ch;font-size:16.5px;color:#A9B2BE;line-height:1.6}
+.pband .row{display:flex;gap:13px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+.pband .fine{margin-top:26px;font-size:12.5px;color:#818A97;max-width:64ch;margin-inline:auto;line-height:1.65}
+
+/* legal block */
+.plegal{border-top:1px solid var(--line);background:#07080B;padding:44px 0 52px}
+.plegal h4{font-size:12px;font-family:var(--f-mono);letter-spacing:.13em;text-transform:uppercase;color:#818A97;margin-bottom:16px;font-weight:500}
+.plegal-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px 44px}
+@media(max-width:820px){.plegal-grid{grid-template-columns:1fr}}
+.plegal p{font-size:12.5px;line-height:1.72;color:#6F7885}
+.plegal p b{color:#98A1AE;font-weight:600;display:block;margin-bottom:4px}
+</style>
+
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs>
+<symbol id="sh-mffu" viewBox="28 42 92 112"><path d="M51.2 56.3476V44H58.7276V49.199H70.0189V44H77.5465V49.199H88.8378V44H96.3653V56.3476H51.2Z" fill="#3A82F7"/><path fill-rule="evenodd" clip-rule="evenodd" d="M30.099 63.2073C30.099 63.2073 29.8762 74.045 30.099 88.1987C30.1186 89.4424 30.1337 90.7064 30.149 91.9864C30.4666 118.543 30.8658 151.927 72.8883 151.927C116.936 151.927 117.565 128.81 117.565 85.0748L117.565 63.2073H30.099ZM110.265 70.5244H37.3154C37.2883 74.9567 37.289 81.1158 37.3987 88.0833C37.4176 89.2874 37.4334 90.4915 37.4492 91.6937C37.6193 104.663 37.7864 117.406 41.8895 127.429C44.0082 132.604 47.0759 136.71 51.6043 139.603C56.1834 142.529 62.8753 144.61 72.8883 144.61C83.3627 144.61 90.497 143.219 95.4292 140.971C100.13 138.828 103.125 135.779 105.227 131.605C107.451 127.19 108.793 121.268 109.508 113.315C110.22 105.384 110.265 96.0779 110.265 85.0748L110.265 70.5244Z" fill="url(#paint0_linear_2_9)"/><path d="M58.1131 106.652H44.287C44.287 106.652 44.3734 115.772 47.0522 122.659C49.731 129.545 58.1131 135.921 58.1131 135.921V106.652Z" fill="#F2CB80"/><path d="M82.5392 94.3049H65.0262V137.75H82.5392V94.3049Z" fill="url(#paint1_radial_2_9)"/><path d="M103.739 82.4146H89.4523V135.921C89.4523 135.921 103.739 132.469 103.739 114.346V82.4146Z" fill="#D8AE5E"/><defs>
+<linearGradient id="paint0_linear_2_9" x1="117.565" y1="61.4677" x2="30.5816" y2="148.161" gradientUnits="userSpaceOnUse">
+<stop stop-color="#DEB25F"/>
+<stop offset="1" stop-color="#F3CC81"/>
+</linearGradient>
+<radialGradient id="paint1_radial_2_9" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(82.5392 94.3049) rotate(111.955) scale(46.8421 18.8419)">
+<stop stop-color="#D8AE5E"/>
+<stop offset="1" stop-color="#F4CD83"/>
+</radialGradient>
+<clipPath id="clip0_2_9">
+<rect width="606" height="108" fill="white" transform="translate(30 44)"/>
+</clipPath>
+</defs></symbol>
+<symbol id="wm-mffu" viewBox="28 42 638 112"><path d="M51.2 56.3476V44H58.7276V49.199H70.0189V44H77.5465V49.199H88.8378V44H96.3653V56.3476H51.2Z" fill="#3A82F7"/><path fill-rule="evenodd" clip-rule="evenodd" d="M30.099 63.2073C30.099 63.2073 29.8762 74.045 30.099 88.1987C30.1186 89.4424 30.1337 90.7064 30.149 91.9864C30.4666 118.543 30.8658 151.927 72.8883 151.927C116.936 151.927 117.565 128.81 117.565 85.0748L117.565 63.2073H30.099ZM110.265 70.5244H37.3154C37.2883 74.9567 37.289 81.1158 37.3987 88.0833C37.4176 89.2874 37.4334 90.4915 37.4492 91.6937C37.6193 104.663 37.7864 117.406 41.8895 127.429C44.0082 132.604 47.0759 136.71 51.6043 139.603C56.1834 142.529 62.8753 144.61 72.8883 144.61C83.3627 144.61 90.497 143.219 95.4292 140.971C100.13 138.828 103.125 135.779 105.227 131.605C107.451 127.19 108.793 121.268 109.508 113.315C110.22 105.384 110.265 96.0779 110.265 85.0748L110.265 70.5244Z" fill="url(#paint0_linear_2_9)"/><path d="M58.1131 106.652H44.287C44.287 106.652 44.3734 115.772 47.0522 122.659C49.731 129.545 58.1131 135.921 58.1131 135.921V106.652Z" fill="#F2CB80"/><path d="M82.5392 94.3049H65.0262V137.75H82.5392V94.3049Z" fill="url(#paint1_radial_2_9)"/><path d="M103.739 82.4146H89.4523V135.921C89.4523 135.921 103.739 132.469 103.739 114.346V82.4146Z" fill="#D8AE5E"/><path d="M153.582 128.851H146.437V71.6373H155.391L165.068 107.099L174.745 71.6373H183.699V128.851H176.554V86.9917L168.776 116.421H161.36L153.582 87.0831V128.851Z" fill="white"/><path d="M198.86 141.463H193.433V134.883H197.142C199.734 134.883 201.302 133.878 201.845 131.867L202.749 128.12H198.317L189.092 84.2499H197.413L204.106 121.631L210.346 84.2499H218.577L209.261 133.146C207.934 138.691 204.467 141.463 198.86 141.463Z" fill="white"/><path d="M261.748 78.3092H245.287V97.1366H258.311V103.626H245.287V128.851H237.057V71.6373H261.748V78.3092Z" fill="white"/><path d="M283.276 84.2499H291.416V128.851H283.276V125.286C282.492 127.663 280.623 128.851 277.669 128.851H274.413C268.986 128.851 266.273 126.17 266.273 120.808V84.2499H274.413V119.528C274.413 120.625 274.594 121.356 274.955 121.722C275.317 122.027 276.041 122.179 277.126 122.179H280.292C281.377 122.179 282.131 121.935 282.553 121.448C283.035 120.96 283.276 120.138 283.276 118.98V84.2499Z" fill="white"/><path d="M313.144 84.2499H316.309C321.796 84.2499 324.54 86.9613 324.54 92.3841V128.851H316.4V93.5722C316.4 92.4755 316.219 91.7748 315.857 91.4701C315.495 91.1045 314.772 90.9217 313.686 90.9217H310.521C309.436 90.9217 308.652 91.1655 308.169 91.6529C307.747 92.1403 307.536 92.9629 307.536 94.1206V128.851H299.396V84.2499H307.536V87.8143C308.32 85.438 310.189 84.2499 313.144 84.2499Z" fill="white"/><path d="M348.89 67.7073H357.03V128.851H348.89V125.286C348.106 127.663 346.237 128.851 343.283 128.851H340.027C334.6 128.851 331.887 126.17 331.887 120.808V92.2927C331.887 86.8699 334.6 84.1585 340.027 84.1585H343.283C346.237 84.1585 348.106 85.3466 348.89 87.7229V67.7073ZM342.74 122.179H345.905C346.991 122.179 347.745 121.935 348.167 121.448C348.649 120.96 348.89 120.138 348.89 118.98V94.0292C348.89 92.8715 348.649 92.049 348.167 91.5615C347.745 91.0741 346.991 90.8303 345.905 90.8303H342.74C341.655 90.8303 340.931 91.0131 340.569 91.3787C340.208 91.7443 340.027 92.445 340.027 93.4808V119.528C340.027 120.625 340.208 121.356 340.569 121.722C340.931 122.027 341.655 122.179 342.74 122.179Z" fill="white"/><path d="M373.251 84.2499H382.115C387.782 84.2499 390.616 86.9613 390.616 92.3841V109.109H372.799V119.711C372.799 120.747 372.98 121.448 373.342 121.813C373.703 122.179 374.427 122.362 375.512 122.362H379.673C380.758 122.362 381.482 122.179 381.843 121.813C382.205 121.448 382.386 120.717 382.386 119.62V115.964H390.345V120.808C390.345 126.17 387.541 128.851 381.934 128.851H373.251C367.644 128.851 364.84 126.17 364.84 120.808V92.3841C364.84 86.9613 367.644 84.2499 373.251 84.2499ZM372.799 103.077H382.567V93.3894C382.567 92.3536 382.386 91.6529 382.024 91.2873C381.723 90.9217 381.029 90.7389 379.944 90.7389H375.512C374.427 90.7389 373.703 90.9217 373.342 91.2873C372.98 91.6529 372.799 92.3536 372.799 93.3894V103.077Z" fill="white"/><path d="M414.073 67.7073H422.213V128.851H414.073V125.286C413.289 127.663 411.42 128.851 408.465 128.851H405.21C399.783 128.851 397.07 126.17 397.07 120.808V92.2927C397.07 86.8699 399.783 84.1585 405.21 84.1585H408.465C411.42 84.1585 413.289 85.3466 414.073 87.7229V67.7073ZM407.923 122.179H411.088C412.174 122.179 412.927 121.935 413.349 121.448C413.832 120.96 414.073 120.138 414.073 118.98V94.0292C414.073 92.8715 413.832 92.049 413.349 91.5615C412.927 91.0741 412.174 90.8303 411.088 90.8303H407.923C406.837 90.8303 406.114 91.0131 405.752 91.3787C405.39 91.7443 405.21 92.445 405.21 93.4808V119.528C405.21 120.625 405.39 121.356 405.752 121.722C406.114 122.027 406.837 122.179 407.923 122.179Z" fill="white"/><path d="M468.69 78.3092H452.23V97.1366H465.253V103.626H452.23V128.851H443.999V71.6373H468.69V78.3092Z" fill="white"/><path d="M490.219 84.2499H498.358V128.851H490.219V125.286C489.435 127.663 487.566 128.851 484.611 128.851H481.355C475.929 128.851 473.215 126.17 473.215 120.808V84.2499H481.355V119.528C481.355 120.625 481.536 121.356 481.898 121.722C482.26 122.027 482.983 122.179 484.068 122.179H487.234C488.319 122.179 489.073 121.935 489.495 121.448C489.977 120.96 490.219 120.138 490.219 118.98V84.2499Z" fill="white"/><path d="M521.262 90.9217H515.202V119.163C515.202 120.26 515.353 120.991 515.654 121.356C516.016 121.661 516.74 121.813 517.825 121.813H521.262V128.851H515.474C509.806 128.851 506.972 126.17 506.972 120.808V90.9217H502.811V84.2499H506.972V76.6641H515.202V84.2499H521.262V90.9217Z" fill="white"/><path d="M543.036 84.2499H551.176V128.851H543.036V125.286C542.252 127.663 540.383 128.851 537.429 128.851H534.173C528.746 128.851 526.033 126.17 526.033 120.808V84.2499H534.173V119.528C534.173 120.625 534.354 121.356 534.715 121.722C535.077 122.027 535.801 122.179 536.886 122.179H540.052C541.137 122.179 541.891 121.935 542.313 121.448C542.795 120.96 543.036 120.138 543.036 118.98V84.2499Z" fill="white"/><path d="M574.441 84.1585H576.25V91.2873H572.994C569.196 91.2873 567.296 93.5417 567.296 98.0506V128.851H559.156V84.2499H567.296V89.7336C567.779 88.1494 568.623 86.8394 569.829 85.8036C571.095 84.7069 572.632 84.1585 574.441 84.1585Z" fill="white"/><path d="M588.938 84.2499H597.801C603.469 84.2499 606.303 86.9613 606.303 92.3841V109.109H588.485V119.711C588.485 120.747 588.666 121.448 589.028 121.813C589.39 122.179 590.113 122.362 591.199 122.362H595.359C596.444 122.362 597.168 122.179 597.53 121.813C597.892 121.448 598.072 120.717 598.072 119.62V115.964H606.031V120.808C606.031 126.17 603.228 128.851 597.62 128.851H588.938C583.33 128.851 580.526 126.17 580.526 120.808V92.3841C580.526 86.9613 583.33 84.2499 588.938 84.2499ZM588.485 103.077H598.253V93.3894C598.253 92.3536 598.072 91.6529 597.711 91.2873C597.409 90.9217 596.716 90.7389 595.63 90.7389H591.199C590.113 90.7389 589.39 90.9217 589.028 91.2873C588.666 91.6529 588.485 92.3536 588.485 93.3894V103.077Z" fill="white"/><path d="M628.041 119.894V112.491C628.041 111.394 627.86 110.694 627.498 110.389C627.137 110.023 626.413 109.841 625.328 109.841H620.715C615.108 109.841 612.304 107.16 612.304 101.798V92.3841C612.304 86.9613 615.108 84.2499 620.715 84.2499H627.317C632.985 84.2499 635.819 86.9613 635.819 92.3841V96.6796H627.86V93.2066C627.86 92.1099 627.679 91.4092 627.317 91.1045C626.956 90.7389 626.232 90.5562 625.147 90.5562H622.976C621.891 90.5562 621.167 90.7389 620.806 91.1045C620.444 91.4092 620.263 92.1099 620.263 93.2066V100.884C620.263 101.981 620.444 102.712 620.806 103.077C621.167 103.382 621.891 103.534 622.976 103.534H627.679C633.226 103.534 636 106.246 636 111.668V120.808C636 126.17 633.196 128.851 627.589 128.851H620.896C615.288 128.851 612.485 126.17 612.485 120.808V116.421H620.444V119.894C620.444 120.991 620.625 121.722 620.986 122.088C621.348 122.392 622.072 122.545 623.157 122.545H625.328C626.413 122.545 627.137 122.392 627.498 122.088C627.86 121.722 628.041 120.991 628.041 119.894Z" fill="white"/><defs>
+<linearGradient id="paint0_linear_2_9" x1="117.565" y1="61.4677" x2="30.5816" y2="148.161" gradientUnits="userSpaceOnUse">
+<stop stop-color="#DEB25F"/>
+<stop offset="1" stop-color="#F3CC81"/>
+</linearGradient>
+<radialGradient id="paint1_radial_2_9" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(82.5392 94.3049) rotate(111.955) scale(46.8421 18.8419)">
+<stop stop-color="#D8AE5E"/>
+<stop offset="1" stop-color="#F4CD83"/>
+</radialGradient>
+<clipPath id="clip0_2_9">
+<rect width="606" height="108" fill="white" transform="translate(30 44)"/>
+</clipPath>
+</defs></symbol>
+<symbol id="sh-perps" viewBox="5 5 73 89"><path d="M23.916 16.9383V7.28613H29.7627V11.3502H38.5326V7.28613H44.3791V11.3502H53.149V7.28613H58.9956V16.9383H23.916Z" fill="#34C759"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.52711 22.2998C7.52711 22.2998 7.35406 30.7718 7.52711 41.8358C7.54232 42.808 7.55406 43.7961 7.56594 44.7966C7.81261 65.5562 8.12267 91.6525 40.7612 91.6525C74.9727 91.6525 75.4613 73.5818 75.4613 39.3938V22.2998H7.52711ZM69.7916 28.0197H13.132C13.111 31.4845 13.1115 36.2991 13.1967 41.7456C13.2114 42.687 13.2237 43.6281 13.236 44.5679C13.3681 54.706 13.4978 64.6673 16.6847 72.5025C18.3303 76.5477 20.7129 79.7573 24.2302 82.0189C27.7866 84.3062 32.984 85.9328 40.7612 85.9328C48.8966 85.9328 54.4377 84.8455 58.2686 83.0882C61.9197 81.4131 64.246 79.0296 65.8784 75.7667C67.6059 72.3156 68.6482 67.6862 69.2034 61.4693C69.7565 55.2696 69.7916 47.995 69.7916 39.3938V28.0197Z" fill="white"/><path d="M29.2854 56.2617H18.5469C18.5469 56.2617 18.614 63.3908 20.6946 68.7745C22.7751 74.1571 29.2854 79.1414 29.2854 79.1414V56.2617Z" fill="white"/><path d="M48.2566 46.6094H34.6543V80.5707H48.2566V46.6094Z" fill="white"/><path d="M64.7224 37.3145H53.626V79.1407C53.626 79.1407 64.7224 76.4422 64.7224 62.2753V37.3145Z" fill="white"/></symbol>
+<symbol id="sh-perps-mono" viewBox="5 5 73 89"><path d="M23.916 16.9383V7.28613H29.7627V11.3502H38.5326V7.28613H44.3791V11.3502H53.149V7.28613H58.9956V16.9383H23.916Z" fill="#34C759"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.52711 22.2998C7.52711 22.2998 7.35406 30.7718 7.52711 41.8358C7.54232 42.808 7.55406 43.7961 7.56594 44.7966C7.81261 65.5562 8.12267 91.6525 40.7612 91.6525C74.9727 91.6525 75.4613 73.5818 75.4613 39.3938V22.2998H7.52711ZM69.7916 28.0197H13.132C13.111 31.4845 13.1115 36.2991 13.1967 41.7456C13.2114 42.687 13.2237 43.6281 13.236 44.5679C13.3681 54.706 13.4978 64.6673 16.6847 72.5025C18.3303 76.5477 20.7129 79.7573 24.2302 82.0189C27.7866 84.3062 32.984 85.9328 40.7612 85.9328C48.8966 85.9328 54.4377 84.8455 58.2686 83.0882C61.9197 81.4131 64.246 79.0296 65.8784 75.7667C67.6059 72.3156 68.6482 67.6862 69.2034 61.4693C69.7565 55.2696 69.7916 47.995 69.7916 39.3938V28.0197Z" fill="currentColor"/><path d="M29.2854 56.2617H18.5469C18.5469 56.2617 18.614 63.3908 20.6946 68.7745C22.7751 74.1571 29.2854 79.1414 29.2854 79.1414V56.2617Z" fill="currentColor"/><path d="M48.2566 46.6094H34.6543V80.5707H48.2566V46.6094Z" fill="currentColor"/><path d="M64.7224 37.3145H53.626V79.1407C53.626 79.1407 64.7224 76.4422 64.7224 62.2753V37.3145Z" fill="currentColor"/></symbol>
+<symbol id="sh-perps-solid" viewBox="5 5 73 89"><path d="M23.916 16.9383V7.28613H29.7627V11.3502H38.5326V7.28613H44.3791V11.3502H53.149V7.28613H58.9956V16.9383H23.916Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.52711 22.2998C7.52711 22.2998 7.35406 30.7718 7.52711 41.8358C7.54232 42.808 7.55406 43.7961 7.56594 44.7966C7.81261 65.5562 8.12267 91.6525 40.7612 91.6525C74.9727 91.6525 75.4613 73.5818 75.4613 39.3938V22.2998H7.52711ZM69.7916 28.0197H13.132C13.111 31.4845 13.1115 36.2991 13.1967 41.7456C13.2114 42.687 13.2237 43.6281 13.236 44.5679C13.3681 54.706 13.4978 64.6673 16.6847 72.5025C18.3303 76.5477 20.7129 79.7573 24.2302 82.0189C27.7866 84.3062 32.984 85.9328 40.7612 85.9328C48.8966 85.9328 54.4377 84.8455 58.2686 83.0882C61.9197 81.4131 64.246 79.0296 65.8784 75.7667C67.6059 72.3156 68.6482 67.6862 69.2034 61.4693C69.7565 55.2696 69.7916 47.995 69.7916 39.3938V28.0197Z" fill="currentColor"/><path d="M29.2854 56.2617H18.5469C18.5469 56.2617 18.614 63.3908 20.6946 68.7745C22.7751 74.1571 29.2854 79.1414 29.2854 79.1414V56.2617Z" fill="currentColor"/><path d="M48.2566 46.6094H34.6543V80.5707H48.2566V46.6094Z" fill="currentColor"/><path d="M64.7224 37.3145H53.626V79.1407C53.626 79.1407 64.7224 76.4422 64.7224 62.2753V37.3145Z" fill="currentColor"/></symbol>
+<symbol id="wm-perps" viewBox="5 5 420 89"><path d="M23.916 16.9383V7.28613H29.7627V11.3502H38.5326V7.28613H44.3791V11.3502H53.149V7.28613H58.9956V16.9383H23.916Z" fill="#34C759"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.52711 22.2998C7.52711 22.2998 7.35406 30.7718 7.52711 41.8358C7.54232 42.808 7.55406 43.7961 7.56594 44.7966C7.81261 65.5562 8.12267 91.6525 40.7612 91.6525C74.9727 91.6525 75.4613 73.5818 75.4613 39.3938V22.2998H7.52711ZM69.7916 28.0197H13.132C13.111 31.4845 13.1115 36.2991 13.1967 41.7456C13.2114 42.687 13.2237 43.6281 13.236 44.5679C13.3681 54.706 13.4978 64.6673 16.6847 72.5025C18.3303 76.5477 20.7129 79.7573 24.2302 82.0189C27.7866 84.3062 32.984 85.9328 40.7612 85.9328C48.8966 85.9328 54.4377 84.8455 58.2686 83.0882C61.9197 81.4131 64.246 79.0296 65.8784 75.7667C67.6059 72.3156 68.6482 67.6862 69.2034 61.4693C69.7565 55.2696 69.7916 47.995 69.7916 39.3938V28.0197Z" fill="white"/><path d="M29.2854 56.2617H18.5469C18.5469 56.2617 18.614 63.3908 20.6946 68.7745C22.7751 74.1571 29.2854 79.1414 29.2854 79.1414V56.2617Z" fill="white"/><path d="M48.2566 46.6094H34.6543V80.5707H48.2566V46.6094Z" fill="white"/><path d="M64.7224 37.3145H53.626V79.1407C53.626 79.1407 64.7224 76.4422 64.7224 62.2753V37.3145Z" fill="white"/><path d="M94.0557 74.248L94.8731 29.9873H100.922L108.716 65.8877L116.563 29.9873H122.558L123.376 74.248H118.416L117.926 42.118L110.46 74.248H106.972L99.56 42.118L99.0695 74.248H94.0557ZM129.161 82.1712V77.6905C130.578 77.6905 131.704 77.6177 132.54 77.4719C133.375 77.3627 133.975 77.1259 134.338 76.7616C134.701 76.4337 134.883 75.9602 134.883 75.3409C134.883 75.013 134.756 74.2845 134.502 73.1552C134.247 72.0259 133.975 70.8237 133.684 69.5487L127.362 42.6644H133.248L137.499 66.2702L141.586 42.6644H147.472L139.951 75.9966C139.624 77.5266 139.025 78.7287 138.153 79.603C137.281 80.5137 136.155 81.1694 134.774 81.5702C133.43 81.9709 131.795 82.1712 129.869 82.1712H129.161ZM163.937 74.248V29.9873H180.995V34.4134H170.095V49.1669H178.542V53.5384H170.095V74.248H163.937ZM189.258 74.6852C188.023 74.6852 187.06 74.3573 186.37 73.7016C185.679 73.0459 185.189 72.2262 184.898 71.2427C184.644 70.2591 184.517 69.2573 184.517 68.2373V42.6644H190.348V66.4887C190.348 67.618 190.512 68.5105 190.839 69.1662C191.166 69.7855 191.838 70.0952 192.855 70.0952C193.509 70.0952 194.181 69.913 194.871 69.5487C195.598 69.148 196.288 68.6744 196.942 68.128V42.6644H202.774V74.248H196.942V71.1334C195.925 72.117 194.762 72.9548 193.454 73.6469C192.183 74.3391 190.784 74.6852 189.258 74.6852ZM208.737 74.248V42.6644H214.568V45.7791C215.621 44.7955 216.784 43.9577 218.056 43.2655C219.327 42.5734 220.727 42.2273 222.253 42.2273C223.525 42.2273 224.486 42.5552 225.14 43.2109C225.831 43.8666 226.303 44.6862 226.557 45.6698C226.848 46.6534 226.993 47.6552 226.993 48.6752V74.248H221.163V50.3691C221.163 49.2398 220.998 48.3655 220.671 47.7462C220.344 47.1269 219.673 46.8173 218.656 46.8173C218.002 46.8173 217.312 47.0177 216.585 47.4184C215.895 47.7827 215.222 48.238 214.568 48.7844V74.248H208.737ZM239.989 74.6852C237.337 74.6852 235.356 73.7198 234.048 71.7891C232.74 69.822 232.086 66.5069 232.086 61.8441V55.7241C232.086 53.3198 232.287 51.0977 232.687 49.0577C233.086 46.9812 233.83 45.3237 234.92 44.0852C236.046 42.8466 237.681 42.2273 239.825 42.2273C240.878 42.2273 241.842 42.4641 242.714 42.9377C243.586 43.4112 244.366 43.9941 245.057 44.6862V29.9873H250.889V74.248H245.057V72.2262C244.366 72.9548 243.603 73.5559 242.768 74.0294C241.968 74.4666 241.043 74.6852 239.989 74.6852ZM241.46 70.0952C242.005 70.0952 242.586 70.0041 243.204 69.822C243.821 69.6034 244.439 69.2937 245.057 68.893V48.1834C244.548 47.8191 243.986 47.5094 243.368 47.2544C242.751 46.963 242.077 46.8173 241.351 46.8173C240.006 46.8173 239.098 47.473 238.626 48.7844C238.154 50.0594 237.918 51.6077 237.918 53.4291V62.3359C237.918 63.793 237.991 65.1227 238.136 66.3248C238.318 67.4905 238.662 68.4195 239.171 69.1116C239.679 69.7673 240.442 70.0952 241.46 70.0952ZM265.516 74.6852C263.045 74.6852 261.137 74.2116 259.792 73.2644C258.448 72.2809 257.504 70.8602 256.959 69.0023C256.45 67.108 256.196 64.7948 256.196 62.0627V54.8498C256.196 52.0448 256.469 49.7134 257.014 47.8555C257.559 45.9977 258.504 44.5952 259.848 43.648C261.229 42.7009 263.118 42.2273 265.516 42.2273C268.168 42.2273 270.111 42.7737 271.346 43.8666C272.618 44.9594 273.453 46.5441 273.853 48.6205C274.253 50.6605 274.453 53.1194 274.453 55.9973V58.5655H262.028V64.9041C262.028 66.1791 262.137 67.2173 262.355 68.0187C262.609 68.8202 262.99 69.4212 263.498 69.822C264.043 70.1862 264.734 70.3684 265.569 70.3684C266.441 70.3684 267.095 70.168 267.531 69.7673C268.004 69.3302 268.313 68.7291 268.459 67.9641C268.64 67.1627 268.73 66.2337 268.73 65.1773V63.2648H274.398V64.4669C274.398 67.6362 273.727 70.1316 272.383 71.953C271.038 73.7744 268.749 74.6852 265.516 74.6852ZM262.028 55.3962H268.73V52.5548C268.73 51.2434 268.657 50.1505 268.512 49.2762C268.367 48.3655 268.059 47.6916 267.587 47.2544C267.151 46.7809 266.441 46.5441 265.46 46.5441C264.516 46.5441 263.789 46.7627 263.28 47.1998C262.808 47.637 262.481 48.3837 262.299 49.4402C262.118 50.4602 262.028 51.8809 262.028 53.7023V55.3962ZM287.037 74.6852C284.385 74.6852 282.404 73.7198 281.096 71.7891C279.788 69.822 279.134 66.5069 279.134 61.8441V55.7241C279.134 53.3198 279.335 51.0977 279.734 49.0577C280.134 46.9812 280.878 45.3237 281.968 44.0852C283.094 42.8466 284.729 42.2273 286.873 42.2273C287.926 42.2273 288.89 42.4641 289.762 42.9377C290.634 43.4112 291.414 43.9941 292.104 44.6862V29.9873H297.937V74.248H292.104V72.2262C291.414 72.9548 290.651 73.5559 289.816 74.0294C289.016 74.4666 288.091 74.6852 287.037 74.6852ZM288.508 70.0952C289.053 70.0952 289.634 70.0041 290.252 69.822C290.869 69.6034 291.487 69.2937 292.104 68.893V48.1834C291.596 47.8191 291.034 47.5094 290.416 47.2544C289.798 46.963 289.125 46.8173 288.399 46.8173C287.054 46.8173 286.146 47.473 285.674 48.7844C285.201 50.0594 284.966 51.6077 284.966 53.4291V62.3359C284.966 63.793 285.039 65.1227 285.184 66.3248C285.366 67.4905 285.71 68.4195 286.219 69.1116C286.727 69.7673 287.49 70.0952 288.508 70.0952ZM316.787 74.248V29.9873H327.742C330.394 29.9873 332.501 30.4791 334.064 31.4627C335.662 32.4098 336.825 33.7941 337.552 35.6155C338.278 37.4369 338.641 39.6409 338.641 42.2273C338.641 44.5587 338.223 46.5805 337.387 48.2927C336.588 50.0048 335.389 51.3344 333.79 52.2816C332.191 53.1923 330.193 53.6477 327.795 53.6477H322.946V74.248H316.787ZM322.946 49.2216H325.78C327.56 49.2216 328.958 49.0212 329.975 48.6205C330.993 48.2198 331.719 47.5277 332.155 46.5441C332.591 45.5241 332.809 44.1034 332.809 42.2819C332.809 40.1691 332.647 38.548 332.32 37.4187C332.029 36.2894 331.392 35.5062 330.411 35.0691C329.43 34.632 327.904 34.4134 325.833 34.4134H322.946V49.2216ZM350.135 74.6852C347.665 74.6852 345.758 74.2116 344.414 73.2644C343.07 72.2809 342.125 70.8602 341.58 69.0023C341.071 67.108 340.817 64.7948 340.817 62.0627V54.8498C340.817 52.0448 341.089 49.7134 341.634 47.8555C342.179 45.9977 343.123 44.5952 344.467 43.648C345.848 42.7009 347.737 42.2273 350.135 42.2273C352.787 42.2273 354.732 42.7737 355.968 43.8666C357.239 44.9594 358.075 46.5441 358.474 48.6205C358.874 50.6605 359.073 53.1194 359.073 55.9973V58.5655H346.647V64.9041C346.647 66.1791 346.756 67.2173 346.974 68.0187C347.229 68.8202 347.611 69.4212 348.12 69.822C348.665 70.1862 349.355 70.3684 350.191 70.3684C351.063 70.3684 351.717 70.168 352.153 69.7673C352.625 69.3302 352.933 68.7291 353.078 67.9641C353.26 67.1627 353.352 66.2337 353.352 65.1773V63.2648H359.019V64.4669C359.019 67.6362 358.346 70.1316 357.002 71.953C355.658 73.7744 353.369 74.6852 350.135 74.6852ZM346.647 55.3962H353.352V52.5548C353.352 51.2434 353.279 50.1505 353.134 49.2762C352.988 48.3655 352.678 47.6916 352.206 47.2544C351.77 46.7809 351.063 46.5441 350.082 46.5441C349.137 46.5441 348.411 46.7627 347.902 47.1998C347.43 47.637 347.103 48.3837 346.921 49.4402C346.739 50.4602 346.647 51.8809 346.647 53.7023V55.3962ZM364.518 74.248V42.6644H370.349V47.1452C371.511 45.2144 372.674 43.9212 373.837 43.2655C374.999 42.6098 376.162 42.2819 377.324 42.2819C377.47 42.2819 377.598 42.2819 377.707 42.2819C377.852 42.2819 378.034 42.3002 378.252 42.3366V48.7844C377.816 48.6023 377.307 48.4566 376.726 48.3473C376.181 48.2016 375.617 48.1287 375.035 48.1287C374.127 48.1287 373.292 48.3473 372.529 48.7844C371.802 49.1852 371.075 49.9866 370.349 51.1887V74.248H364.518ZM381.864 84.6302V42.6644H387.696V45.178C388.386 44.3766 389.222 43.6845 390.203 43.1016C391.184 42.5187 392.347 42.2273 393.691 42.2273C395.326 42.2273 396.615 42.6644 397.559 43.5387C398.54 44.3766 399.267 45.4512 399.739 46.7627C400.211 48.0377 400.521 49.3491 400.667 50.6969C400.812 52.0084 400.885 53.1377 400.885 54.0848V61.7348C400.885 63.9569 400.667 66.0698 400.231 68.0734C399.795 70.0405 398.995 71.6434 397.833 72.882C396.706 74.0841 395.108 74.6852 393.037 74.6852C391.911 74.6852 390.91 74.412 390.038 73.8655C389.167 73.2827 388.386 72.6269 387.696 71.8984V84.6302H381.864ZM391.891 70.0952C392.909 70.0952 393.635 69.7309 394.071 69.0023C394.507 68.2373 394.781 67.2173 394.89 65.9423C394.999 64.6673 395.052 63.2648 395.052 61.7348V54.0848C395.052 52.7734 394.98 51.5712 394.834 50.4784C394.689 49.3491 394.381 48.4566 393.909 47.8009C393.437 47.1452 392.691 46.8173 391.673 46.8173C390.91 46.8173 390.184 46.9812 389.493 47.3091C388.803 47.6369 388.205 48.0194 387.696 48.4566V68.6744C388.241 69.0752 388.859 69.4212 389.549 69.7127C390.239 69.9677 391.019 70.0952 391.891 70.0952ZM413.49 74.6852C410.91 74.6852 408.839 73.8837 407.277 72.2809C405.715 70.6416 404.823 68.4923 404.605 65.833L409.457 64.3577C409.747 66.3612 410.237 67.873 410.927 68.893C411.618 69.8766 412.635 70.3684 413.979 70.3684C415.033 70.3684 415.832 70.0769 416.377 69.4941C416.922 68.8748 417.196 68.0552 417.196 67.0352C417.196 66.1245 416.995 65.3048 416.595 64.5762C416.195 63.8477 415.541 63.1009 414.633 62.3359L409.239 57.6912C408.149 56.7441 407.221 55.6877 406.458 54.522C405.732 53.3562 405.368 51.8444 405.368 49.9866C405.368 48.3109 405.695 46.9084 406.349 45.7791C407.04 44.6134 407.984 43.7391 409.183 43.1562C410.419 42.5369 411.855 42.2273 413.49 42.2273C416.106 42.2273 418.104 43.0469 419.485 44.6862C420.865 46.2891 421.664 48.238 421.882 50.533L417.741 52.0084C417.595 50.9155 417.377 49.9684 417.087 49.1669C416.796 48.3291 416.377 47.6916 415.832 47.2544C415.287 46.7809 414.58 46.5441 413.708 46.5441C412.763 46.5441 412 46.872 411.419 47.5277C410.874 48.147 410.6 48.8937 410.6 49.768C410.6 50.3144 410.709 50.8609 410.927 51.4073C411.182 51.9173 411.6 52.4273 412.182 52.9373L417.741 58.0737C418.504 58.7659 419.211 59.5127 419.865 60.3141C420.555 61.1155 421.119 62.0262 421.555 63.0462C421.991 64.0662 422.209 65.2502 422.209 66.598C422.209 68.383 421.846 69.8766 421.119 71.0787C420.393 72.2809 419.375 73.1916 418.068 73.8109C416.76 74.3937 415.234 74.6852 413.49 74.6852Z" fill="white"/></symbol>
+</defs></svg>
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="hdr-logo" href="/" aria-label="My Funded Futures home">
+      <svg viewBox="0 0 638 112" role="img" aria-label="My Funded Futures"><use href="#wm-mffu"></use></svg>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <button type="button" aria-expanded="false">About us
+        <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg>
+      </button>
+      <button type="button" aria-expanded="false">How it works
+        <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg>
+      </button>
+      <a class="nav-perps" href="#top" data-cta="nav-perps"><span class="dot" aria-hidden="true"></span>Perps<span class="tag-new">NEW</span></a>
+      <button type="button" aria-expanded="false">More
+        <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg>
+      </button>
+    </nav>
+    <div class="hdr-act">
+      <a class="lgn" href="https://dashboard.myfundedfutures.com">Login</a>
+      <a class="btn btn-mffu" href="https://myfundedfutures.com/#pricing">Get Funded</a>
+    </div>
+  </div>
+</header>
+
+<main id="top" class="perps">
+<!-- ============================ HERO ============================ -->
+<section class="phero">
+  <span class="phero-bg" aria-hidden="true"></span>
+  <div class="wrap">
+    <div class="phero-in">
+      <div>
+        <svg viewBox="0 0 420 89" class="phero-wm" role="img" aria-label="MyFundedPerps"><use href="#wm-perps"></use></svg>
+        <p class="phero-from">From the team behind
+          <svg viewBox="0 0 638 112" role="img" aria-label="My Funded Futures"><use href="#wm-mffu"></use></svg>
+        </p>
+        <h1>Get funded to trade<br><em>crypto and stocks</em>.</h1>
+        <p class="phero-sub">
+          MyFundedPerps is a new prop firm from the MyFunded family. Trade perpetual futures across
+          digital assets, equities and more, with up to $500K in funding and up to 90% of the profits.
+        </p>
+        <div class="phero-cta">
+          <a class="btn btn-green btn-lg" href="https://myfundedperpetuals.com?utm_source=mffu-perps-lp&utm_medium=referral&utm_campaign=perps_launch&utm_content=lp-hero-primary" data-cta="lp-hero-primary">
+            Open a MyFundedPerps account
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+          <a class="btn btn-green-ghost btn-lg" href="#tiers">See how it works</a>
+        </div>
+        <p class="phero-note">
+          A separate product with its own account and login. Evaluations and funded accounts run in a simulated environment.
+        </p>
+      </div>
+
+      <!-- coin block + terminal -->
+      <div class="phero-right">
+<div class="blkw phero-blk" style="width:224px;height:224px">
+  <span class="glow" aria-hidden="true"></span>
+  <video autoplay muted loop playsinline preload="auto" disablepictureinpicture aria-hidden="true">
+    <source src="https://cube.fundingperpetuals.com/cube-512-30-v1.webm" type="video/webm">
+  </video>
+</div>
+      <div class="term rv" aria-label="Trading terminal preview">
+        <div class="term-hd">
+          <span class="term-sym"><i aria-hidden="true">B</i>BTC-USD<span class="term-lev">5&times;</span></span>
+          <span class="term-kv"><s>Mark</s><b id="tk-mark">77,722.50</b></span>
+          <span class="term-kv"><s>24h</s><b class="up">+5.07%</b></span>
+          <span class="term-kv"><s>Funding</s><b class="up">+0.0031%</b></span>
+          <span class="term-kv"><s>24h Vol</s><b>$20.14B</b></span>
+        </div>
+        <div class="term-body">
+          <div class="term-chart">
+            <div class="term-tf" role="group" aria-label="Timeframe">
+              <button type="button">1m</button><button type="button">5m</button>
+              <button type="button" aria-pressed="true">15m</button><button type="button">1h</button><button type="button">4h</button>
+            </div>
+            <canvas id="tk-chart" width="560" height="216" role="img" aria-label="BTC-USD candlestick chart, 15 minute candles"></canvas>
+          </div>
+          <div class="term-ob">
+            <div class="term-ob-h"><span>PRICE</span><span>SIZE</span></div>
+            <div id="tk-asks"></div>
+            <div class="ob-spread"><span>Spread</span><span>2.88</span></div>
+            <div id="tk-bids"></div>
+            <div class="term-depth"><span class="up">Bid 36.1%</span><span class="down">63.9% Ask</span></div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- stat bar -->
+    <div class="pstats">
+      <div class="pstat"><span>Max allocation</span><b>Up to $500K</b></div>
+      <div class="pstat"><span>Profit split</span><b>Up to 90%</b></div>
+      <div class="pstat"><span>Payout cycle</span><b>Every 7 days</b></div>
+      <div class="pstat"><span>Markets</span><b>24 / 7</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ LINEAGE ============================ -->
+<section class="sec" aria-labelledby="lin-h">
+  <div class="wrap">
+    <div class="sec-hd split">
+      <div>
+        <p class="eyebrow">Same team</p>
+        <h2 class="h-sec" id="lin-h" style="margin-top:14px">Built by the people<br>who already pay you.</h2>
+      </div>
+      <p class="h-sub">My Funded Futures has been funding traders since 2023. MyFundedPerps applies that same operating discipline to a market that never closes.</p>
+    </div>
+
+    <div class="lineage">
+      <div class="lin-stage rv">
+        <div class="lin-row">
+          <div class="lin-cell">
+            <span class="lin-plate gold"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg></span>
+            <span class="lin-nm"><b>My Funded Futures</b><span>CME futures</span></span>
+          </div>
+          <span class="lin-join" aria-hidden="true"></span>
+          <div class="lin-cell">
+            <span class="lin-plate green"><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg></span>
+            <span class="lin-nm"><b>MyFundedPerps</b><span>Perpetuals</span></span>
+          </div>
+        </div>
+        <p class="lin-cap"><b>Same shield. New market.</b><br>One team, one standard for payouts, two ways to get funded.</p>
+      </div>
+
+      <div>
+        <div class="lin-pts">
+          <div class="lin-pt">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.86-9.53a.75.75 0 00-1.22-.87l-3.24 4.53-1.62-1.62a.75.75 0 10-1.06 1.06l2.24 2.24a.75.75 0 001.14-.09l3.76-5.25z" clip-rule="evenodd"/></svg>
+            <div><b>A payout record you can check</b><p>More than $250M paid to traders across 100,000+ withdrawals since 2023, with a 4.9 rating on Trustpilot from over 18,000 reviews.</p></div>
+          </div>
+          <div class="lin-pt">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.86-9.53a.75.75 0 00-1.22-.87l-3.24 4.53-1.62-1.62a.75.75 0 10-1.06 1.06l2.24 2.24a.75.75 0 001.14-.09l3.76-5.25z" clip-rule="evenodd"/></svg>
+            <div><b>Rules written to be readable</b><p>Clear profit targets, clear drawdown, and no consistency rule on Select and Signature plans. If a rule is not on the page, it is not a rule.</p></div>
+          </div>
+          <div class="lin-pt">
+            <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.86-9.53a.75.75 0 00-1.22-.87l-3.24 4.53-1.62-1.62a.75.75 0 10-1.06 1.06l2.24 2.24a.75.75 0 001.14-.09l3.76-5.25z" clip-rule="evenodd"/></svg>
+            <div><b>Support that answers</b><p>The same operations and support organization that runs the futures business stands behind the perpetuals product.</p></div>
+          </div>
+        </div>
+        <div class="lin-record">
+          <div><b>$250M+</b><span>Paid out to traders</span></div>
+          <div><b>100K+</b><span>Payouts issued</span></div>
+          <div><b>4.9</b><span>Trustpilot, 18,000+ reviews</span></div>
+        </div>
+        <p style="margin-top:14px;font-size:11.5px;color:#818A97">My Funded Futures track record, since 2023.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ MARKETS ============================ -->
+<section class="sec" style="padding-top:0" aria-labelledby="mkt-h">
+  <div class="wrap">
+    <div class="sec-hd split">
+      <div>
+        <p class="eyebrow">What you can trade</p>
+        <h2 class="h-sec" id="mkt-h" style="margin-top:14px">Hundreds of perpetual pairs.</h2>
+      </div>
+      <p class="h-sub">The program begins with digital assets, where liquidity is deepest and the market runs every hour of every day.</p>
+    </div>
+
+    <div class="mkt-tabs" role="group" aria-label="Market category">
+      <button class="mkt-tab" type="button" aria-pressed="true" data-mkt="crypto">Digital assets</button>
+      <button class="mkt-tab" type="button" aria-pressed="false" data-mkt="metals">Metals &amp; energy</button>
+      <button class="mkt-tab" type="button" aria-pressed="false" data-mkt="fx">Foreign exchange</button>
+      <button class="mkt-tab" type="button" aria-pressed="false" data-mkt="index">Indices &amp; equities</button>
+    </div>
+
+    <div class="chips" id="mkt-chips"></div>
+
+    <p class="mkt-note">
+      Digital asset perpetuals are the core of the launch program. Coverage of metals, energy, foreign exchange, indices and equities is expanding, and the pairs available to you depend on your model and your region. The live list is always the one shown inside the platform.
+    </p>
+  </div>
+</section>
+
+<!-- ============================ GET STARTED ============================ -->
+<section class="sec" id="tiers" style="padding-top:0" aria-labelledby="go-h">
+  <div class="wrap">
+    <div class="golive rv">
+      <div>
+        <p class="eyebrow">Choose your challenge</p>
+        <h2 class="h-sec" id="go-h" style="margin-top:14px">Pick your tier on<br>MyFundedPerps.</h2>
+        <p class="h-sub" style="margin-top:18px">Account sizes, evaluation models, drawdown and payout rules all live on the
+          MyFundedPerps site, where you create your account and start a challenge.</p>
+        <div class="golive-cta">
+          <a class="btn btn-green btn-lg" href="https://myfundedperpetuals.com?utm_source=mffu-perps-lp&utm_medium=referral&utm_campaign=perps_launch&utm_content=lp-golive-primary" data-cta="lp-golive-primary">
+            Open a MyFundedPerps account
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+          </a>
+          <a class="golive-dom" href="https://myfundedperpetuals.com?utm_source=mffu-perps-lp&utm_medium=referral&utm_campaign=perps_launch&utm_content=lp-golive-domain" data-cta="lp-golive-domain">myfundedperpetuals.com</a>
+        </div>
+      </div>
+      <ul class="golive-list">
+        <li><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.86-9.53a.75.75 0 00-1.22-.87l-3.24 4.53-1.62-1.62a.75.75 0 10-1.06 1.06l2.24 2.24a.75.75 0 001.14-.09l3.76-5.25z" clip-rule="evenodd"/></svg><div><b>Account sizes to suit your risk</b><p>Several tiers, with one-step and two-step evaluation models.</p></div></li>
+        <li><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.86-9.53a.75.75 0 00-1.22-.87l-3.24 4.53-1.62-1.62a.75.75 0 10-1.06 1.06l2.24 2.24a.75.75 0 001.14-.09l3.76-5.25z" clip-rule="evenodd"/></svg><div><b>Up to $500K in funding</b><p>Scale your allocation as you hit performance targets consistently.</p></div></li>
+        <li><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.86-9.53a.75.75 0 00-1.22-.87l-3.24 4.53-1.62-1.62a.75.75 0 10-1.06 1.06l2.24 2.24a.75.75 0 001.14-.09l3.76-5.25z" clip-rule="evenodd"/></svg><div><b>Keep up to 90% of profits</b><p>Request a payout every 7 days with 24-hour processing.</p></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ WHAT SETS IT APART ============================ -->
+<section class="sec" style="padding-top:0" aria-labelledby="apart-h">
+  <div class="wrap">
+    <div class="sec-hd split">
+      <div>
+        <p class="eyebrow">What sets it apart</p>
+        <h2 class="h-sec" id="apart-h" style="margin-top:14px">A terminal built<br>for perpetuals.</h2>
+      </div>
+      <p class="h-sub">Not a futures platform with crypto bolted on. Depth of book, funding rates, and position management designed for this market from the start.</p>
+    </div>
+
+    <div class="trio">
+      <div class="pcard rv">
+        <div class="tro-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <h3>Funding up to $500K</h3>
+        <p>Hit performance targets consistently and scale your allocation to as much as $500,000 in simulated capital.</p>
+      </div>
+      <div class="pcard rv">
+        <div class="tro-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4"/><path d="M12 3v3.6M12 17.4V21M3 12h3.6M17.4 12H21"/></svg></div>
+        <h3>No consistency rule</h3>
+        <p>Trade the way your edge actually works. Select and Signature plans carry no consistency requirement on the way to a payout.</p>
+      </div>
+      <div class="pcard rv">
+        <div class="tro-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6.6V12l3.6 2.2"/></svg></div>
+        <h3>No time limits</h3>
+        <p>There is no clock on your evaluation. Take the setups you would take anyway, at the pace the market gives them to you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ HOW IT WORKS ============================ -->
+<section class="sec" style="padding-top:0" aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="sec-hd split">
+      <div>
+        <p class="eyebrow">How it works</p>
+        <h2 class="h-sec" id="how-h" style="margin-top:14px">Four steps from tier<br>to first payout.</h2>
+      </div>
+      <p class="h-sub">The path is the same one that has already produced more than 100,000 payouts on the futures side.</p>
+    </div>
+    <div class="hgrid">
+      <div class="hstep rv">
+        <div class="hstep-n">STEP 01</div>
+        <h3>Choose your challenge</h3>
+        <p>Pick the tier and model that fit your trading style. Compare profit targets and drawdown rules before you start.</p>
+        <p>Trade perpetuals across hundreds of markets. No time limits, no pressure, at your own pace.</p>
+      </div>
+      <div class="hstep rv">
+        <div class="hstep-n">STEP 02</div>
+        <h3>Hit your target</h3>
+        <p>Reach the profit target for your tier while staying inside its risk limits. The evaluation is built to test real trading skill.</p>
+        <p>No shortcuts and no luck. Disciplined execution is what passes.</p>
+      </div>
+      <div class="hstep rv">
+        <div class="hstep-n">STEP 03</div>
+        <h3>Get funded</h3>
+        <p>Pass the evaluation and receive your funded account, with up to $500,000 in simulated capital to trade.</p>
+        <p>Scale your allocation as you hit performance targets consistently.</p>
+      </div>
+      <div class="hstep rv">
+        <div class="hstep-n">STEP 04</div>
+        <h3>Start earning</h3>
+        <p>Keep up to 90% of your profits. Request payouts every 7 days with 24-hour guaranteed processing.</p>
+        <p>You focus on trading. The team behind My Funded Futures handles the rest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ AGENTS ============================ -->
+<section class="agents" aria-labelledby="ag-h">
+  <span class="agents-edge" aria-hidden="true"></span>
+  <div class="wrap">
+    <p class="eyebrow">Developer platform</p>
+    <h2 id="ag-h" style="margin-top:16px">Built for agents and<br>algorithmic trading</h2>
+    <p class="lead">Connect AI agents, algorithmic strategies and hosted bots directly to your MyFundedPerps account. Build with REST, WebSocket, MCP or SDKs for Python, TypeScript, Go, Rust, Java and PHP.</p>
+
+    <div class="code rv">
+      <div class="code-hd"><u></u><u></u><u></u><b>agent.py</b></div>
+<pre><span class="c"># Connect an agent to a funded MyFundedPerps account</span>
+<span class="k">from</span> myfundedperps <span class="k">import</span> <span class="f">Client</span>, <span class="f">OrderType</span>
+
+client = <span class="f">Client</span>(api_key=<span class="s">"mfp_live_..."</span>)
+book   = client.<span class="f">order_book</span>(<span class="s">"BTC-USD"</span>, depth=<span class="n">25</span>)
+
+<span class="k">if</span> book.<span class="f">imbalance</span>() &gt; <span class="n">0.62</span> <span class="k">and</span> client.<span class="f">funding_rate</span>(<span class="s">"BTC-USD"</span>) &lt; <span class="n">0</span>:
+    client.<span class="f">submit</span>(
+        symbol=<span class="s">"BTC-USD"</span>,
+        side=<span class="s">"buy"</span>,
+        size=<span class="n">0.25</span>,
+        type=OrderType.<span class="f">LIMIT</span>,
+        price=book.<span class="f">best_bid</span>(),
+        reduce_only=<span class="k">False</span>,
+    )</pre>
+    </div>
+
+    <div class="agent-logos">
+      <span>REST</span><span>WebSocket</span><span>MCP</span><span>Python</span><span>TypeScript</span><span>Go</span><span>Rust</span><span>Java</span><span>PHP</span>
+    </div>
+    <div style="margin-top:34px"><a class="btn btn-green-ghost btn-lg" href="https://myfundedperpetuals.com?utm_source=mffu-perps-lp&utm_medium=referral&utm_campaign=perps_launch&utm_content=lp-devplatform" data-cta="lp-devplatform">Explore the developer platform</a></div>
+  </div>
+</section>
+
+<!-- ============================ COMPARE ============================ -->
+<section class="sec" aria-labelledby="cmp-h">
+  <div class="wrap">
+    <div class="sec-hd split">
+      <div>
+        <p class="eyebrow">Which one is for you</p>
+        <h2 class="h-sec" id="cmp-h" style="margin-top:14px">Futures or perpetuals?</h2>
+      </div>
+      <p class="h-sub">Plenty of traders will run both. They are separate products, so nothing you have already built on the futures side is affected.</p>
+    </div>
+
+    <div class="cmp-wrap">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th scope="col"><span class="sr">Feature</span></th>
+            <th scope="col" class="cf"><b><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg>My Funded Futures</b></th>
+            <th scope="col" class="cp"><b><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg>MyFundedPerps</b></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">What you trade</th><td class="cf">CME group futures, including ES, NQ, CL and GC</td><td class="cp">Perpetual futures on digital assets, with more markets being added</td></tr>
+          <tr><th scope="row">Market hours</th><td class="cf">Sunday evening to Friday afternoon, with a daily break</td><td class="cp"><b>24 hours a day, 7 days a week</b></td></tr>
+          <tr><th scope="row">Account sizes</th><td class="cf">$25K to $150K</td><td class="cp">$25K to $200K</td></tr>
+          <tr><th scope="row">Maximum allocation</th><td class="cf">Scale up to $100K in payouts</td><td class="cp"><b>Up to $500K in simulated capital</b></td></tr>
+          <tr><th scope="row">Profit split</th><td class="cf">Up to 90%</td><td class="cp">Up to 90%</td></tr>
+          <tr><th scope="row">Payouts</th><td class="cf">As fast as the same day on Rapid</td><td class="cp">Every 7 days, 24-hour processing</td></tr>
+          <tr><th scope="row">Platform</th><td class="cf">NinjaTrader, Tradovate, TradingView, Quantower and more</td><td class="cp">A purpose-built web terminal, plus an API for agents</td></tr>
+          <tr><th scope="row">Your account</th><td class="cf">Your existing My Funded Futures login</td><td class="cp"><b>A separate MyFundedPerps account and login</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tier-fine">Both programs are simulated. Neither involves the deposit, use or risk of real capital, and no participant order is routed to a live market or exchange.</p>
+  </div>
+</section>
+
+<!-- ============================ FAQ ============================ -->
+<section class="sec" style="padding-top:0" aria-labelledby="faq-h">
+  <div class="wrap faq-grid">
+    <div>
+      <h2 class="h-sec" id="faq-h">Common questions</h2>
+      <p class="h-sub" style="margin-top:16px">What traders ask most before they start their first challenge.</p>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>What is MyFundedPerps?<i aria-hidden="true"></i></summary>
+        <div class="faq-a"><p>MyFundedPerps is a perpetuals-focused prop firm from the MyFunded family, built with the technology and team behind Funding Perpetuals. You pass an evaluation, prove your edge, and trade a funded account with up to $500,000 in simulated capital on a platform from the team behind My Funded Futures.</p></div>
+      </details>
+      <details>
+        <summary>Is my My Funded Futures account the same account?<i aria-hidden="true"></i></summary>
+        <div class="faq-a"><p>No. MyFundedPerps is a separate product with its own account, login, terms and support. Your futures accounts, payouts, loyalty status and affiliate arrangements are unaffected, and you sign up for perpetuals separately.</p></div>
+      </details>
+      <details>
+        <summary>Is real money at risk?<i aria-hidden="true"></i></summary>
+        <div class="faq-a">
+          <p>No. Every MyFundedPerps account, both evaluation and funded, operates in a simulated, non-executing environment. No participant funds a live trading account, and no participant order is routed to a public market or exchange.</p>
+          <p>Pricing is modeled by reference to publicly available data from third-party venues so that conditions approximate a real book. Balances, fills, margin, liquidations and payouts are simulated within the program.</p>
+        </div>
+      </details>
+      <details>
+        <summary>What can I trade?<i aria-hidden="true"></i></summary>
+        <div class="faq-a"><p>The program opens with perpetual contracts on digital assets, where liquidity is deepest. Coverage of metals, energy, foreign exchange, indices and equities is expanding. The markets available to you depend on your model and your region, and the live list is always the one shown inside the platform.</p></div>
+      </details>
+      <details>
+        <summary>How do payouts work?<i aria-hidden="true"></i></summary>
+        <div class="faq-a"><p>Once you are funded you can request a payout every 7 days, with 24-hour guaranteed processing, and you keep up to 90% of simulated profits. Full payout rules are published on the MyFundedPerps site.</p></div>
+      </details>
+      <details>
+        <summary>Can I run bots or AI agents?<i aria-hidden="true"></i></summary>
+        <div class="faq-a"><p>Yes. MyFundedPerps ships a developer platform with REST, WebSocket and MCP access plus SDKs, so you can connect algorithmic strategies, hosted bots and AI agents directly to your account. Prohibited strategies are set out in the program rules.</p></div>
+      </details>
+      <details>
+        <summary>Who can open an account?<i aria-hidden="true"></i></summary>
+        <div class="faq-a"><p>Eligibility depends on your country of residence and on identity verification at signup. Some jurisdictions are restricted. The current restricted-country list and eligibility requirements are published on the MyFundedPerps site and are checked during signup.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FINAL BAND ============================ -->
+<section class="pband">
+  <div class="wrap">
+    <svg viewBox="0 0 73 89" class="mk" aria-hidden="true"><use href="#sh-perps"></use></svg>
+    <h2>Your next funded account<br>never has to close.</h2>
+    <p>Pick a tier, pass the evaluation, and trade perpetuals with the payout discipline you already know from My Funded Futures.</p>
+    <div class="row">
+      <a class="btn btn-green btn-lg" href="https://myfundedperpetuals.com?utm_source=mffu-perps-lp&utm_medium=referral&utm_campaign=perps_launch&utm_content=lp-band-primary" data-cta="lp-band-primary">
+        Open a MyFundedPerps account
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+      </a>
+      <a class="btn btn-ghost btn-lg" href="https://myfundedfutures.com/#pricing">Stay with futures</a>
+    </div>
+    <p class="fine">MyFundedPerps is a separate product with its own account, login and terms. Trading involves substantial risk and is not suitable for everyone. Nothing on this page is investment advice.</p>
+  </div>
+</section>
+
+<!-- ============================ LEGAL ============================ -->
+<section class="plegal">
+  <div class="wrap">
+    <h4>Important disclosures</h4>
+    <div class="plegal-grid">
+      <p><b>Simulated environment, no real capital, no live trading</b>
+        All accounts offered through MyFundedPerps, including both evaluation accounts and simulated funded accounts, operate exclusively within a simulated, non-executing environment. No program involves the deposit, use or risk of real capital, and no participant is asked to fund a live trading account.</p>
+      <p><b>Reference pricing, no affiliation with referenced exchanges</b>
+        Simulated pricing and settlement are modeled by reference to publicly available data from third-party exchanges. MyFundedPerps is not affiliated with, sponsored by or endorsed by those venues, and simulated accounts do not connect to or interact with any real account, order book or funds.</p>
+      <p><b>Hypothetical performance</b>
+        Hypothetical performance results have inherent limitations. Unlike an actual performance record, simulated results do not represent actual trading, and because the trades have not been executed the results may under-compensate or over-compensate for the impact of market factors such as lack of liquidity.</p>
+      <p><b>Separate products</b>
+        My Funded Futures and MyFundedPerps are operated as separate products with separate accounts, logins, terms and support. Purchasing or holding an account with one does not create an account or entitlement with the other.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div class="ftr-brand">
+        <svg viewBox="0 0 638 112" role="img" aria-label="My Funded Futures"><use href="#wm-mffu"></use></svg>
+        <p style="font-size:14px;color:var(--fg-3);max-width:34ch;line-height:1.65">The premier futures prop firm. Consistent payouts, clear rules, and a platform built for real traders.</p>
+        <div class="ftr-soc">
+          <a href="https://www.instagram.com/myfundedfutures" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.13 1.38C1.35 2.68.93 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13.67.66 1.34 1.08 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.72 2.13-1.38.66-.67 1.08-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.93 19.86.63 19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0Zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm7.85-10.41a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0Z"></path></svg></a>
+          <a href="https://x.com/MyFundedFutures" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.63 7.58H.47l8.6-9.83L0 1.15h7.59l5.25 6.93 6.07-6.93Zm-1.29 19.49h2.04L6.49 3.24H4.3l13.31 17.4Z"></path></svg></a>
+          <a href="https://www.youtube.com/@MyFundedFuturesPropFirm" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81ZM9.55 15.57V8.43L15.82 12l-6.27 3.57Z"></path></svg></a>
+          <a href="https://discord.com/invite/d7tUceuxg8" aria-label="Discord"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.32 4.37a19.79 19.79 0 0 0-4.89-1.51.07.07 0 0 0-.07.03c-.21.38-.45.87-.61 1.25a18.27 18.27 0 0 0-5.49 0c-.16-.39-.4-.87-.62-1.25a.08.08 0 0 0-.07-.03 19.74 19.74 0 0 0-4.89 1.51.07.07 0 0 0-.03.03C.53 9.05-.32 13.58.1 18.06a.08.08 0 0 0 .03.06 19.9 19.9 0 0 0 5.99 3.03.08.08 0 0 0 .08-.03c.46-.63.87-1.3 1.23-1.99a.08.08 0 0 0-.04-.11 13.11 13.11 0 0 1-1.87-.89.08.08 0 0 1-.01-.13l.37-.29a.07.07 0 0 1 .08-.01c3.93 1.79 8.18 1.79 12.06 0a.07.07 0 0 1 .08.01l.37.29a.08.08 0 0 1-.1.13c-.6.35-1.22.65-1.87.89a.08.08 0 0 0-.04.11c.36.69.77 1.36 1.22 1.99a.08.08 0 0 0 .09.03 19.84 19.84 0 0 0 6-3.03.08.08 0 0 0 .03-.06c.5-5.18-.84-9.67-3.55-13.66a.06.06 0 0 0-.03-.03ZM8.02 15.33c-1.18 0-2.16-1.09-2.16-2.42s.96-2.42 2.16-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.33-.96 2.42-2.16 2.42Zm7.97 0c-1.18 0-2.16-1.09-2.16-2.42s.96-2.42 2.16-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.33-.95 2.42-2.16 2.42Z"></path></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="https://myfundedfutures.com/disclaimer">Disclaimer</a></li>
+          <li><a href="https://myfundedfutures.com/privacy-policy">Privacy Policy</a></li>
+          <li><a href="https://myfundedfutures.com/terms">Terms</a></li>
+          <li><a href="https://myfundedfutures.com/cancellation">Cancellation</a></li>
+          <li><a href="https://myfundedfutures.com/california-privacy-policy">California Privacy Policy</a></li>
+          <li><a href="https://myfundedfutures.com/cookie-policy#cookie-preferences">Cookie Preferences</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>About us</h4>
+        <ul>
+          <li><a href="https://myfundedfutures.com/why-us">Why Us</a></li>
+          <li><a href="https://myfundedfutures.com/community">Community</a></li>
+          <li><a href="https://myfundedfutures.com/careers">Careers</a></li>
+          <li><a href="https://www.trustpilot.com/review/myfundedfutures.com">Testimonials</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>How it works</h4>
+        <ul>
+          <li><a href="https://myfundedfutures.com/how-it-works">Learn How It Works</a></li>
+          <li><a href="https://myfundedfutures.com/affiliate">Affiliate</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>More</h4>
+        <ul>
+          <li><a href="https://myfundedfutures.com/blog">Blogs</a></li>
+          <li><a href="https://myfundedfutures.com/fintevo">Fintevo</a></li>
+          <li><a href="https://help.myfundedfutures.com/en/">FAQ</a></li>
+          <li><a class="nav-perps" style="font-weight:600" href="#top" data-cta="footer-perps"><span class="dot" aria-hidden="true"></span>MyFundedPerps</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ftr-legal">
+      <p>
+        &copy; 2023&ndash;2026 MyFundedFutures. All rights reserved.
+        MyFundedPerps is a separate product with its own account, login, and terms. Perpetual futures programs are offered in a simulated, non&#8209;executing environment. No real capital is deposited, traded, or at risk, and no orders are routed to any live market or exchange. Nothing on this page is investment advice.
+      </p>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+(function(){
+  var m = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var els = document.querySelectorAll('.rv');
+  if (m.matches || !('IntersectionObserver' in window)) {
+    els.forEach(function(e){ e.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en, i){
+      if (en.isIntersecting) {
+        var el = en.target;
+        setTimeout(function(){ el.classList.add('in'); }, (i % 4) * 70);
+        io.unobserve(el);
+      }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+  els.forEach(function(e){ io.observe(e); });
+})();
+// account-size selector
+(function(){
+  var g = document.querySelectorAll('.sizes .size');
+  g.forEach(function(b){
+    b.addEventListener('click', function(){
+      g.forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+      b.setAttribute('aria-pressed','true');
+    });
+  });
+})();
+// dismissible announcement
+(function(){
+  var x = document.querySelector('.promo-x');
+  if (x) x.addEventListener('click', function(){
+    var p = document.querySelector('.promo');
+    if (p) p.style.display = 'none';
+  });
+})();
+</script>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------- market chips ---------------- */
+  var MARKETS = {
+    crypto: [
+      ['BTC','#F7931A'],['ETH','#7A88D6'],['SOL','#14F195'],['XRP','#B8BFC9'],
+      ['BNB','#F0B90B'],['ADA','#3468D1'],['DOGE','#C9A63A'],['AVAX','#E84142'],
+      ['LINK','#3A82F7'],['HYPE','#4FD98A'],['SUI','#5CC7F5'],['TON','#3BA3E0'],
+      ['LTC','#A6A9B6'],['DOT','#DE4A8C'],['ARB','#3C7FD4'],['OP','#E5544B']
+    ],
+    metals: [
+      ['XAU','#D8AE5E'],['XAG','#C2C7CF'],['XPT','#9FB0C0'],['CL','#8A94A6'],
+      ['NG','#5FA8D3'],['HG','#C97C4E'],['XPD','#B0A6C4'],['RB','#A08A6A']
+    ],
+    fx: [
+      ['EUR','#3A82F7'],['GBP','#5B7FD1'],['JPY','#D96A7A'],['AUD','#4FB3A0'],
+      ['CAD','#D67B5B'],['CHF','#C9CDD6'],['NZD','#6FA8C9'],['MXN','#7FBF7F']
+    ],
+    index: [
+      ['US500','#5B8FE8'],['NAS100','#7A9FF0'],['US30','#8FA8D6'],['GER40','#D0A85F'],
+      ['NVDA','#76B900'],['TSLA','#E82127'],['AAPL','#B8BFC9'],['MSFT','#5BA9E8'],
+      ['AMZN','#F0A030'],['META','#4A7FE8']
+    ]
+  };
+  var QUOTE = { crypto: 'USD', metals: 'USD', fx: 'USD', index: 'USD' };
+
+  function shade(hex) {
+    // decide chip text colour from background luminance
+    var r = parseInt(hex.substr(1,2),16), g = parseInt(hex.substr(3,2),16), b = parseInt(hex.substr(5,2),16);
+    return (0.299*r + 0.587*g + 0.114*b) > 150 ? '#0B0D10' : '#FFFFFF';
+  }
+  function renderChips(key) {
+    var host = document.getElementById('mkt-chips');
+    if (!host) return;
+    host.innerHTML = MARKETS[key].map(function (m) {
+      var t = m[0], c = m[1];
+      return '<div class="chip"><i style="background:' + c + ';color:' + shade(c) + '">' +
+             t.slice(0,2) + '</i><span><b>' + t + '/' + QUOTE[key] + '</b><s>PERP</s></span></div>';
+    }).join('');
+  }
+  renderChips('crypto');
+  var mktTabs = document.querySelectorAll('.mkt-tab');
+  mktTabs.forEach(function (b) {
+    b.addEventListener('click', function () {
+      mktTabs.forEach(function (x) { x.setAttribute('aria-pressed','false'); });
+      b.setAttribute('aria-pressed','true');
+      renderChips(b.dataset.mkt);
+    });
+  });
+
+  /* ---------------- tier + timeframe toggles ---------------- */
+  function toggleGroup(sel) {
+    var g = document.querySelectorAll(sel);
+    g.forEach(function (b) {
+      if (b.disabled) return;
+      b.addEventListener('click', function () {
+        g.forEach(function (x) { if (!x.disabled) x.setAttribute('aria-pressed','false'); });
+        b.setAttribute('aria-pressed','true');
+      });
+    });
+  }
+  toggleGroup('.tier-tab');
+  toggleGroup('.term-tf button');
+
+  /* ---------------- order book ---------------- */
+  var MID = 77722.50;
+  function ob(host, side, n) {
+    var el = document.getElementById(host);
+    if (!el) return;
+    var rows = '', p = MID + (side === 'ask' ? 11 : -1.4);
+    for (var i = 0; i < n; i++) {
+      var price = side === 'ask' ? p - i * 2.7 : p - i * 2.6;
+      var size  = (0.09 + ((i * 37) % 26) / 10).toFixed(3);
+      var w     = 16 + ((i * 53) % 62);
+      rows += '<div class="ob-r ob-' + (side === 'ask' ? 'ask' : 'bid') + '">' +
+              '<em style="width:' + w + '%"></em>' +
+              '<span class="' + (side === 'ask' ? 'down' : 'up') + '">' +
+              price.toFixed(2) + '</span><span>' + size + '</span></div>';
+    }
+    el.innerHTML = rows;
+  }
+  ob('tk-asks', 'ask', 5);
+  ob('tk-bids', 'bid', 5);
+
+  /* ---------------- candlestick chart ---------------- */
+  var cv = document.getElementById('tk-chart');
+  if (cv && cv.getContext) {
+    // deterministic pseudo-random so the chart is stable across reloads
+    var seed = 20260901;
+    function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
+
+    // Regime-switching walk: trends, consolidations and the odd impulse bar,
+    // so it reads like a real 15m book rather than a sine wave.
+    var N = 58, candles = [], price = 77180;
+    var regime = 1, bias = 0.55, runLeft = 9;
+    for (var i = 0; i < N; i++) {
+      if (--runLeft <= 0) {                       // pick a new regime
+        var r = rnd();
+        regime = r < 0.38 ? 1 : (r < 0.7 ? -1 : 0);
+        bias = 0.34 + rnd() * 0.72;
+        runLeft = 5 + Math.floor(rnd() * 11);
+      }
+      var noise  = (rnd() - 0.5) * 118;
+      var impulse = rnd() > 0.94 ? (rnd() - 0.4) * 250 : 0;
+      var o = price, c = price + regime * bias * 46 + noise + impulse;
+      var body = Math.abs(c - o);
+      var wick = 14 + rnd() * (34 + body * 0.5);
+      candles.push({
+        o: o, c: c,
+        h: Math.max(o, c) + rnd() * wick,
+        l: Math.min(o, c) - rnd() * wick
+      });
+      price = c;
+    }
+    // land the series near the quoted mark price
+    var shift = 77722.5 - candles[N - 1].c;
+    candles.forEach(function (k) { k.o += shift; k.c += shift; k.h += shift; k.l += shift; });
+
+    function draw() {
+      var dpr = window.devicePixelRatio || 1;
+      var W = cv.clientWidth || 560, H = 216;
+      cv.width = W * dpr; cv.height = H * dpr;
+      var x = cv.getContext('2d');
+      x.setTransform(dpr, 0, 0, dpr, 0, 0);
+      x.clearRect(0, 0, W, H);
+
+      var padR = 52, padB = 20, plotW = W - padR, plotH = H - padB;
+      var hi = -Infinity, lo = Infinity;
+      candles.forEach(function (k) { hi = Math.max(hi, k.h); lo = Math.min(lo, k.l); });
+      var pad = (hi - lo) * 0.12; hi += pad; lo -= pad;
+      var Y = function (p) { return plotH - ((p - lo) / (hi - lo)) * plotH; };
+
+      // grid + right axis
+      x.strokeStyle = 'rgba(255,255,255,.055)';
+      x.fillStyle = '#5F6875';
+      x.font = '9px ui-monospace, monospace';
+      x.textAlign = 'left';
+      x.lineWidth = 1;
+      for (var g = 0; g <= 4; g++) {
+        var yy = Math.round((plotH / 4) * g) + 0.5;
+        x.beginPath(); x.moveTo(0, yy); x.lineTo(plotW, yy); x.stroke();
+        x.fillText((hi - ((hi - lo) / 4) * g).toFixed(0), plotW + 7, yy + 3);
+      }
+
+      // candles
+      var cw = plotW / N, bw = Math.max(2, cw * 0.58);
+      candles.forEach(function (k, i) {
+        var cx = i * cw + cw / 2;
+        var up = k.c >= k.o;
+        var col = up ? '#2FBE7E' : '#E4576B';
+        x.strokeStyle = col; x.fillStyle = col; x.lineWidth = 1;
+        x.beginPath();
+        x.moveTo(Math.round(cx) + 0.5, Y(k.h));
+        x.lineTo(Math.round(cx) + 0.5, Y(k.l));
+        x.stroke();
+        var yo = Y(k.o), yc = Y(k.c);
+        x.fillRect(cx - bw / 2, Math.min(yo, yc), bw, Math.max(1.5, Math.abs(yc - yo)));
+      });
+
+      // last price marker
+      var last = candles[N - 1].c, ly = Y(last);
+      x.strokeStyle = 'rgba(228,87,107,.65)';
+      x.setLineDash([3, 3]);
+      x.beginPath(); x.moveTo(0, ly); x.lineTo(plotW, ly); x.stroke();
+      x.setLineDash([]);
+      x.fillStyle = '#E4576B';
+      x.fillRect(plotW + 2, ly - 7, padR - 4, 14);
+      x.fillStyle = '#fff';
+      x.font = '600 9px ui-monospace, monospace';
+      x.fillText(last.toFixed(2), plotW + 6, ly + 3);
+
+      // volume strip
+      var vh = 26;
+      candles.forEach(function (k, i) {
+        var cx = i * cw + cw / 2;
+        var v = 4 + ((i * 41) % 21);
+        x.fillStyle = (k.c >= k.o) ? 'rgba(47,190,126,.34)' : 'rgba(228,87,107,.34)';
+        x.fillRect(cx - bw / 2, plotH + padB - vh * (v / 26), bw, vh * (v / 26));
+      });
+    }
+    draw();
+    var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(draw, 140); });
+
+    // gentle mark-price tick so the terminal feels live
+    if (!reduce) {
+      var mk = document.getElementById('tk-mark'), base = 77722.50;
+      setInterval(function () {
+        var v = base + (Math.sin(Date.now() / 2600) * 34) + (Math.random() - 0.5) * 12;
+        mk.textContent = v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }, 1400);
+    }
+  }
+})();
+</script>
+
+
+</body>
+</html>
