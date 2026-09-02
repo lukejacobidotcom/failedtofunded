@@ -182,10 +182,10 @@ ul{margin:0;padding:0;list-style:none}
 .msw{
   display:inline-flex;align-items:center;gap:4px;height:52px;padding:4px;border-radius:999px;flex:none;
   border:1px solid rgba(47,190,126,.34);background:#04090A;color:#fff;position:relative;
-  box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 24px -8px rgba(47,190,126,.5);
-  animation:mswPulse 3s ease-in-out infinite;transition:border-color .2s
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03);
+  transition:border-color .2s,box-shadow .2s
 }
-.msw:hover{border-color:rgba(47,190,126,.7)}
+.msw:hover{border-color:rgba(47,190,126,.7);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(47,190,126,.1),0 0 30px -4px rgba(47,190,126,.8)}
 .msw:focus-visible{outline:2px solid var(--green-hi);outline-offset:3px}
 .msw-knob{
   display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px 0 12px;border-radius:999px;position:relative;z-index:2;
@@ -215,7 +215,6 @@ ul{margin:0;padding:0;list-style:none}
 .msw:hover .msw-arrow{transform:translateX(3px)}
 .msw:hover .msw-knob{transform:translateX(10px)}
 .msw.go .msw-side{opacity:.3}
-@keyframes mswPulse{0%,100%{box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 24px -8px rgba(47,190,126,.45)}50%{box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(47,190,126,.1),0 0 32px -4px rgba(47,190,126,.85)}}
 @keyframes mswTick{to{transform:translateX(-50%)}}
 @media(max-width:1189px){.msw-tick{display:none}}
 @media(max-width:1080px){.msw{margin-left:auto}}
@@ -226,7 +225,7 @@ ul{margin:0;padding:0;list-style:none}
 /* logo: wordmark on desktop, shield alone on small phones so the switch fits */
 .hdr-logo .sh{display:none;height:100%;width:auto}
 @media(max-width:520px){.hdr-logo .wm{display:none}.hdr-logo .sh{display:block}.hdr-logo{height:34px}}
-@media(prefers-reduced-motion:reduce){.msw,.msw-tick-in{animation:none !important}}
+@media(prefers-reduced-motion:reduce){.msw-tick-in{animation:none !important}}
 
 /* ---------- footer ---------- */
 .ftr{border-top:1px solid var(--line);background:var(--ink-2);margin-top:0}
@@ -366,7 +365,7 @@ ul{margin:0;padding:0;list-style:none}
 .state .k small{display:block;font-size:12.5px;color:var(--fg-3);margin-top:6px;line-height:1.5;letter-spacing:0;text-transform:none;font-family:var(--f-mffu)}
 .state .demo{display:flex;align-items:center;min-height:64px;overflow-x:auto}
 /* forced states for the demo frames */
-.msw.is-hover{border-color:rgba(47,190,126,.7)}
+.msw.is-hover{border-color:rgba(47,190,126,.7);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(47,190,126,.1),0 0 30px -4px rgba(47,190,126,.8)}
 .msw.is-hover .msw-side::before{border-color:rgba(47,190,126,.85);background:rgba(47,190,126,.1)}
 .msw.is-hover .msw-side{color:#fff}
 .msw.is-hover .msw-arrow{transform:translateX(3px)}
@@ -391,7 +390,7 @@ ul{margin:0;padding:0;list-style:none}
 
   <div class="states">
     <div class="state">
-      <div class="k">State 1<b>At rest</b><small>Knob parked on Futures. The Perps side carries the cube, the label and the ticker, and the empty seat is outlined so the knob visibly has somewhere to go. The green glow breathes on a 3s cycle.</small></div>
+      <div class="k">State 1<b>At rest</b><small>Knob parked on Futures. The Perps side carries the cube, the label and the ticker, and the empty seat is outlined so the knob visibly has somewhere to go. It sits quiet at rest; the green glow only comes on when you hover.</small></div>
       <div class="demo"><a class="msw " href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=header-page-rest" data-cta="header-page-rest" aria-label="Switch to MyFundedPerps, trade crypto and stocks">
       <span class="msw-knob"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg><span class="msw-lbl">Futures</span></span>
       <span class="msw-side">
@@ -408,7 +407,7 @@ ul{margin:0;padding:0;list-style:none}
 </div>
     </div>
     <div class="state">
-      <div class="k">State 2<b>Hover</b><small>The knob nudges 10px toward Perps, the seat outline brightens, the arrow leans right. This is what makes it read as a switch and not a bar.</small></div>
+      <div class="k">State 2<b>Hover</b><small>The knob nudges 10px toward Perps, the seat outline brightens, the green glow comes on, the arrow leans right. This is what makes it read as a switch and not a bar.</small></div>
       <div class="demo"><a class="msw is-hover" href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=header-page-hover" data-cta="header-page-hover" aria-label="Switch to MyFundedPerps, trade crypto and stocks">
       <span class="msw-knob"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg><span class="msw-lbl">Futures</span></span>
       <span class="msw-side">
@@ -466,11 +465,11 @@ ul{margin:0;padding:0;list-style:none}
       <dt>Element</dt><dd>An <code>&lt;a&gt;</code> styled as a switch, not a checkbox: it navigates, so it is a link. <code>aria-label="Switch to MyFundedPerps, trade crypto and stocks"</code>.</dd>
       <dt>Destination</dt><dd><code>https://myfundedperpetuals.com</code> with <code>utm_source</code>, <code>utm_medium=referral</code>, <code>utm_campaign=perps_launch</code>, <code>utm_content=header-switch</code>. One constant; change it in one place.</dd>
       <dt>Click</dt><dd>Prevent default, slide the knob to the far end over 420ms, add <code>.go</code>, then set <code>location.href</code>. Modifier-clicks and middle-clicks fall through so open-in-new-tab still works.</dd>
-      <dt>Hover</dt><dd>Knob <code>translateX(10px)</code>, seat outline brightens, arrow <code>translateX(3px)</code>, border brightens. 200ms. The seat outline itself is always visible.</dd>
+      <dt>Hover</dt><dd>Knob <code>translateX(10px)</code>, seat outline brightens, arrow <code>translateX(3px)</code>, border brightens and the green glow comes on. 200ms. The seat outline is always visible; the glow is hover-only.</dd>
       <dt>Ticker</dt><dd>Illustrative prices in this build. On the real site, feed it from the Perps price API; BTC already ticks every 1.5s to show the hook.</dd>
       <dt>Cube</dt><dd><code>cube.fundingperpetuals.com/cube-512-30-v1.webm</code>, matted on black, composited with <code>mix-blend-mode: screen</code> so no alpha channel is needed. Muted, looped, plays inline.</dd>
       <dt>Breakpoints</dt><dd>Ticker hidden below 1190px. Labels hidden and the cube shrinks to 34px at 520px and below. Header gap is 16px; nav items are <code>white-space: nowrap</code> so the nav can never wrap to make room.</dd>
-      <dt>Reduced motion</dt><dd>No glow pulse, no ticker scroll, no slide on click. The cube holds a frame at 0.9s.</dd>
+      <dt>Reduced motion</dt><dd>No ticker scroll, no slide on click. The cube holds a frame at 0.9s.</dd>
     </dl>
   </div>
 </div>
