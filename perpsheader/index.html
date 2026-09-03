@@ -224,18 +224,26 @@ ul{margin:0;padding:0;list-style:none}
 }
 
 /* Mirrored switch for the Perps site: knob parked on Perps, Futures is the
-   destination, so seat, glow, arrow and mark take the futures gold. */
-.msw-perps{border-color:rgba(216,174,94,.34)}
+   destination. Rule: the selection is the only filled element. The Futures
+   side is outline-only at rest (ghosted mark, muted label, no seat fill) with
+   the prices kept legible; hover brings the gold back so the affordance holds. */
+.msw-perps{border-color:rgba(216,174,94,.3)}
 .msw-perps:hover{border-color:rgba(216,174,94,.7);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(216,174,94,.1),0 0 30px -4px rgba(216,174,94,.75)}
-.msw-perps .msw-knob{background:linear-gradient(180deg,rgba(52,199,89,.32),rgba(52,199,89,.12));border-color:rgba(52,199,89,.65)}
-.msw-perps .msw-side{padding:0 5px 0 12px;color:#EBDDB8}
-.msw-perps .msw-side::before{border-color:rgba(216,174,94,.5);background:rgba(216,174,94,.05)}
-.msw-perps:hover .msw-side::before{border-color:rgba(216,174,94,.85);background:rgba(216,174,94,.1)}
-.msw-perps .msw-mark{background:radial-gradient(120% 120% at 50% 0%,rgba(216,174,94,.26),rgba(216,174,94,.05));border-color:rgba(216,174,94,.3)}
-.msw-perps .msw-arrow{color:var(--gold-lt);transform:scaleX(-1)}
-.msw-perps:hover .msw-arrow{transform:scaleX(-1) translateX(3px)}
+.msw-perps .msw-knob{padding:0 14px 0 11px;background:linear-gradient(180deg,rgba(52,199,89,.4),rgba(52,199,89,.16));border-color:rgba(52,199,89,.75)}
+.msw-perps .msw-side{padding:0 4px 0 10px;color:#9AA3AF}
+.msw-perps:hover .msw-side{color:#fff}
+.msw-perps .msw-side::before{border-color:rgba(216,174,94,.3);background:transparent}
+.msw-perps:hover .msw-side::before{border-color:rgba(216,174,94,.8);background:rgba(216,174,94,.08)}
+.msw-perps .msw-mark{background:transparent;border-color:rgba(216,174,94,.3);transition:background .2s,border-color .2s}
+.msw-perps .msw-mark svg{opacity:.55;transition:opacity .2s}
+.msw-perps:hover .msw-mark{background:radial-gradient(120% 120% at 50% 0%,rgba(216,174,94,.26),rgba(216,174,94,.05));border-color:rgba(216,174,94,.55)}
+.msw-perps:hover .msw-mark svg{opacity:1}
+.msw-perps .msw-arrow{color:rgba(216,174,94,.55);transform:scaleX(-1)}
+.msw-perps:hover .msw-arrow{color:var(--gold-lt);transform:scaleX(-1) translateX(3px)}
 .msw-perps:hover .msw-knob{transform:translateX(-10px)}
-.msw-perps .msw-tick-in{color:#E8D6A8}
+.msw-perps .msw-tick{width:156px}
+.msw-perps .msw-tick-in{color:#AEB6C2}
+.msw-perps .msw-tick-in b{color:#D8DEE6}
 .msw-perps .msw-tick-in u{color:var(--gold-lt)}
 .msw-perps .msw-tick-in u.dn{color:#F1566B}
 
@@ -244,7 +252,7 @@ ul{margin:0;padding:0;list-style:none}
 .phdr-in{display:flex;align-items:center;gap:16px;min-height:72px}
 .phdr-logo{display:flex;align-items:center;height:30px;flex:none}
 .phdr-logo svg{height:100%;width:auto}
-.pnav{display:flex;align-items:center;gap:22px;margin-inline:auto}
+.pnav{display:flex;align-items:center;gap:20px;margin-inline:auto}
 .pnav a{font-size:14px;color:#9CA3AF;white-space:nowrap;transition:color .15s}
 .pnav a:hover{color:#fff}
 .pbtn{background:#37CA5D;color:#000;font-weight:600;font-size:14px;padding:10px 16px;border-radius:14px;white-space:nowrap;flex:none;transition:background .15s}
@@ -332,8 +340,8 @@ ul{margin:0;padding:0;list-style:none}
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
         <span class="msw-col"><span class="msw-lbl">Futures</span>
         <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
-          <span><b>ES</b> <i id="msw-es">5,842</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
-          <span><b>ES</b> 5,842 <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> <i id="msw-es">5,842.25</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915.50 <u>&#9650;0.9%</u></span><span><b>YM</b> 42,118 <u>&#9650;0.4%</u></span><span><b>RTY</b> 2,236.80 <u class="dn">&#9660;0.2%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481.30 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> <i>5,842.25</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915.50 <u>&#9650;0.9%</u></span><span><b>YM</b> 42,118 <u>&#9650;0.4%</u></span><span><b>RTY</b> 2,236.80 <u class="dn">&#9660;0.2%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481.30 <u>&#9650;0.2%</u></span>
         </span></span></span>
         <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
       </span>
@@ -366,7 +374,7 @@ ul{margin:0;padding:0;list-style:none}
     setTimeout(function(){ window.location.href=sw.href; },420);
   });
   var es=document.getElementById('msw-es');
-  if(es&&!reduce){ var base=5842; setInterval(function(){ var n=base+Math.sin(Date.now()/2900)*2.5+(Math.random()-.5)*1.5; es.textContent=n.toLocaleString('en-US',{maximumFractionDigits:0}); },1500); }
+  if(es&&!reduce){ var base=5842; setInterval(function(){ var n=base+Math.sin(Date.now()/2900)*2.5+(Math.random()-.5)*1.5; es.textContent=n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); },1500); }
 })();
 </script>
 
@@ -406,26 +414,26 @@ ul{margin:0;padding:0;list-style:none}
 /* the Perps nav has six items, so its ticker needs more room before it folds */
 @media(max-width:1279px){.phdr .msw-tick{display:none}}
 </style>
-<div class="hp"><p class="eyebrow">Header component, Perps side</p><h1>The market switch, mirrored</h1><p class="lede">This is the same control as it sits in the My Funded Perps header. The knob is parked on Perps; Futures is the destination, so the seat, the glow, the arrow and the mark all take the futures gold, and the ticker shows CME symbols.</p><div class="states"><div class="state"><div class="k">State 1<b>At rest</b><small>Knob parked on Perps. The Futures side carries the gold shield, the label and an ES, NQ, CL and GC ticker, with the empty seat outlined in gold. Quiet at rest.</small></div><div class="demo"><a class="msw msw-perps " href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-rest" data-cta="perps-page-rest" aria-label="Switch to My Funded Futures, trade CME futures">
+<div class="hp"><p class="eyebrow">Header component, Perps side</p><h1>The market switch, mirrored</h1><p class="lede">This is the same control as it sits in the My Funded Perps header. The knob is parked on Perps; Futures is the destination, so the seat, the glow, the arrow and the mark all take the futures gold, and the ticker shows CME symbols.</p><div class="states"><div class="state"><div class="k">State 1<b>At rest</b><small>Knob parked on Perps. The Futures side is outline-only: a ghosted gold shield, a muted label, the seat outlined but unfilled, so it clearly is not the selection. The ticker keeps ES, NQ, YM, RTY, CL and GC prices legible.</small></div><div class="demo"><a class="msw msw-perps " href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-rest" data-cta="perps-page-rest" aria-label="Switch to My Funded Futures, trade CME futures">
       <span class="msw-side">
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
         <span class="msw-col"><span class="msw-lbl">Futures</span>
         <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
-          <span><b>ES</b> <i id="msw-es">5,842</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
-          <span><b>ES</b> 5,842 <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> <i id="msw-es">5,842.25</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915.50 <u>&#9650;0.9%</u></span><span><b>YM</b> 42,118 <u>&#9650;0.4%</u></span><span><b>RTY</b> 2,236.80 <u class="dn">&#9660;0.2%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481.30 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> <i>5,842.25</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915.50 <u>&#9650;0.9%</u></span><span><b>YM</b> 42,118 <u>&#9650;0.4%</u></span><span><b>RTY</b> 2,236.80 <u class="dn">&#9660;0.2%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481.30 <u>&#9650;0.2%</u></span>
         </span></span></span>
         <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
       </span>
       <span class="msw-knob"><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg><span class="msw-lbl">Perps</span></span>
     </a>
 
-</div></div><div class="state"><div class="k">State 2<b>Hover</b><small>The knob nudges 10px toward Futures, the gold seat brightens, the gold glow comes on, the arrow leans left.</small></div><div class="demo"><a class="msw msw-perps is-hover" href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-hover" data-cta="perps-page-hover" aria-label="Switch to My Funded Futures, trade CME futures">
+</div></div><div class="state"><div class="k">State 2<b>Hover</b><small>The knob nudges 10px toward Futures, the seat fills and brightens, the shield and label come up to full, the gold glow comes on, the arrow leans left.</small></div><div class="demo"><a class="msw msw-perps is-hover" href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-hover" data-cta="perps-page-hover" aria-label="Switch to My Funded Futures, trade CME futures">
       <span class="msw-side">
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
         <span class="msw-col"><span class="msw-lbl">Futures</span>
         <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
-          <span><b>ES</b> <i id="msw-es">5,842</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
-          <span><b>ES</b> 5,842 <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> <i id="msw-es">5,842.25</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915.50 <u>&#9650;0.9%</u></span><span><b>YM</b> 42,118 <u>&#9650;0.4%</u></span><span><b>RTY</b> 2,236.80 <u class="dn">&#9660;0.2%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481.30 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> <i>5,842.25</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915.50 <u>&#9650;0.9%</u></span><span><b>YM</b> 42,118 <u>&#9650;0.4%</u></span><span><b>RTY</b> 2,236.80 <u class="dn">&#9660;0.2%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481.30 <u>&#9650;0.2%</u></span>
         </span></span></span>
         <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
       </span>
@@ -437,8 +445,8 @@ ul{margin:0;padding:0;list-style:none}
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
         <span class="msw-col"><span class="msw-lbl">Futures</span>
         <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
-          <span><b>ES</b> <i id="msw-es">5,842</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
-          <span><b>ES</b> 5,842 <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> <i id="msw-es">5,842.25</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915.50 <u>&#9650;0.9%</u></span><span><b>YM</b> 42,118 <u>&#9650;0.4%</u></span><span><b>RTY</b> 2,236.80 <u class="dn">&#9660;0.2%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481.30 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> <i>5,842.25</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915.50 <u>&#9650;0.9%</u></span><span><b>YM</b> 42,118 <u>&#9650;0.4%</u></span><span><b>RTY</b> 2,236.80 <u class="dn">&#9660;0.2%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481.30 <u>&#9650;0.2%</u></span>
         </span></span></span>
         <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
       </span>
@@ -450,15 +458,15 @@ ul{margin:0;padding:0;list-style:none}
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
         <span class="msw-col"><span class="msw-lbl">Futures</span>
         <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
-          <span><b>ES</b> <i id="msw-es">5,842</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
-          <span><b>ES</b> 5,842 <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> <i id="msw-es">5,842.25</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915.50 <u>&#9650;0.9%</u></span><span><b>YM</b> 42,118 <u>&#9650;0.4%</u></span><span><b>RTY</b> 2,236.80 <u class="dn">&#9660;0.2%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481.30 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> <i>5,842.25</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915.50 <u>&#9650;0.9%</u></span><span><b>YM</b> 42,118 <u>&#9650;0.4%</u></span><span><b>RTY</b> 2,236.80 <u class="dn">&#9660;0.2%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481.30 <u>&#9650;0.2%</u></span>
         </span></span></span>
         <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
       </span>
       <span class="msw-knob"><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg><span class="msw-lbl">Perps</span></span>
     </a>
 
-</div></div></div><div class="spec"><h2>Behaviour spec</h2><dl><dt>Element</dt><dd>Same component, same markup, with a <code>.msw-perps</code> modifier that flips the knob to the right and recolours the destination side gold. <code>aria-label="Switch to My Funded Futures, trade CME futures"</code>.</dd><dt>Destination</dt><dd><code>https://myfundedfutures.com</code> with <code>utm_source=myfundedperps</code>, <code>utm_medium=referral</code>, <code>utm_campaign=perps_launch</code>, <code>utm_content=header-switch</code>.</dd><dt>Click</dt><dd>Prevent default, slide the knob to the left end over 420ms, add <code>.go</code>, then set <code>location.href</code>. The travel is <code>-(knob.offsetLeft - 4)</code>.</dd><dt>Hover</dt><dd>Knob <code>translateX(-10px)</code>, gold seat brightens, arrow leans left, gold glow comes on. 200ms. Nothing pulses at rest.</dd><dt>Mark</dt><dd>The gold My Funded Futures shield in a 36px plate, mirroring the green shield on the MFFU side.</dd><dt>Ticker</dt><dd>ES, NQ, CL and GC, illustrative in this build. ES ticks every 1.5s. On the real site, feed it from the futures quote feed.</dd><dt>Breakpoints</dt><dd>This header has six nav items, so the ticker folds below 1280px rather than 1190px. Labels hidden and the mark shrinks at 520px and below.</dd><dt>Reduced motion</dt><dd>No ticker scroll, no slide on click.</dd></dl></div></div></main>
+</div></div></div><div class="spec"><h2>Behaviour spec</h2><dl><dt>Element</dt><dd>Same component, same markup, with a <code>.msw-perps</code> modifier that flips the knob to the right and recolours the destination side gold. <code>aria-label="Switch to My Funded Futures, trade CME futures"</code>.</dd><dt>Destination</dt><dd><code>https://myfundedfutures.com</code> with <code>utm_source=myfundedperps</code>, <code>utm_medium=referral</code>, <code>utm_campaign=perps_launch</code>, <code>utm_content=header-switch</code>.</dd><dt>Click</dt><dd>Prevent default, slide the knob to the left end over 420ms, add <code>.go</code>, then set <code>location.href</code>. The travel is <code>-(knob.offsetLeft - 4)</code>.</dd><dt>Hover</dt><dd>Knob <code>translateX(-10px)</code>, gold seat brightens, arrow leans left, gold glow comes on. 200ms. Nothing pulses at rest.</dd><dt>Mark</dt><dd>The gold My Funded Futures shield in a 36px plate, ghosted to 55% at rest and full on hover.</dd><dt>Selection</dt><dd>The selected side is the only filled element. The destination side is outline-only at rest, which is what makes the knob read as the selection rather than one of two buttons.</dd><dt>Ticker</dt><dd>ES, NQ, YM, RTY, CL and GC with contract prices, illustrative in this build, in a 156px window. ES ticks every 1.5s. On the real site, feed it from the futures quote feed.</dd><dt>Breakpoints</dt><dd>This header has six nav items, so the ticker folds below 1280px rather than 1190px. Labels hidden and the mark shrinks at 520px and below.</dd><dt>Reduced motion</dt><dd>No ticker scroll, no slide on click.</dd></dl></div></div></main>
 
 </body>
 </html>
