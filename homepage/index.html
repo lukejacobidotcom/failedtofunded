@@ -212,8 +212,8 @@ ul{margin:0;padding:0;list-style:none}
 .msw-side::before{content:"";position:absolute;inset:0;border-radius:999px;border:1px dashed rgba(47,190,126,.5);background:rgba(47,190,126,.05);transition:border-color .2s,background .2s}
 .msw:hover .msw-side::before{border-color:rgba(47,190,126,.85);background:rgba(47,190,126,.1)}
 .msw:hover .msw-side{color:#fff}
-.msw .vid{width:40px;height:40px;border-radius:50%;overflow:hidden;position:relative;flex:none;z-index:1}
-.msw .vid video{display:block;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;transform:scale(1.32)}
+.msw-mark{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:none;position:relative;z-index:1;background:radial-gradient(120% 120% at 50% 0%,rgba(47,190,126,.26),rgba(47,190,126,.05));border:1px solid rgba(47,190,126,.3)}
+.msw-mark svg{width:17px;height:21px}
 .msw-col{display:flex;flex-direction:column;justify-content:center;line-height:1.1;position:relative;z-index:1}
 .msw-tick{overflow:hidden;width:126px;margin-top:3px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
 .msw-tick-in{display:flex;gap:14px;white-space:nowrap;width:max-content;animation:mswTick 16s linear infinite;font-family:var(--f-mono);font-size:10px;font-weight:500;color:#9FE3BA}
@@ -229,8 +229,37 @@ ul{margin:0;padding:0;list-style:none}
 @media(max-width:1080px){.msw{margin-left:auto}}
 @media(max-width:520px){
   .msw{height:46px;padding:3px}.msw-knob{height:38px;padding:0 10px}.msw-side{height:38px;padding:0 10px 0 4px;gap:6px}
-  .msw-lbl{display:none}.msw .vid{width:34px;height:34px}
+  .msw-lbl{display:none}.msw-mark{width:30px;height:30px}.msw-mark svg{width:14px;height:17px}
 }
+
+/* Mirrored switch for the Perps site: knob parked on Perps, Futures is the
+   destination, so seat, glow, arrow and mark take the futures gold. */
+.msw-perps{border-color:rgba(216,174,94,.34)}
+.msw-perps:hover{border-color:rgba(216,174,94,.7);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(216,174,94,.1),0 0 30px -4px rgba(216,174,94,.75)}
+.msw-perps .msw-knob{background:linear-gradient(180deg,rgba(52,199,89,.32),rgba(52,199,89,.12));border-color:rgba(52,199,89,.65)}
+.msw-perps .msw-side{padding:0 5px 0 12px;color:#EBDDB8}
+.msw-perps .msw-side::before{border-color:rgba(216,174,94,.5);background:rgba(216,174,94,.05)}
+.msw-perps:hover .msw-side::before{border-color:rgba(216,174,94,.85);background:rgba(216,174,94,.1)}
+.msw-perps .msw-mark{background:radial-gradient(120% 120% at 50% 0%,rgba(216,174,94,.26),rgba(216,174,94,.05));border-color:rgba(216,174,94,.3)}
+.msw-perps .msw-arrow{color:var(--gold-lt);transform:scaleX(-1)}
+.msw-perps:hover .msw-arrow{transform:scaleX(-1) translateX(3px)}
+.msw-perps:hover .msw-knob{transform:translateX(-10px)}
+.msw-perps .msw-tick-in{color:#E8D6A8}
+.msw-perps .msw-tick-in u{color:var(--gold-lt)}
+.msw-perps .msw-tick-in u.dn{color:#F1566B}
+
+/* The Perps site's own header chrome, for the mirrored switch page */
+.phdr{position:sticky;top:0;z-index:60;background:rgba(12,14,17,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08);font-family:var(--f-perps)}
+.phdr-in{display:flex;align-items:center;gap:16px;min-height:72px}
+.phdr-logo{display:flex;align-items:center;height:30px;flex:none}
+.phdr-logo svg{height:100%;width:auto}
+.pnav{display:flex;align-items:center;gap:22px;margin-inline:auto}
+.pnav a{font-size:14px;color:#9CA3AF;white-space:nowrap;transition:color .15s}
+.pnav a:hover{color:#fff}
+.pbtn{background:#37CA5D;color:#000;font-weight:600;font-size:14px;padding:10px 16px;border-radius:14px;white-space:nowrap;flex:none;transition:background .15s}
+.pbtn:hover{background:#4FD98A}
+@media(max-width:1080px){.pnav{display:none}}
+
 /* logo: wordmark on desktop, shield alone on small phones so the switch fits */
 .hdr-logo .sh{display:none;height:100%;width:auto}
 @media(max-width:520px){.hdr-logo .wm{display:none}.hdr-logo .sh{display:block}.hdr-logo{height:34px}}
@@ -340,7 +369,7 @@ ul{margin:0;padding:0;list-style:none}
     <a class="msw" href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=header-switch" data-cta="header-switch" aria-label="Switch to MyFundedPerps, trade crypto and stocks">
       <span class="msw-knob"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg><span class="msw-lbl">Futures</span></span>
       <span class="msw-side">
-        <span class="vid" aria-hidden="true"><video autoplay muted loop playsinline preload="auto" disablepictureinpicture><source src="https://cube.fundingperpetuals.com/cube-512-30-v1.webm" type="video/webm"></video></span>
+        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 73 89"><use href="#sh-perps"></use></svg></span>
         <span class="msw-col"><span class="msw-lbl">Perps</span>
         <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
           <span><b>BTC</b> <i id="msw-btc">77,722</i> <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
@@ -377,14 +406,11 @@ ul{margin:0;padding:0;list-style:none}
     if(reduce||sw.classList.contains('go')) return;
     e.preventDefault();
     var knob=sw.querySelector('.msw-knob');
-    var travel=sw.clientWidth-knob.offsetWidth-knob.offsetLeft-4;
+    var travel=sw.classList.contains('msw-perps') ? -(knob.offsetLeft-4) : (sw.clientWidth-knob.offsetWidth-knob.offsetLeft-4);
     knob.style.transform='translateX('+travel+'px)';
     sw.classList.add('go');
     setTimeout(function(){ window.location.href=sw.href; },420);
   });
-  /* hold the cube on a frame if the visitor prefers reduced motion */
-  var v=sw.querySelector('video');
-  if(reduce&&v){ v.removeAttribute('autoplay'); v.pause(); try{v.currentTime=0.9;}catch(err){} }
   /* a gentle BTC tick so the ticker feels alive */
   var btc=document.getElementById('msw-btc');
   if(btc&&!reduce){ var base=77722; setInterval(function(){ var n=base+Math.sin(Date.now()/2600)*34+(Math.random()-.5)*12; btc.textContent=Math.round(n).toLocaleString('en-US'); },1500); }

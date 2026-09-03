@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Market Switch | My Funded Futures</title>
+<title>Market Switch | My Funded Perps</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="The MyFundedFutures header market switch: states and behaviour spec.">
-<meta name="theme-color" content="#02040E">
+<meta name="description" content="The market switch as it sits in the My Funded Perps header: states and behaviour spec.">
+<meta name="theme-color" content="#0C0E11">
 </head>
-<body style="background:#02040E">
+<body style="background:#0C0E11">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap">
@@ -317,68 +317,60 @@ ul{margin:0;padding:0;list-style:none}
 <symbol id="sh-perps-solid" viewBox="5 5 73 89"><path d="M23.916 16.9383V7.28613H29.7627V11.3502H38.5326V7.28613H44.3791V11.3502H53.149V7.28613H58.9956V16.9383H23.916Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.52711 22.2998C7.52711 22.2998 7.35406 30.7718 7.52711 41.8358C7.54232 42.808 7.55406 43.7961 7.56594 44.7966C7.81261 65.5562 8.12267 91.6525 40.7612 91.6525C74.9727 91.6525 75.4613 73.5818 75.4613 39.3938V22.2998H7.52711ZM69.7916 28.0197H13.132C13.111 31.4845 13.1115 36.2991 13.1967 41.7456C13.2114 42.687 13.2237 43.6281 13.236 44.5679C13.3681 54.706 13.4978 64.6673 16.6847 72.5025C18.3303 76.5477 20.7129 79.7573 24.2302 82.0189C27.7866 84.3062 32.984 85.9328 40.7612 85.9328C48.8966 85.9328 54.4377 84.8455 58.2686 83.0882C61.9197 81.4131 64.246 79.0296 65.8784 75.7667C67.6059 72.3156 68.6482 67.6862 69.2034 61.4693C69.7565 55.2696 69.7916 47.995 69.7916 39.3938V28.0197Z" fill="currentColor"/><path d="M29.2854 56.2617H18.5469C18.5469 56.2617 18.614 63.3908 20.6946 68.7745C22.7751 74.1571 29.2854 79.1414 29.2854 79.1414V56.2617Z" fill="currentColor"/><path d="M48.2566 46.6094H34.6543V80.5707H48.2566V46.6094Z" fill="currentColor"/><path d="M64.7224 37.3145H53.626V79.1407C53.626 79.1407 64.7224 76.4422 64.7224 62.2753V37.3145Z" fill="currentColor"/></symbol>
 <symbol id="wm-perps" viewBox="5 5 420 89"><path d="M23.916 16.9383V7.28613H29.7627V11.3502H38.5326V7.28613H44.3791V11.3502H53.149V7.28613H58.9956V16.9383H23.916Z" fill="#34C759"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.52711 22.2998C7.52711 22.2998 7.35406 30.7718 7.52711 41.8358C7.54232 42.808 7.55406 43.7961 7.56594 44.7966C7.81261 65.5562 8.12267 91.6525 40.7612 91.6525C74.9727 91.6525 75.4613 73.5818 75.4613 39.3938V22.2998H7.52711ZM69.7916 28.0197H13.132C13.111 31.4845 13.1115 36.2991 13.1967 41.7456C13.2114 42.687 13.2237 43.6281 13.236 44.5679C13.3681 54.706 13.4978 64.6673 16.6847 72.5025C18.3303 76.5477 20.7129 79.7573 24.2302 82.0189C27.7866 84.3062 32.984 85.9328 40.7612 85.9328C48.8966 85.9328 54.4377 84.8455 58.2686 83.0882C61.9197 81.4131 64.246 79.0296 65.8784 75.7667C67.6059 72.3156 68.6482 67.6862 69.2034 61.4693C69.7565 55.2696 69.7916 47.995 69.7916 39.3938V28.0197Z" fill="white"/><path d="M29.2854 56.2617H18.5469C18.5469 56.2617 18.614 63.3908 20.6946 68.7745C22.7751 74.1571 29.2854 79.1414 29.2854 79.1414V56.2617Z" fill="white"/><path d="M48.2566 46.6094H34.6543V80.5707H48.2566V46.6094Z" fill="white"/><path d="M64.7224 37.3145H53.626V79.1407C53.626 79.1407 64.7224 76.4422 64.7224 62.2753V37.3145Z" fill="white"/><path d="M94.0557 74.248L94.8731 29.9873H100.922L108.716 65.8877L116.563 29.9873H122.558L123.376 74.248H118.416L117.926 42.118L110.46 74.248H106.972L99.56 42.118L99.0695 74.248H94.0557ZM129.161 82.1712V77.6905C130.578 77.6905 131.704 77.6177 132.54 77.4719C133.375 77.3627 133.975 77.1259 134.338 76.7616C134.701 76.4337 134.883 75.9602 134.883 75.3409C134.883 75.013 134.756 74.2845 134.502 73.1552C134.247 72.0259 133.975 70.8237 133.684 69.5487L127.362 42.6644H133.248L137.499 66.2702L141.586 42.6644H147.472L139.951 75.9966C139.624 77.5266 139.025 78.7287 138.153 79.603C137.281 80.5137 136.155 81.1694 134.774 81.5702C133.43 81.9709 131.795 82.1712 129.869 82.1712H129.161ZM163.937 74.248V29.9873H180.995V34.4134H170.095V49.1669H178.542V53.5384H170.095V74.248H163.937ZM189.258 74.6852C188.023 74.6852 187.06 74.3573 186.37 73.7016C185.679 73.0459 185.189 72.2262 184.898 71.2427C184.644 70.2591 184.517 69.2573 184.517 68.2373V42.6644H190.348V66.4887C190.348 67.618 190.512 68.5105 190.839 69.1662C191.166 69.7855 191.838 70.0952 192.855 70.0952C193.509 70.0952 194.181 69.913 194.871 69.5487C195.598 69.148 196.288 68.6744 196.942 68.128V42.6644H202.774V74.248H196.942V71.1334C195.925 72.117 194.762 72.9548 193.454 73.6469C192.183 74.3391 190.784 74.6852 189.258 74.6852ZM208.737 74.248V42.6644H214.568V45.7791C215.621 44.7955 216.784 43.9577 218.056 43.2655C219.327 42.5734 220.727 42.2273 222.253 42.2273C223.525 42.2273 224.486 42.5552 225.14 43.2109C225.831 43.8666 226.303 44.6862 226.557 45.6698C226.848 46.6534 226.993 47.6552 226.993 48.6752V74.248H221.163V50.3691C221.163 49.2398 220.998 48.3655 220.671 47.7462C220.344 47.1269 219.673 46.8173 218.656 46.8173C218.002 46.8173 217.312 47.0177 216.585 47.4184C215.895 47.7827 215.222 48.238 214.568 48.7844V74.248H208.737ZM239.989 74.6852C237.337 74.6852 235.356 73.7198 234.048 71.7891C232.74 69.822 232.086 66.5069 232.086 61.8441V55.7241C232.086 53.3198 232.287 51.0977 232.687 49.0577C233.086 46.9812 233.83 45.3237 234.92 44.0852C236.046 42.8466 237.681 42.2273 239.825 42.2273C240.878 42.2273 241.842 42.4641 242.714 42.9377C243.586 43.4112 244.366 43.9941 245.057 44.6862V29.9873H250.889V74.248H245.057V72.2262C244.366 72.9548 243.603 73.5559 242.768 74.0294C241.968 74.4666 241.043 74.6852 239.989 74.6852ZM241.46 70.0952C242.005 70.0952 242.586 70.0041 243.204 69.822C243.821 69.6034 244.439 69.2937 245.057 68.893V48.1834C244.548 47.8191 243.986 47.5094 243.368 47.2544C242.751 46.963 242.077 46.8173 241.351 46.8173C240.006 46.8173 239.098 47.473 238.626 48.7844C238.154 50.0594 237.918 51.6077 237.918 53.4291V62.3359C237.918 63.793 237.991 65.1227 238.136 66.3248C238.318 67.4905 238.662 68.4195 239.171 69.1116C239.679 69.7673 240.442 70.0952 241.46 70.0952ZM265.516 74.6852C263.045 74.6852 261.137 74.2116 259.792 73.2644C258.448 72.2809 257.504 70.8602 256.959 69.0023C256.45 67.108 256.196 64.7948 256.196 62.0627V54.8498C256.196 52.0448 256.469 49.7134 257.014 47.8555C257.559 45.9977 258.504 44.5952 259.848 43.648C261.229 42.7009 263.118 42.2273 265.516 42.2273C268.168 42.2273 270.111 42.7737 271.346 43.8666C272.618 44.9594 273.453 46.5441 273.853 48.6205C274.253 50.6605 274.453 53.1194 274.453 55.9973V58.5655H262.028V64.9041C262.028 66.1791 262.137 67.2173 262.355 68.0187C262.609 68.8202 262.99 69.4212 263.498 69.822C264.043 70.1862 264.734 70.3684 265.569 70.3684C266.441 70.3684 267.095 70.168 267.531 69.7673C268.004 69.3302 268.313 68.7291 268.459 67.9641C268.64 67.1627 268.73 66.2337 268.73 65.1773V63.2648H274.398V64.4669C274.398 67.6362 273.727 70.1316 272.383 71.953C271.038 73.7744 268.749 74.6852 265.516 74.6852ZM262.028 55.3962H268.73V52.5548C268.73 51.2434 268.657 50.1505 268.512 49.2762C268.367 48.3655 268.059 47.6916 267.587 47.2544C267.151 46.7809 266.441 46.5441 265.46 46.5441C264.516 46.5441 263.789 46.7627 263.28 47.1998C262.808 47.637 262.481 48.3837 262.299 49.4402C262.118 50.4602 262.028 51.8809 262.028 53.7023V55.3962ZM287.037 74.6852C284.385 74.6852 282.404 73.7198 281.096 71.7891C279.788 69.822 279.134 66.5069 279.134 61.8441V55.7241C279.134 53.3198 279.335 51.0977 279.734 49.0577C280.134 46.9812 280.878 45.3237 281.968 44.0852C283.094 42.8466 284.729 42.2273 286.873 42.2273C287.926 42.2273 288.89 42.4641 289.762 42.9377C290.634 43.4112 291.414 43.9941 292.104 44.6862V29.9873H297.937V74.248H292.104V72.2262C291.414 72.9548 290.651 73.5559 289.816 74.0294C289.016 74.4666 288.091 74.6852 287.037 74.6852ZM288.508 70.0952C289.053 70.0952 289.634 70.0041 290.252 69.822C290.869 69.6034 291.487 69.2937 292.104 68.893V48.1834C291.596 47.8191 291.034 47.5094 290.416 47.2544C289.798 46.963 289.125 46.8173 288.399 46.8173C287.054 46.8173 286.146 47.473 285.674 48.7844C285.201 50.0594 284.966 51.6077 284.966 53.4291V62.3359C284.966 63.793 285.039 65.1227 285.184 66.3248C285.366 67.4905 285.71 68.4195 286.219 69.1116C286.727 69.7673 287.49 70.0952 288.508 70.0952ZM316.787 74.248V29.9873H327.742C330.394 29.9873 332.501 30.4791 334.064 31.4627C335.662 32.4098 336.825 33.7941 337.552 35.6155C338.278 37.4369 338.641 39.6409 338.641 42.2273C338.641 44.5587 338.223 46.5805 337.387 48.2927C336.588 50.0048 335.389 51.3344 333.79 52.2816C332.191 53.1923 330.193 53.6477 327.795 53.6477H322.946V74.248H316.787ZM322.946 49.2216H325.78C327.56 49.2216 328.958 49.0212 329.975 48.6205C330.993 48.2198 331.719 47.5277 332.155 46.5441C332.591 45.5241 332.809 44.1034 332.809 42.2819C332.809 40.1691 332.647 38.548 332.32 37.4187C332.029 36.2894 331.392 35.5062 330.411 35.0691C329.43 34.632 327.904 34.4134 325.833 34.4134H322.946V49.2216ZM350.135 74.6852C347.665 74.6852 345.758 74.2116 344.414 73.2644C343.07 72.2809 342.125 70.8602 341.58 69.0023C341.071 67.108 340.817 64.7948 340.817 62.0627V54.8498C340.817 52.0448 341.089 49.7134 341.634 47.8555C342.179 45.9977 343.123 44.5952 344.467 43.648C345.848 42.7009 347.737 42.2273 350.135 42.2273C352.787 42.2273 354.732 42.7737 355.968 43.8666C357.239 44.9594 358.075 46.5441 358.474 48.6205C358.874 50.6605 359.073 53.1194 359.073 55.9973V58.5655H346.647V64.9041C346.647 66.1791 346.756 67.2173 346.974 68.0187C347.229 68.8202 347.611 69.4212 348.12 69.822C348.665 70.1862 349.355 70.3684 350.191 70.3684C351.063 70.3684 351.717 70.168 352.153 69.7673C352.625 69.3302 352.933 68.7291 353.078 67.9641C353.26 67.1627 353.352 66.2337 353.352 65.1773V63.2648H359.019V64.4669C359.019 67.6362 358.346 70.1316 357.002 71.953C355.658 73.7744 353.369 74.6852 350.135 74.6852ZM346.647 55.3962H353.352V52.5548C353.352 51.2434 353.279 50.1505 353.134 49.2762C352.988 48.3655 352.678 47.6916 352.206 47.2544C351.77 46.7809 351.063 46.5441 350.082 46.5441C349.137 46.5441 348.411 46.7627 347.902 47.1998C347.43 47.637 347.103 48.3837 346.921 49.4402C346.739 50.4602 346.647 51.8809 346.647 53.7023V55.3962ZM364.518 74.248V42.6644H370.349V47.1452C371.511 45.2144 372.674 43.9212 373.837 43.2655C374.999 42.6098 376.162 42.2819 377.324 42.2819C377.47 42.2819 377.598 42.2819 377.707 42.2819C377.852 42.2819 378.034 42.3002 378.252 42.3366V48.7844C377.816 48.6023 377.307 48.4566 376.726 48.3473C376.181 48.2016 375.617 48.1287 375.035 48.1287C374.127 48.1287 373.292 48.3473 372.529 48.7844C371.802 49.1852 371.075 49.9866 370.349 51.1887V74.248H364.518ZM381.864 84.6302V42.6644H387.696V45.178C388.386 44.3766 389.222 43.6845 390.203 43.1016C391.184 42.5187 392.347 42.2273 393.691 42.2273C395.326 42.2273 396.615 42.6644 397.559 43.5387C398.54 44.3766 399.267 45.4512 399.739 46.7627C400.211 48.0377 400.521 49.3491 400.667 50.6969C400.812 52.0084 400.885 53.1377 400.885 54.0848V61.7348C400.885 63.9569 400.667 66.0698 400.231 68.0734C399.795 70.0405 398.995 71.6434 397.833 72.882C396.706 74.0841 395.108 74.6852 393.037 74.6852C391.911 74.6852 390.91 74.412 390.038 73.8655C389.167 73.2827 388.386 72.6269 387.696 71.8984V84.6302H381.864ZM391.891 70.0952C392.909 70.0952 393.635 69.7309 394.071 69.0023C394.507 68.2373 394.781 67.2173 394.89 65.9423C394.999 64.6673 395.052 63.2648 395.052 61.7348V54.0848C395.052 52.7734 394.98 51.5712 394.834 50.4784C394.689 49.3491 394.381 48.4566 393.909 47.8009C393.437 47.1452 392.691 46.8173 391.673 46.8173C390.91 46.8173 390.184 46.9812 389.493 47.3091C388.803 47.6369 388.205 48.0194 387.696 48.4566V68.6744C388.241 69.0752 388.859 69.4212 389.549 69.7127C390.239 69.9677 391.019 70.0952 391.891 70.0952ZM413.49 74.6852C410.91 74.6852 408.839 73.8837 407.277 72.2809C405.715 70.6416 404.823 68.4923 404.605 65.833L409.457 64.3577C409.747 66.3612 410.237 67.873 410.927 68.893C411.618 69.8766 412.635 70.3684 413.979 70.3684C415.033 70.3684 415.832 70.0769 416.377 69.4941C416.922 68.8748 417.196 68.0552 417.196 67.0352C417.196 66.1245 416.995 65.3048 416.595 64.5762C416.195 63.8477 415.541 63.1009 414.633 62.3359L409.239 57.6912C408.149 56.7441 407.221 55.6877 406.458 54.522C405.732 53.3562 405.368 51.8444 405.368 49.9866C405.368 48.3109 405.695 46.9084 406.349 45.7791C407.04 44.6134 407.984 43.7391 409.183 43.1562C410.419 42.5369 411.855 42.2273 413.49 42.2273C416.106 42.2273 418.104 43.0469 419.485 44.6862C420.865 46.2891 421.664 48.238 421.882 50.533L417.741 52.0084C417.595 50.9155 417.377 49.9684 417.087 49.1669C416.796 48.3291 416.377 47.6916 415.832 47.2544C415.287 46.7809 414.58 46.5441 413.708 46.5441C412.763 46.5441 412 46.872 411.419 47.5277C410.874 48.147 410.6 48.8937 410.6 49.768C410.6 50.3144 410.709 50.8609 410.927 51.4073C411.182 51.9173 411.6 52.4273 412.182 52.9373L417.741 58.0737C418.504 58.7659 419.211 59.5127 419.865 60.3141C420.555 61.1155 421.119 62.0262 421.555 63.0462C421.991 64.0662 422.209 65.2502 422.209 66.598C422.209 68.383 421.846 69.8766 421.119 71.0787C420.393 72.2809 419.375 73.1916 418.068 73.8109C416.76 74.3937 415.234 74.6852 413.49 74.6852Z" fill="white"/></symbol>
 </defs></svg>
-<header class="hdr">
-  <div class="wrap hdr-in">
-    <a class="hdr-logo" href="/" aria-label="My Funded Futures home">
-      <svg viewBox="0 0 638 112" class="wm" role="img" aria-label="My Funded Futures"><use href="#wm-mffu"></use></svg>
-      <svg viewBox="0 0 92 112" class="sh" aria-hidden="true"><use href="#sh-mffu"></use></svg>
+<header class="phdr">
+  <div class="wrap phdr-in">
+    <a class="phdr-logo" href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=unattributed" aria-label="My Funded Perps home">
+      <svg viewBox="0 0 420 89" role="img" aria-label="My Funded Perps"><use href="#wm-perps"></use></svg>
     </a>
 
-    <!-- Market switch. A link styled as a physical toggle: the raised knob sits on
-         Futures (you are here); the Perps side is the destination. Click slides the
-         knob across, then navigates to the Perps site. -->
-    <a class="msw" href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=header-switch" data-cta="header-switch" aria-label="Switch to MyFundedPerps, trade crypto and stocks">
-      <span class="msw-knob"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg><span class="msw-lbl">Futures</span></span>
+    <!-- The mirrored switch, as it sits in the Perps site header. Knob parked on
+         Perps (you are here); Futures is the destination, so the seat, glow and
+         arrow all take the futures gold. Click slides the knob left, then leaves
+         for myfundedfutures.com. -->
+    <a class="msw msw-perps" href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=header-switch" data-cta="header-switch" aria-label="Switch to My Funded Futures, trade CME futures">
       <span class="msw-side">
-        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 73 89"><use href="#sh-perps"></use></svg></span>
-        <span class="msw-col"><span class="msw-lbl">Perps</span>
-        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
-          <span><b>BTC</b> <i id="msw-btc">77,722</i> <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-          <span><b>BTC</b> 77,722 <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-        </span></span></span>
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+        <span class="msw-col"><span class="msw-lbl">Futures</span>
+        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
+          <span><b>ES</b> <i id="msw-es">5,842</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> 5,842 <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+        </span></span></span>
+        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
       </span>
+      <span class="msw-knob"><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg><span class="msw-lbl">Perps</span></span>
     </a>
 
-    <nav class="nav" aria-label="Primary">
-      <button type="button" aria-expanded="false">About us
-        <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg>
-      </button>
-      <button type="button" aria-expanded="false">How it works
-        <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg>
-      </button>
-      <button type="button" aria-expanded="false">More
-        <svg class="chev" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg>
-      </button>
+    <nav class="pnav" aria-label="Primary">
+      <a href="#">Dashboard</a>
+      <a href="#">Markets</a>
+      <a href="#">Trade</a>
+      <a href="#">Competitions</a>
+      <a href="#">Rewards</a>
+      <a href="#">Affiliates</a>
     </nav>
-    <div class="hdr-act">
-      <a class="lgn" href="https://dashboard.myfundedfutures.com">Login</a>
-      <a class="btn btn-mffu" href="https://myfundedfutures.com/#pricing">Get Funded</a>
-    </div>
+    <a class="pbtn" href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=unattributed">Start a Challenge</a>
   </div>
 </header>
 <script>
 (function(){
   var sw=document.querySelector('.msw'); if(!sw) return;
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  /* slide the knob across, then leave for the Perps site */
   sw.addEventListener('click',function(e){
-    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return;   /* let new-tab gestures through */
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return;
     if(reduce||sw.classList.contains('go')) return;
     e.preventDefault();
     var knob=sw.querySelector('.msw-knob');
-    var travel=sw.classList.contains('msw-perps') ? -(knob.offsetLeft-4) : (sw.clientWidth-knob.offsetWidth-knob.offsetLeft-4);
+    var travel=-(knob.offsetLeft-4);                     /* knob is on the right; slide it home to the left */
     knob.style.transform='translateX('+travel+'px)';
     sw.classList.add('go');
     setTimeout(function(){ window.location.href=sw.href; },420);
   });
-  /* a gentle BTC tick so the ticker feels alive */
-  var btc=document.getElementById('msw-btc');
-  if(btc&&!reduce){ var base=77722; setInterval(function(){ var n=base+Math.sin(Date.now()/2600)*34+(Math.random()-.5)*12; btc.textContent=Math.round(n).toLocaleString('en-US'); },1500); }
+  var es=document.getElementById('msw-es');
+  if(es&&!reduce){ var base=5842; setInterval(function(){ var n=base+Math.sin(Date.now()/2900)*2.5+(Math.random()-.5)*1.5; es.textContent=n.toLocaleString('en-US',{maximumFractionDigits:0}); },1500); }
 })();
 </script>
 
-<main style="background:#02040E">
+<main style="background:#0C0E11">
 <style>
 .hp{max-width:1216px;margin:0 auto;padding:56px 24px 96px}
 .hp h1{font-size:clamp(28px,3.6vw,42px);letter-spacing:-.025em;margin-top:12px}
@@ -414,59 +406,59 @@ ul{margin:0;padding:0;list-style:none}
 /* the Perps nav has six items, so its ticker needs more room before it folds */
 @media(max-width:1279px){.phdr .msw-tick{display:none}}
 </style>
-<div class="hp"><p class="eyebrow">Header component, MFFU side</p><h1>The market switch</h1><p class="lede">The live control is in the header above this line. Below are its states, frozen so they can be compared, and the behaviour spec for whoever builds it into the production header.</p><div class="states"><div class="state"><div class="k">State 1<b>At rest</b><small>Knob parked on Futures. The Perps side carries the green shield, the label and the ticker, and the empty seat is outlined so the knob visibly has somewhere to go. Quiet at rest; the green glow only comes on when you hover.</small></div><div class="demo"><a class="msw " href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=header-page-rest" data-cta="header-page-rest" aria-label="Switch to MyFundedPerps, trade crypto and stocks">
-      <span class="msw-knob"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg><span class="msw-lbl">Futures</span></span>
+<div class="hp"><p class="eyebrow">Header component, Perps side</p><h1>The market switch, mirrored</h1><p class="lede">This is the same control as it sits in the My Funded Perps header. The knob is parked on Perps; Futures is the destination, so the seat, the glow, the arrow and the mark all take the futures gold, and the ticker shows CME symbols.</p><div class="states"><div class="state"><div class="k">State 1<b>At rest</b><small>Knob parked on Perps. The Futures side carries the gold shield, the label and an ES, NQ, CL and GC ticker, with the empty seat outlined in gold. Quiet at rest.</small></div><div class="demo"><a class="msw msw-perps " href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-rest" data-cta="perps-page-rest" aria-label="Switch to My Funded Futures, trade CME futures">
       <span class="msw-side">
-        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 73 89"><use href="#sh-perps"></use></svg></span>
-        <span class="msw-col"><span class="msw-lbl">Perps</span>
-        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
-          <span><b>BTC</b> <i id="msw-btc">77,722</i> <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-          <span><b>BTC</b> 77,722 <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-        </span></span></span>
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+        <span class="msw-col"><span class="msw-lbl">Futures</span>
+        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
+          <span><b>ES</b> <i id="msw-es">5,842</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> 5,842 <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+        </span></span></span>
+        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
       </span>
+      <span class="msw-knob"><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg><span class="msw-lbl">Perps</span></span>
     </a>
 
-</div></div><div class="state"><div class="k">State 2<b>Hover</b><small>The knob nudges 10px toward Perps, the seat outline brightens, the green glow comes on, the arrow leans right. This is what makes it read as a switch and not a bar.</small></div><div class="demo"><a class="msw is-hover" href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=header-page-hover" data-cta="header-page-hover" aria-label="Switch to MyFundedPerps, trade crypto and stocks">
-      <span class="msw-knob"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg><span class="msw-lbl">Futures</span></span>
+</div></div><div class="state"><div class="k">State 2<b>Hover</b><small>The knob nudges 10px toward Futures, the gold seat brightens, the gold glow comes on, the arrow leans left.</small></div><div class="demo"><a class="msw msw-perps is-hover" href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-hover" data-cta="perps-page-hover" aria-label="Switch to My Funded Futures, trade CME futures">
       <span class="msw-side">
-        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 73 89"><use href="#sh-perps"></use></svg></span>
-        <span class="msw-col"><span class="msw-lbl">Perps</span>
-        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
-          <span><b>BTC</b> <i id="msw-btc">77,722</i> <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-          <span><b>BTC</b> 77,722 <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-        </span></span></span>
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+        <span class="msw-col"><span class="msw-lbl">Futures</span>
+        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
+          <span><b>ES</b> <i id="msw-es">5,842</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> 5,842 <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+        </span></span></span>
+        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
       </span>
+      <span class="msw-knob"><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg><span class="msw-lbl">Perps</span></span>
     </a>
 
-</div></div><div class="state"><div class="k">State 3<b>Switching</b><small>On click the knob slides across in 420ms, the Perps side dims, then the page leaves for myfundedperpetuals.com. Try the live one above.</small></div><div class="demo"><a class="msw go" href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=header-page-go" data-cta="header-page-go" aria-label="Switch to MyFundedPerps, trade crypto and stocks">
-      <span class="msw-knob" style="transform:translateX(236px)"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg><span class="msw-lbl">Futures</span></span>
+</div></div><div class="state"><div class="k">State 3<b>Switching</b><small>On click the knob slides left in 420ms, the Futures side dims, then the page leaves for myfundedfutures.com. Try the live one above.</small></div><div class="demo"><a class="msw msw-perps go" href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-go" data-cta="perps-page-go" aria-label="Switch to My Funded Futures, trade CME futures">
       <span class="msw-side">
-        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 73 89"><use href="#sh-perps"></use></svg></span>
-        <span class="msw-col"><span class="msw-lbl">Perps</span>
-        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
-          <span><b>BTC</b> <i id="msw-btc">77,722</i> <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-          <span><b>BTC</b> 77,722 <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-        </span></span></span>
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+        <span class="msw-col"><span class="msw-lbl">Futures</span>
+        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
+          <span><b>ES</b> <i id="msw-es">5,842</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> 5,842 <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+        </span></span></span>
+        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
       </span>
+      <span class="msw-knob" style="transform:translateX(-236px)"><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg><span class="msw-lbl">Perps</span></span>
     </a>
 
-</div></div><div class="state"><div class="k">State 4<b>Compact</b><small>At 520px and below. Labels and ticker drop, the shield stays. The logo beside it collapses to the shield too.</small></div><div class="demo"><a class="msw compact" href="https://myfundedperpetuals.com?utm_source=mffu-homepage&utm_medium=referral&utm_campaign=perps_launch&utm_content=header-page-compact" data-cta="header-page-compact" aria-label="Switch to MyFundedPerps, trade crypto and stocks">
-      <span class="msw-knob"><svg viewBox="0 0 92 112" aria-hidden="true"><use href="#sh-mffu"></use></svg><span class="msw-lbl">Futures</span></span>
+</div></div><div class="state"><div class="k">State 4<b>Compact</b><small>At 520px and below. Labels and ticker drop, the gold shield stays.</small></div><div class="demo"><a class="msw msw-perps compact" href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-compact" data-cta="perps-page-compact" aria-label="Switch to My Funded Futures, trade CME futures">
       <span class="msw-side">
-        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 73 89"><use href="#sh-perps"></use></svg></span>
-        <span class="msw-col"><span class="msw-lbl">Perps</span>
-        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
-          <span><b>BTC</b> <i id="msw-btc">77,722</i> <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-          <span><b>BTC</b> 77,722 <u>&#9650;5.07%</u></span><span><b>ETH</b> 3,410 <u>&#9650;2.14%</u></span><span><b>SOL</b> 184.2 <u>&#9650;4.40%</u></span><span><b>NVDA</b> 128.5 <u>&#9650;1.9%</u></span>
-        </span></span></span>
         <svg class="msw-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h9.69L10.22 6.03a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+        <span class="msw-col"><span class="msw-lbl">Futures</span>
+        <span class="msw-tick" aria-hidden="true"><span class="msw-tick-in">
+          <span><b>ES</b> <i id="msw-es">5,842</i> <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+          <span><b>ES</b> 5,842 <u>&#9650;0.6%</u></span><span><b>NQ</b> 20,915 <u>&#9650;0.9%</u></span><span><b>CL</b> 78.40 <u class="dn">&#9660;0.3%</u></span><span><b>GC</b> 2,481 <u>&#9650;0.2%</u></span>
+        </span></span></span>
+        <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
       </span>
+      <span class="msw-knob"><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg><span class="msw-lbl">Perps</span></span>
     </a>
 
-</div></div></div><div class="spec"><h2>Behaviour spec</h2><dl><dt>Element</dt><dd>An <code>&lt;a&gt;</code> styled as a switch, not a checkbox: it navigates, so it is a link. <code>aria-label="Switch to MyFundedPerps, trade crypto and stocks"</code>.</dd><dt>Destination</dt><dd><code>https://myfundedperpetuals.com</code> with <code>utm_source=mffu-homepage</code>, <code>utm_medium=referral</code>, <code>utm_campaign=perps_launch</code>, <code>utm_content=header-switch</code>. One constant; change it in one place.</dd><dt>Click</dt><dd>Prevent default, slide the knob to the far end over 420ms, add <code>.go</code>, then set <code>location.href</code>. Modifier-clicks and middle-clicks fall through so open-in-new-tab still works.</dd><dt>Hover</dt><dd>Knob <code>translateX(10px)</code>, seat outline brightens, arrow <code>translateX(3px)</code>, border brightens and the green glow comes on. 200ms. The seat outline is always visible; the glow is hover-only. Nothing pulses at rest.</dd><dt>Mark</dt><dd>The green MyFundedPerps shield in a 36px plate. The animated cube was dropped from the control so it reads as a switch first; the cube lives in the page hero instead.</dd><dt>Ticker</dt><dd>Illustrative prices in this build. On the real site, feed it from the Perps price API; BTC already ticks every 1.5s to show the hook.</dd><dt>Breakpoints</dt><dd>Ticker hidden below 1190px. Labels hidden and the mark shrinks to 30px at 520px and below. Header gap is 16px; nav items are <code>white-space: nowrap</code> so the nav can never wrap to make room.</dd><dt>Reduced motion</dt><dd>No ticker scroll, no slide on click.</dd></dl></div></div></main>
+</div></div></div><div class="spec"><h2>Behaviour spec</h2><dl><dt>Element</dt><dd>Same component, same markup, with a <code>.msw-perps</code> modifier that flips the knob to the right and recolours the destination side gold. <code>aria-label="Switch to My Funded Futures, trade CME futures"</code>.</dd><dt>Destination</dt><dd><code>https://myfundedfutures.com</code> with <code>utm_source=myfundedperps</code>, <code>utm_medium=referral</code>, <code>utm_campaign=perps_launch</code>, <code>utm_content=header-switch</code>.</dd><dt>Click</dt><dd>Prevent default, slide the knob to the left end over 420ms, add <code>.go</code>, then set <code>location.href</code>. The travel is <code>-(knob.offsetLeft - 4)</code>.</dd><dt>Hover</dt><dd>Knob <code>translateX(-10px)</code>, gold seat brightens, arrow leans left, gold glow comes on. 200ms. Nothing pulses at rest.</dd><dt>Mark</dt><dd>The gold My Funded Futures shield in a 36px plate, mirroring the green shield on the MFFU side.</dd><dt>Ticker</dt><dd>ES, NQ, CL and GC, illustrative in this build. ES ticks every 1.5s. On the real site, feed it from the futures quote feed.</dd><dt>Breakpoints</dt><dd>This header has six nav items, so the ticker folds below 1280px rather than 1190px. Labels hidden and the mark shrinks at 520px and below.</dd><dt>Reduced motion</dt><dd>No ticker scroll, no slide on click.</dd></dl></div></div></main>
 
 </body>
 </html>
