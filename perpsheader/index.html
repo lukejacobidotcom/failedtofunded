@@ -181,12 +181,12 @@ ul{margin:0;padding:0;list-style:none}
    click completes it, then leaves for the Perps site. */
 .msw{
   display:inline-flex;align-items:center;gap:4px;height:52px;padding:4px;border-radius:999px;flex:none;
-  border:1px solid rgba(47,190,126,.34);background:#04090A;color:#fff;position:relative;
+  border:1px solid rgba(255,255,255,.14);background:#04090A;color:#fff;position:relative;
   box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03);
   transition:border-color .2s,box-shadow .2s
 }
-.msw:hover{border-color:rgba(47,190,126,.7);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(47,190,126,.1),0 0 30px -4px rgba(47,190,126,.8)}
-.msw:focus-visible{outline:2px solid var(--green-hi);outline-offset:3px}
+.msw:hover{border-color:rgba(255,255,255,.3);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(255,255,255,.04),0 0 24px -6px rgba(255,255,255,.16)}
+.msw:focus-visible{outline:2px solid rgba(255,255,255,.7);outline-offset:3px}
 .msw-knob{
   display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px 0 12px;border-radius:999px;position:relative;z-index:2;
   background:linear-gradient(180deg,rgba(216,174,94,.34),rgba(216,174,94,.14));border:1px solid rgba(216,174,94,.65);
@@ -196,30 +196,32 @@ ul{margin:0;padding:0;list-style:none}
 }
 .msw-knob svg{width:17px;height:21px;flex:none}
 .msw-side{
-  display:inline-flex;align-items:center;gap:9px;height:42px;padding:0 14px 0 5px;border-radius:999px;position:relative;
+  display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px 0 4px;border-radius:999px;position:relative;
   font-weight:600;font-size:13px;color:#9AA3AF;white-space:nowrap;transition:color .2s,opacity .3s
 }
 /* the empty seat: always outlined, so the knob visibly has somewhere to go; hover brightens it */
-.msw-side::before{content:"";position:absolute;inset:0;border-radius:999px;border:1px dashed rgba(47,190,126,.5);background:rgba(47,190,126,.05);transition:border-color .2s,background .2s}
-.msw:hover .msw-side::before{border-color:rgba(47,190,126,.85);background:rgba(47,190,126,.1)}
+.msw-side::before{content:"";position:absolute;inset:0;border-radius:999px;border:1px dashed rgba(255,255,255,.22);background:transparent;transition:border-color .2s,background .2s}
+.msw:hover .msw-side::before{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.04)}
 .msw:hover .msw-side{color:#fff}
-.msw-mark{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;position:relative;z-index:1;background:radial-gradient(120% 120% at 50% 0%,rgba(47,190,126,.18),rgba(47,190,126,.04));border:1px solid rgba(47,190,126,.26)}
+.msw-mark{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;position:relative;z-index:1;background:radial-gradient(120% 120% at 50% 0%,rgba(47,190,126,.26),rgba(47,190,126,.06));border:1px solid rgba(47,190,126,.4);transition:box-shadow .2s,border-color .2s}
 .msw-mark svg{width:14px;height:17px}
-.msw-col{display:flex;flex-direction:column;justify-content:center;line-height:1.1;position:relative;z-index:1}
-.msw-tick{overflow:hidden;width:126px;margin-top:3px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
-.msw-tick-in{display:flex;gap:14px;white-space:nowrap;width:max-content;animation:mswTick 16s linear infinite;font-family:var(--f-mono);font-size:10px;font-weight:500;color:#9FE3BA}
-.msw-tick-in b{color:#fff;font-weight:600}
+.msw:hover .msw-mark{border-color:rgba(47,190,126,.7);box-shadow:0 0 18px -3px rgba(47,190,126,.75)}
+.msw-col{display:flex;flex-direction:column;justify-content:center;line-height:1.05;position:relative;z-index:1}
+.msw-tick{overflow:hidden;width:116px;margin-top:2px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.msw-tick-in{display:flex;gap:14px;white-space:nowrap;width:max-content;animation:mswTick 16s linear infinite;font-family:var(--f-mono);font-size:10px;font-weight:500;color:#AEB6C2}
+.msw-tick-in b{color:#D8DEE6;font-weight:600}
 .msw-tick-in i{font-style:normal;font-variant-numeric:tabular-nums}
-.msw-tick-in u{text-decoration:none;color:var(--green-hi)}
-.msw-arrow{width:18px;height:18px;color:var(--green-hi);flex:none;position:relative;z-index:1;transition:transform .2s}
-.msw:hover .msw-arrow{transform:translateX(3px)}
+.msw-tick-in u{text-decoration:none;color:#6FCF97}
+.msw-tick-in u.dn{color:#E4576B}
+.msw-arrow{width:18px;height:18px;color:var(--fg-3);flex:none;position:relative;z-index:1;transition:transform .2s,color .2s}
+.msw:hover .msw-arrow{transform:translateX(3px);color:#fff}
 .msw:hover .msw-knob{transform:translateX(10px)}
 .msw.go .msw-side{opacity:.3}
 @keyframes mswTick{to{transform:translateX(-50%)}}
 @media(max-width:1189px){.msw-tick{display:none}}
 @media(max-width:1080px){.msw{margin-left:auto}}
 @media(max-width:520px){
-  .msw{height:46px;padding:3px}.msw-knob{height:38px;padding:0 10px}.msw-side{height:38px;padding:0 10px 0 4px;gap:6px}
+  .msw{height:46px;padding:3px}.msw-knob{height:38px;padding:0 10px}.msw-side{height:30px;padding:0 9px 0 3px;gap:6px}
   .msw-lbl{display:none}.msw-mark{width:26px;height:26px}.msw-mark svg{width:12px;height:15px}
 }
 
@@ -227,24 +229,24 @@ ul{margin:0;padding:0;list-style:none}
    Futures after it as the destination. Rule: the selection is the only filled element. The Futures
    side is outline-only at rest (ghosted mark, muted label, no seat fill) with
    the prices kept legible; hover brings the gold back so the affordance holds. */
-.msw-perps{border-color:rgba(216,174,94,.3)}
-.msw-perps:hover{border-color:rgba(216,174,94,.7);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(216,174,94,.1),0 0 30px -4px rgba(216,174,94,.75)}
+.msw-perps{border-color:rgba(255,255,255,.14)}
+.msw-perps:hover{border-color:rgba(255,255,255,.3);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(255,255,255,.04),0 0 24px -6px rgba(255,255,255,.16)}
 .msw-perps .msw-knob{padding:0 14px 0 11px;background:linear-gradient(180deg,rgba(52,199,89,.4),rgba(52,199,89,.16));border-color:rgba(52,199,89,.75)}
-.msw-perps .msw-side{padding:0 14px 0 5px;color:#9AA3AF}
+.msw-perps .msw-side{padding:0 12px 0 4px;color:#9AA3AF}
 .msw-perps:hover .msw-side{color:#fff}
-.msw-perps .msw-side::before{border-color:rgba(216,174,94,.3);background:transparent}
-.msw-perps:hover .msw-side::before{border-color:rgba(216,174,94,.8);background:rgba(216,174,94,.08)}
+.msw-perps .msw-side::before{border-color:rgba(255,255,255,.22);background:transparent}
+.msw-perps:hover .msw-side::before{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.04)}
 .msw-perps .msw-mark{background:transparent;border-color:rgba(216,174,94,.3);transition:background .2s,border-color .2s}
 .msw-perps .msw-mark svg{opacity:.55;transition:opacity .2s}
-.msw-perps:hover .msw-mark{background:radial-gradient(120% 120% at 50% 0%,rgba(216,174,94,.26),rgba(216,174,94,.05));border-color:rgba(216,174,94,.55)}
+.msw-perps:hover .msw-mark{background:radial-gradient(120% 120% at 50% 0%,rgba(216,174,94,.26),rgba(216,174,94,.05));border-color:rgba(216,174,94,.6);box-shadow:0 0 18px -3px rgba(216,174,94,.7)}
 .msw-perps:hover .msw-mark svg{opacity:1}
-.msw-perps .msw-arrow{color:rgba(216,174,94,.55)}
-.msw-perps:hover .msw-arrow{color:var(--gold-lt);transform:translateX(3px)}
+.msw-perps .msw-arrow{color:var(--fg-3)}
+.msw-perps:hover .msw-arrow{color:#fff;transform:translateX(3px)}
 .msw-perps:hover .msw-knob{transform:translateX(10px)}
-.msw-perps .msw-tick{width:156px}
+.msw-perps .msw-tick{width:136px}
 .msw-perps .msw-tick-in{color:#AEB6C2}
 .msw-perps .msw-tick-in b{color:#D8DEE6}
-.msw-perps .msw-tick-in u{color:var(--gold-lt)}
+.msw-perps .msw-tick-in u{color:#6FCF97}
 .msw-perps .msw-tick-in u.dn{color:#F1566B}
 
 /* The Perps site's own header chrome, for the mirrored switch page */
@@ -390,17 +392,16 @@ ul{margin:0;padding:0;list-style:none}
 .state .k b{display:block;font-family:inherit;font-size:15px;letter-spacing:-.01em;text-transform:none;color:#fff;margin-top:6px;font-weight:600}
 .state .k small{display:block;font-size:12.5px;color:var(--fg-3);margin-top:6px;line-height:1.5;letter-spacing:0;text-transform:none}
 .state .demo{display:flex;align-items:center;min-height:64px;overflow-x:auto}
-/* forced states for the demo frames */
-.msw.is-hover{border-color:rgba(47,190,126,.7);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(47,190,126,.1),0 0 30px -4px rgba(47,190,126,.8)}
-.msw.is-hover .msw-side::before{border-color:rgba(47,190,126,.85);background:rgba(47,190,126,.1)}
+/* forced states for the demo frames: neutral chrome, only the emblem carries colour */
+.msw.is-hover{border-color:rgba(255,255,255,.3);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(255,255,255,.04),0 0 24px -6px rgba(255,255,255,.16)}
+.msw.is-hover .msw-side::before{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.04)}
 .msw.is-hover .msw-side{color:#fff}
-.msw.is-hover .msw-arrow{transform:translateX(3px)}
+.msw.is-hover .msw-arrow{transform:translateX(3px);color:#fff}
 .msw.is-hover .msw-knob{transform:translateX(10px)}
-.msw-perps.is-hover{border-color:rgba(216,174,94,.7);box-shadow:inset 0 2px 6px rgba(0,0,0,.75),inset 0 0 0 1px rgba(255,255,255,.03),0 0 0 4px rgba(216,174,94,.1),0 0 30px -4px rgba(216,174,94,.75)}
-.msw-perps.is-hover .msw-side::before{border-color:rgba(216,174,94,.85);background:rgba(216,174,94,.1)}
-.msw-perps.is-hover .msw-arrow{transform:translateX(3px)}
-.msw-perps.is-hover .msw-knob{transform:translateX(10px)}
-.msw.compact{height:46px;padding:3px}.msw.compact .msw-knob{height:38px;padding:0 10px}.msw.compact .msw-side{height:38px;padding:0 10px 0 4px;gap:6px}
+.msw.is-hover .msw-mark{border-color:rgba(47,190,126,.7);box-shadow:0 0 18px -3px rgba(47,190,126,.75)}
+.msw-perps.is-hover .msw-mark{background:radial-gradient(120% 120% at 50% 0%,rgba(216,174,94,.26),rgba(216,174,94,.05));border-color:rgba(216,174,94,.6);box-shadow:0 0 18px -3px rgba(216,174,94,.7)}
+.msw-perps.is-hover .msw-mark svg{opacity:1}
+.msw.compact{height:46px;padding:3px}.msw.compact .msw-knob{height:38px;padding:0 10px}.msw.compact .msw-side{height:30px;padding:0 9px 0 3px;gap:6px}
 .msw.compact .msw-lbl,.msw.compact .msw-tick{display:none}.msw.compact .msw-mark{width:30px;height:30px}.msw.compact .msw-mark svg{width:14px;height:17px}
 .spec{margin-top:44px;border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .spec h2{font-size:12px;font-family:var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3);padding:14px 20px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.025);font-weight:500}
@@ -427,7 +428,7 @@ ul{margin:0;padding:0;list-style:none}
       </span>
     </a>
 
-</div></div><div class="state"><div class="k">State 2<b>Hover</b><small>The knob nudges 10px toward Futures, the seat fills and brightens, the shield and label come up to full, the gold glow comes on, the arrow leans right.</small></div><div class="demo"><a class="msw msw-perps is-hover" href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-hover" data-cta="perps-page-hover" aria-label="Switch to My Funded Futures, trade CME futures">
+</div></div><div class="state"><div class="k">State 2<b>Hover</b><small>The knob nudges 10px toward Futures, the seat fills and brightens, the shield and label come up to full, the Futures emblem glows, the arrow leans right.</small></div><div class="demo"><a class="msw msw-perps is-hover" href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-hover" data-cta="perps-page-hover" aria-label="Switch to My Funded Futures, trade CME futures">
       <span class="msw-knob"><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg><span class="msw-lbl">Perps</span>
 <span class="msw-side">
         <span class="msw-mark" aria-hidden="true"><svg viewBox="0 0 92 112"><use href="#sh-mffu"></use></svg></span>
