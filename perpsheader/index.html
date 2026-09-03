@@ -207,8 +207,8 @@ ul{margin:0;padding:0;list-style:none}
 .msw-mark svg{width:14px;height:17px}
 .msw:hover .msw-mark{border-color:rgba(47,190,126,.7);box-shadow:0 0 18px -3px rgba(47,190,126,.75)}
 .msw-col{display:flex;flex-direction:column;justify-content:center;line-height:1.05;position:relative;z-index:1}
-.msw-tick{overflow:hidden;width:116px;margin-top:2px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
-.msw-tick-in{display:flex;gap:14px;white-space:nowrap;width:max-content;animation:mswTick 16s linear infinite;font-family:var(--f-mono);font-size:10px;font-weight:500;color:#AEB6C2}
+.msw-tick{overflow:hidden;width:148px;margin-top:2px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.msw-tick-in{display:flex;gap:14px;white-space:nowrap;width:max-content;animation:mswTick 22s linear infinite;font-family:var(--f-mono);font-size:10.5px;font-weight:500;color:#AEB6C2}
 .msw-tick-in b{color:#D8DEE6;font-weight:600}
 .msw-tick-in i{font-style:normal;font-variant-numeric:tabular-nums}
 .msw-tick-in u{text-decoration:none;color:#6FCF97}
@@ -218,7 +218,7 @@ ul{margin:0;padding:0;list-style:none}
 .msw:hover .msw-knob{transform:translateX(10px)}
 .msw.go .msw-side{opacity:.3}
 @keyframes mswTick{to{transform:translateX(-50%)}}
-@media(max-width:1189px){.msw-tick{display:none}}
+@media(max-width:1199px){.msw-tick{display:none}}
 @media(max-width:1080px){.msw{margin-left:auto}}
 @media(max-width:520px){
   .msw{height:46px;padding:3px}.msw-knob{height:38px;padding:0 10px}.msw-side{height:30px;padding:0 9px 0 3px;gap:6px}
@@ -243,7 +243,7 @@ ul{margin:0;padding:0;list-style:none}
 .msw-perps .msw-arrow{color:var(--fg-3)}
 .msw-perps:hover .msw-arrow{color:#fff;transform:translateX(3px)}
 .msw-perps:hover .msw-knob{transform:translateX(10px)}
-.msw-perps .msw-tick{width:136px}
+.msw-perps .msw-tick{width:164px}
 .msw-perps .msw-tick-in{color:#AEB6C2}
 .msw-perps .msw-tick-in b{color:#D8DEE6}
 .msw-perps .msw-tick-in u{color:#6FCF97}
@@ -413,7 +413,7 @@ ul{margin:0;padding:0;list-style:none}
 .spec dd code{font-family:var(--f-mono);font-size:12.5px;color:#BFE9D2;background:rgba(47,190,126,.08);padding:2px 6px;border-radius:5px}
 .spec dl>*:nth-last-child(-n+2){border-bottom:0}
 /* the Perps nav has six items, so its ticker needs more room before it folds */
-@media(max-width:1279px){.phdr .msw-tick{display:none}}
+@media(max-width:1219px){.phdr .msw-tick{display:none}}
 </style>
 <div class="hp"><p class="eyebrow">Header component, Perps side</p><h1>The market switch, mirrored</h1><p class="lede">This is the same control as it sits in the My Funded Perps header. The knob is parked on Perps; Futures is the destination, so the seat, the glow, the arrow and the mark all take the futures gold, and the ticker shows CME symbols.</p><div class="states"><div class="state"><div class="k">State 1<b>At rest</b><small>Knob parked on Perps. The Futures side is outline-only: a ghosted gold shield, a muted label, the seat outlined but unfilled, so it clearly is not the selection. The ticker keeps ES, NQ, YM, RTY, CL and GC prices legible.</small></div><div class="demo"><a class="msw msw-perps " href="https://myfundedfutures.com?utm_source=myfundedperps&utm_medium=referral&utm_campaign=perps_launch&utm_content=perps-page-rest" data-cta="perps-page-rest" aria-label="Switch to My Funded Futures, trade CME futures">
       <span class="msw-knob"><svg viewBox="0 0 73 89" aria-hidden="true"><use href="#sh-perps"></use></svg><span class="msw-lbl">Perps</span></span>
