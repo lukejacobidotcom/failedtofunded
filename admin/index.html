@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Trader Royale Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#02030d; --bg2:#030816; --card:#1a1b23; --card2:#18191f; --row:#1e1f27; --head:#202129; --input:#202129; --input2:#2a2b34;
+  --line:#2a2b34; --text:#e8e9ee; --muted:#9a9cab; --dim:#6b6d7c;
+  --gold:#d2ae61; --gold-pill:#64573d; --gold-chip:#342d25;
+  --cyan:#60d1ef; --banner:#061c27;
+  --green:#22c55e; --orange:#f59e0b; --red:#ef4444; --blue:#4181f0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(1200px 700px at 10% 110%,#0c1a37 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);background-attachment:fixed;color:var(--text);font-family:"Nunito Sans",system-ui,sans-serif;font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+/* sidebar */
+.sidebar{padding:18px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow:auto}
+.logo{display:flex;align-items:center;gap:10px;padding:0 6px 14px}
+.logo svg{flex:none}
+.logo b{font-family:Oswald,sans-serif;font-weight:600;font-size:22px;letter-spacing:.2px;white-space:nowrap}
+.sb-search{display:flex;align-items:center;gap:10px;color:var(--muted);padding:8px 10px;margin-bottom:10px}
+.sb-search kbd{margin-left:auto;font-size:11px;color:var(--dim);font-family:inherit}
+.nav a{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:10px;text-decoration:none;color:#d6d7de;font-weight:600;cursor:pointer}
+.nav a:hover{background:#ffffff0d}
+.nav a.on{background:#ffffff14;color:#fff}
+.nav a .chev{margin-left:auto;color:var(--dim)}
+.nav svg{width:17px;height:17px;flex:none;opacity:.85}
+.promo{margin:8px 0 12px;border-radius:14px;padding:14px;background:linear-gradient(110deg,#1a254a 0%,#3a3350 55%,#b98b4f 100%);display:flex;gap:10px;align-items:center;border:1px solid #ffffff22;cursor:pointer}
+.promo b{display:block;font-weight:800}
+.promo small{color:#e4e5ea;font-size:12px}
+.logout{margin-top:auto;display:flex;gap:10px;align-items:center;padding:12px;color:#d6d7de;font-weight:700;letter-spacing:.5px}
+/* main */
+main{padding:14px 18px 40px;min-width:0}
+.banner{background:var(--banner);border:1px solid #0e3a4d;border-radius:12px;padding:12px 18px;display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
+.banner .t{color:var(--cyan);font-weight:800;font-size:16px}
+.banner .s{color:var(--cyan);font-size:13px;opacity:.9}
+.banner .x{margin-left:auto;background:none;border:0;color:var(--cyan);font-size:20px;cursor:pointer}
+.demo-tag{display:inline-block;margin-left:8px;font-size:10px;font-weight:800;letter-spacing:.8px;background:#60d1ef22;border:1px solid #60d1ef55;color:var(--cyan);padding:1px 7px;border-radius:999px;vertical-align:middle}
+.card{background:var(--card);border-radius:14px;border:1px solid #ffffff08}
+.pad{padding:18px}
+h1,h2,h3{margin:0}
+h2{font-size:20px;font-weight:800}
+.muted{color:var(--muted)}
+.cap{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:800}
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:14px 0 16px}
+.kpi{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;cursor:pointer;width:100%;transition:border-color .15s,background .15s}
+.kpi:hover{border-color:#d2ae6166}
+.kpi.on{border-color:var(--gold);background:#d2ae6114;box-shadow:inset 0 -3px 0 var(--gold)}
+.kpi .v{font-size:20px;font-weight:800}
+.kpi .l{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:800;margin-top:2px}
+/* inputs */
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search{position:relative}
+.search input{background:var(--input2);border:0;border-radius:12px;padding:13px 44px 13px 14px;width:280px;outline:none}
+.search svg{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.sel{background:var(--input);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;min-width:150px}
+label.fl{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);font-weight:700}
+/* buttons */
+.btn{border:1px solid transparent;border-radius:8px;padding:9px 14px;font-weight:800;cursor:pointer;background:transparent;display:inline-flex;align-items:center;gap:8px;justify-content:center;font-size:13px}
+.btn.gold{background:var(--gold);color:#16130b}
+.btn.gold:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:#ffffff22;color:#cfd0d8}
+.btn.ghost:hover{background:#ffffff0d}
+.btn.o-gold{border-color:#d2ae6199;color:var(--gold)}
+.btn.o-red{border-color:#ef444499;color:#f87171}
+.btn.o-green{border-color:#22c55e99;color:#4ade80}
+.btn.o-red:hover{background:#ef444414}.btn.o-green:hover{background:#22c55e14}.btn.o-gold:hover{background:#d2ae6114}
+.btn.sm{padding:5px 9px;font-size:12px;border-radius:7px}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.link-gold{color:var(--gold);font-weight:800;text-decoration:none;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+/* table */
+.tbl-wrap{border:1px solid var(--line);border-radius:12px;overflow:auto;margin-top:14px}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th{background:var(--head);text-align:left;font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:#c9cad3;font-weight:800;padding:12px;white-space:nowrap;border-bottom:1px solid var(--line)}
+td{padding:11px 12px;border-bottom:1px solid #ffffff0a;white-space:nowrap}
+tbody tr:hover td{background:#ffffff06}
+tr.click{cursor:pointer}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.pos{color:var(--green)}.neg{color:#f87171}
+.foot{display:flex;justify-content:flex-end;gap:22px;padding:12px 14px;color:#cfd0d8;font-size:13px;background:var(--card)}
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:800;letter-spacing:.3px}
+.chip.gold{background:var(--gold-chip);color:var(--gold)}
+.chip.green{background:#22c55e1f;color:#4ade80}
+.chip.red{background:#ef44441f;color:#f87171}
+.chip.orange{background:#f59e0b1f;color:#fbbf24}
+.chip.blue{background:#4181f01f;color:#7aa7ff}
+.chip.gray{background:#ffffff12;color:#c9cad3}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+/* detail */
+.detail{display:grid;grid-template-columns:330px 1fr;gap:14px;align-items:start}
+.lcard{background:var(--card2);border-radius:14px;border:1px solid #ffffff08;overflow:hidden}
+.lsec{padding:14px 16px;border-bottom:1px solid #ffffff0a}
+.who{display:flex;gap:12px;align-items:center}
+.avatar{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#1e3a8a,#2a2f55);display:grid;place-items:center;font-weight:800;color:#c7d2fe}
+.who .u{font-size:13px;color:#d6d7de}
+.who .e{font-size:13px;color:var(--muted)}
+.role{display:block;margin-top:4px;background:var(--gold-pill);color:var(--gold);text-align:center;border-radius:4px;font-size:11px;font-weight:800;padding:1px 0}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:13px}
+.kv span:first-child{color:var(--muted)}
+.kv span:last-child{text-align:right}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.tile{background:#ffffff08;border:1px solid var(--line);border-radius:8px;padding:9px 4px;text-align:center}
+.tile b{display:block;font-size:14px}
+.tile small{font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:800}
+.btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 16px}
+.meter{height:8px;border-radius:99px;background:#ffffff12;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,#ef4444,#f59e0b 45%,#22c55e)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px 14px;padding:12px 14px;background:var(--card);border-radius:14px;margin-bottom:12px}
+.tab{background:none;border:0;border-radius:999px;padding:7px 14px;font-weight:800;font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:#cfd0d8;cursor:pointer}
+.tab.on{background:var(--gold-pill);color:var(--gold)}
+.subtabs{display:flex;gap:26px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.subtabs button{background:none;border:0;padding:10px 2px;color:#cfd0d8;font-size:16px;cursor:pointer;border-bottom:2px solid transparent}
+.subtabs button.on{color:var(--gold);border-bottom-color:var(--gold)}
+.expand{background:#0f1016}
+.expand td{padding:0}
+.inner{padding:10px 14px 14px 40px}
+.inner table{min-width:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.inner th{font-size:10px;padding:8px 10px}
+.inner td{padding:8px 10px;font-size:13px}
+.caret{display:inline-block;transition:transform .15s;color:var(--muted)}
+.caret.open{transform:rotate(90deg)}
+.strike td{color:var(--dim);text-decoration:line-through}
+.strike td:last-child{text-decoration:none}
+.back{background:none;border:0;color:var(--muted);cursor:pointer;font-weight:700;margin-bottom:10px;padding:0}
+/* modal */
+.scrim{position:fixed;inset:0;background:#000000a6;display:grid;place-items:center;z-index:50;padding:16px}
+.modal{width:min(480px,100%);background:var(--card);border:1px solid #ffffff14;border-radius:16px;padding:20px}
+.modal h3{font-size:18px;font-weight:800;margin-bottom:4px}
+.modal .grid{display:grid;gap:12px;margin:16px 0}
+.modal input,.modal select,.modal textarea{background:var(--input);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;width:100%}
+.modal textarea{min-height:72px;resize:vertical}
+.warn{background:#f59e0b14;border:1px solid #f59e0b44;color:#fcd34d;border-radius:10px;padding:10px 12px;font-size:13px}
+.toast{position:fixed;right:18px;bottom:18px;background:#0f2a1c;border:1px solid #22c55e66;color:#bbf7d0;padding:12px 16px;border-radius:12px;font-weight:700;z-index:60;box-shadow:0 10px 30px #0008;max-width:380px}
+@media (max-width:1100px){.app{grid-template-columns:1fr}.sidebar{display:none}.detail{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:560px){main{padding:12px}.kpis{grid-template-columns:repeat(2,1fr)}.search input{width:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <svg width="30" height="34" viewBox="0 0 30 34" aria-hidden="true"><path d="M15 1 28 6v10c0 8-5.5 14-13 17C7.5 30 2 24 2 16V6z" fill="#1a1b23" stroke="#d2ae61" stroke-width="2"/><rect x="9" y="15" width="3" height="9" fill="#d2ae61"/><rect x="13.5" y="11" width="3" height="13" fill="#d2ae61"/><rect x="18" y="13" width="3" height="11" fill="#d2ae61"/></svg>
+      <b>My Funded Futures</b>
+    </div>
+    <div class="sb-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search<kbd>Ctrl + /</kbd></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="promo" data-go="list">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>
+      <div><b>Trader Royale</b><small>Competition admin</small></div>
+    </div>
+    <div class="logout"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>LOG OUT</div>
+  </aside>
+  <main>
+    <div class="banner" id="banner">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60d1ef" stroke-width="2" style="margin-top:2px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <div><div class="t">Trader Royale: Day 6 of 32 <span class="demo-tag">DEMO DATA</span></div><div class="s">Today's rule: Opening Bell Blitz (spice 5). Trade only 9:30 to 9:45 a.m. ET. Main Event, Mon Oct 26.</div></div>
+      <button class="x" onclick="this.parentElement.remove()" aria-label="Close">×</button>
+    </div>
+    <div id="view"></div>
+  </main>
+</div>
+<div id="modal"></div>
+<div id="toastbox"></div>
+
+<script>
+/* ---------------- demo data (fake traders only) ---------------- */
+const START = 50000, DD = 2000;
+const RULES = [
+  {day:1,date:"Mon Oct 19",name:"Opposite Day",spice:4},
+  {day:2,date:"Tue Oct 20",name:"Tech Wreck",spice:5},
+  {day:3,date:"Wed Oct 21",name:"The Gauntlet",spice:4},
+  {day:4,date:"Thu Oct 22",name:"One and Done",spice:5},
+  {day:5,date:"Fri Oct 23",name:"Full Send",spice:5},
+  {day:6,date:"Mon Oct 26",name:"Opening Bell Blitz",spice:5}
+];
+const INST = {MNQ:{pv:2,px:21850,vol:18,fee:1.5},MES:{pv:5,px:6050,vol:6,fee:1.5},MGC:{pv:10,px:2650,vol:5,fee:1.5},MCL:{pv:100,px:71.4,vol:.35,fee:1.5},NQ:{pv:20,px:21850,vol:18,fee:4.5},ES:{pv:50,px:6050,vol:6,fee:4.5}};
+const PEOPLE = [
+  ["tapereader","Alex R.","US","TX","creator: FuturesFam",true],
+  ["gammaghost","Sam K.","US","FL","paid: Meta",true],
+  ["wickhunter","Priya N.","CA","ON","organic",true],
+  ["orderflowolly","Oliver P.","GB","",  "affiliate: TradeLab",true],
+  ["vwapvixen","Mia T.","US","CA","creator: FuturesFam",false],
+  ["deltaduke","Marcus L.","US","NY","email",true],
+  ["scalpsensei","Kenji M.","AU","NSW","organic",true],
+  ["thetagrind","Lucia F.","US","IL","paid: X",true],
+  ["pivotpilot","Noah B.","US","AZ","creator: ChartCartel",true],
+  ["rangeranger","Eva S.","DE","",  "organic",true],
+  ["fadeking","Dev P.","US","GA","affiliate: TradeLab",true],
+  ["breakoutbex","Rebecca H.","US","WA","paid: Meta",true]
+];
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function gauss(r){let u=0,v=0;while(!u)u=r();while(!v)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+const pad2=n=>String(n).padStart(2,"0");
+function timeStr(r,from,to){const m=Math.floor(from+r()*(to-from));return pad2(Math.floor(m/60))+":"+pad2(m%60)}
+
+let TID = 1000;
+function genTrades(pi, r, skill, riskMult, endDay){
+  const trades=[];
+  for(const rule of RULES){
+    if(rule.day>endDay) break;
+    if(r()<0.12 && rule.day!==6) continue; // skipped a day
+    let n = 2+Math.floor(r()*3), syms=["MNQ","MES","MGC","MCL"], dirs=null, win=[570,959];
+    if(rule.day===2){syms=["MNQ"];dirs="S";n=1+Math.floor(r()*3)}
+    if(rule.day===4){n=1}
+    if(rule.day===5){syms=["NQ","ES"];n=1+Math.floor(r()*2)}
+    if(rule.day===6){win=[570,585];n=1+Math.floor(r()*2)}
+    let lastDir = r()<.5?"L":"S", lastSym=null;
+    const times=[...Array(n)].map(()=>timeStr(r,win[0],win[1])).sort();
+    for(let i=0;i<n;i++){
+      let sym = syms[Math.floor(r()*syms.length)];
+      if(rule.day===3 && sym===lastSym){sym=syms[(syms.indexOf(sym)+1)%syms.length]}
+      let dir = dirs || (rule.day===1 ? (lastDir=lastDir==="L"?"S":"L") : (r()<.5?"L":"S"));
+      const I=INST[sym], qty = rule.day===5?2:(sym.length===2?1:Math.max(1,Math.round((1+r()*4)*riskMult)));
+      const move = (gauss(r)+skill)*I.vol;           // points in the trader's favor
+      const entry = +(I.px*(1+(r()-.5)*.01)).toFixed(sym==="MCL"?2:2);
+      const exit = +(dir==="L"?entry+move:entry-move).toFixed(2);
+      trades.push({id:"T"+(TID++),day:rule.day,time:times[i],sym,side:dir,qty,entry,exit,fee:I.fee*qty,status:"Filled",orig:null});
+      lastSym=sym;
+    }
+  }
+  return trades;
+}
+function gross(t){const I=INST[t.sym];return (t.side==="L"?t.exit-t.entry:t.entry-t.exit)*I.pv*t.qty}
+function net(t){return +(gross(t)-t.fee).toFixed(2)}
+
+const TRADERS = PEOPLE.map((p,i)=>{
+  const r=rng(9001+i*77);
+  const skill=[.35,.2,.25,.1,.05,-.15,.3,0,-.05,.15,-.35,.1][i];
+  const risk=[1,1.2,.9,1,1.1,1.6,1,1,1.3,.8,2.2,1][i];
+  return {
+    id:i+1, uuid:"demo-"+(1000+i*37).toString(16)+"-4c1e-8f0a-"+(90000+i*1111),
+    user:p[0], name:p[1], email:p[0]+"@example.com", phone:"+1 (555) 01"+pad2(10+i)+"-"+(4000+i*13),
+    country:p[2], state:p[3], source:p[4], kyc:p[5], registered:"Oct "+(3+i%10)+", 2026",
+    mffu:"cust_demo_"+(5000+i), dq:(i===7), dqReason:(i===7?"Copy trading: identical fills with another account on days 2 and 3":""),
+    trades:genTrades(i,r,skill,risk,6), adj:[], notes:[], revealed:false
+  };
+});
+/* scripted case: @fadeking goes all-in on One and Done (day 4), hits the floor, and cannot trade after */
+(function(){const f=TRADERS[10];f.trades=f.trades.filter(t=>t.day<4);
+  f.trades.push({id:"T"+(TID++),day:4,time:"09:41",sym:"NQ",side:"S",qty:2,entry:21846.25,exit:21912.50,fee:9,status:"Filled",orig:null});})();
+TRADERS[7].notes.push({t:"Oct 22 16:40",by:"Ops Admin",text:"Disqualified after hedge-detection review. Evidence attached in ticket OPS-2291."});
+
+/* ---------------- calc ---------------- */
+function calc(tr){
+  let bal=START, floor=START-DD, high=START, outDay=null;
+  const days=RULES.map(rule=>{
+    const ts=tr.trades.filter(t=>t.day===rule.day);
+    const live=ts.filter(t=>t.status!=="Busted");
+    const tp=live.reduce((s,t)=>s+net(t),0);
+    const ap=tr.adj.filter(a=>a.day===rule.day&&a.type==="Balance adjustment").reduce((s,a)=>s+a.amount,0);
+    const startFloor=floor;
+    const pnl=tp+ap;
+    if(outDay===null){bal+=pnl}
+    const breached = outDay===null && bal<=floor;
+    if(breached) outDay=rule.day;
+    if(outDay===null || outDay===rule.day){high=Math.max(high,bal);floor=Math.max(floor,high-DD)}
+    return {rule,trades:ts,count:ts.length,played:ts.length>0,pnl,adjPnl:ap,eod:bal,floor:startFloor,breached};
+  });
+  const status = tr.dq?"Disqualified":(outDay!==null?"Out":"Active");
+  const best = days.reduce((b,d)=>d.pnl>(b?b.pnl:-1e9)?d:b,null);
+  return {bal,floor,pnl:bal-START,days,status,outDay,played:days.filter(d=>d.played).length,best,dist:bal-floor};
+}
+function ranked(){
+  const rows=TRADERS.map(t=>({t,c:calc(t)}));
+  rows.sort((a,b)=>b.c.pnl-a.c.pnl);
+  rows.forEach((r,i)=>r.rank=i+1);
+  return rows;
+}
+
+/* ---------------- helpers ---------------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money=(n,sign)=>{const s=Math.abs(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});return (n<0?"-$":(sign&&n>0?"+$":"$"))+s};
+const cls=n=>n>0?"pos":(n<0?"neg":"");
+const statusChip=s=>s==="Active"?'<span class="chip green"><i class="dot" style="background:#4ade80"></i>Active</span>':s==="Out"?'<span class="chip orange">Out: max drawdown</span>':'<span class="chip red">Disqualified</span>';
+const kycChip=k=>k?'<span class="chip green">✓ KYC complete</span>':'<span class="chip red">✕ Not submitted</span>';
+const nowStr=()=>"Oct 26 "+new Date().toTimeString().slice(0,5);
+function toast(msg){const d=document.createElement("div");d.className="toast";d.textContent=msg;$("#toastbox").appendChild(d);setTimeout(()=>d.remove(),3200)}
+function log(tr,type,detail,amount,day){tr.adj.unshift({time:nowStr(),type,detail,amount:amount||0,day:day||6,by:"Ops Admin (you)"})}
+
+const ICON={
+ dash:'<path d="M3 12 12 3l9 9M5 10v10h14V10"/>',grid:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',rep:'<path d="M6 2h9l5 5v15H6zM14 2v6h6"/>',cart:'<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l3 12h11l2-8H6"/>',
+ users:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>',
+ prop:'<circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M19 8v6M16 11h6"/>',pay:'<circle cx="12" cy="12" r="9"/><path d="M15 9a3 3 0 0 0-3-1.5c-1.7 0-3 1-3 2.2s1.3 1.8 3 2.3 3 1.1 3 2.3-1.3 2.2-3 2.2A3 3 0 0 1 9 15M12 6v12"/>',
+ trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/>',check:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',audit:'<path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'
+};
+const NAV=[["Dashboard","dash"],["Grid Dashboard","grid"],["Entity Search","search"],["Reports","rep",1],["Commerce","cart",1],["Customers","users"],["Affiliates","share",1],["Prop Accounts","prop",1],["Payouts","pay",1],["Competitions","trophy",0,"list"],["Pending Enable","check"],["Audit Log","audit"],["Emails","mail"]];
+$("#nav").innerHTML=NAV.map(([l,ic,ch,go])=>`<a class="${go?"on":""}" ${go?`data-go="${go}"`:""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${ICON[ic]}</svg>${l}${ch?'<span class="chev">›</span>':""}</a>`).join("");
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g&&g.dataset.go==="list")showList();if(g&&!g.dataset.go&&g.closest("#nav"))toast("Demo: only Competitions is built.")});
+
+/* ---------------- list view ---------------- */
+let LIST={q:"",f:"all"};
+const FILTERS={all:()=>true,active:r=>r.c.status==="Active",out:r=>r.c.status==="Out",dq:r=>r.c.status==="Disqualified",kyc:r=>r.t.kyc,nokyc:r=>!r.t.kyc};
+function showList(){
+  const rows=ranked();
+  const n=k=>rows.filter(FILTERS[k]).length;
+  const tile=(k,label,color)=>`<button class="kpi ${LIST.f===k?"on":""}" data-f="${k}" aria-pressed="${LIST.f===k}"><div class="v" ${color?`style="color:${color}"`:""}>${n(k)}</div><div class="l">${label}</div></button>`;
+  $("#view").innerHTML=`
+  <div class="card pad">
+    <div class="row" style="justify-content:space-between">
+      <div><h2>Trader Royale · Participants</h2><div class="muted" style="margin-top:4px">Search any competitor to resolve a game issue. All names, emails and trades here are fake demo data.</div></div>
+      <button class="btn ghost" onclick="exportCSV(null)">Export CSV <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></button>
+    </div>
+    <div class="kpis" role="group" aria-label="Filter participants">
+      ${tile("all","All registered")}${tile("active","Active","var(--green)")}${tile("out","Out on drawdown","var(--orange)")}${tile("dq","Disqualified","var(--red)")}${tile("kyc","KYC complete")}${tile("nokyc","KYC pending","var(--red)")}
+    </div>
+    <div class="row">
+      <div class="search"><input id="q" placeholder="Search username, name, email, UUID" value="${esc(LIST.q)}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
+      <span class="muted" id="fl" style="font-size:13px"></span>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Rank</th><th>Username</th><th>Name</th><th>Email</th><th>Status</th><th>KYC</th><th class="num">Balance</th><th class="num">P&amp;L</th><th class="num">Floor distance</th><th class="num">Days played</th><th></th></tr></thead>
+      <tbody id="lb"></tbody></table>
+      <div class="foot"><span>Page Size: 20 ▾</span><span id="pg"></span><span>Page 1 of 1</span></div>
+    </div>
+  </div>`;
+  const draw=()=>{
+    const q=LIST.q.toLowerCase();
+    const f=rows.filter(r=>FILTERS[LIST.f](r)&&(!q||[r.t.user,r.t.name,r.t.email,r.t.uuid].some(v=>v.toLowerCase().includes(q))));
+    const lab={all:"",active:"Active",out:"Out on drawdown",dq:"Disqualified",kyc:"KYC complete",nokyc:"KYC pending"}[LIST.f];
+    $("#fl").innerHTML=lab?`Filtered: <b style="color:var(--gold)">${lab}</b> · <a class="link-gold" id="clr">Clear</a>`:"";
+    if($("#clr"))$("#clr").onclick=()=>{LIST.f="all";showList()};
+    $("#lb").innerHTML=f.map(r=>`<tr class="click" data-id="${r.t.id}">
+      <td>#${r.rank}</td><td><b>@${esc(r.t.user)}</b></td><td>${esc(r.t.name)}</td><td class="muted">${esc(r.t.email)}</td>
+      <td>${statusChip(r.c.status)}</td><td>${r.t.kyc?'<span class="pos">✓</span>':'<span class="neg">✕</span>'}</td>
+      <td class="num">${money(r.c.bal)}</td><td class="num ${cls(r.c.pnl)}">${money(r.c.pnl,1)}</td>
+      <td class="num">${r.c.status==="Active"?money(r.c.dist):"-"}</td><td class="num">${r.c.played} / 15</td><td class="link-gold">View ›</td></tr>`).join("")||`<tr><td colspan="11" class="muted" style="text-align:center;padding:30px">No Rows To Show</td></tr>`;
+    $("#pg").textContent=`${f.length?1:0} to ${f.length} of ${f.length}`;
+    document.querySelectorAll("#lb tr.click").forEach(tr=>tr.onclick=()=>showUser(+tr.dataset.id));
+  };
+  $("#q").oninput=e=>{LIST.q=e.target.value;draw()};
+  document.querySelectorAll(".kpi[data-f]").forEach(b=>b.onclick=()=>{LIST.f=(LIST.f===b.dataset.f&&b.dataset.f!=="all")?"all":b.dataset.f;showList();$("#q").focus()});
+  draw();
+}
+
+/* ---------------- user view ---------------- */
+let CUR=null, TAB="days", OPEN=new Set([6]), TF={day:"All",sym:"All"};
+function showUser(id){CUR=TRADERS.find(t=>t.id===id);TAB="days";OPEN=new Set([6]);renderUser();window.scrollTo(0,0)}
+function renderUser(){
+  const t=CUR, c=calc(t), rank=ranked().find(r=>r.t.id===t.id).rank;
+  const pct=Math.max(0,Math.min(100,c.dist/DD*100));
+  $("#view").innerHTML=`
+  <button class="back" data-go="list">‹ All participants</button>
+  <div class="detail">
+    <div class="lcard">
+      <div class="lsec"><div class="who"><div class="avatar">${esc(t.user.slice(0,2).toUpperCase())}</div>
+        <div style="flex:1;min-width:0"><div class="u">@${esc(t.user)}</div><div class="e">${esc(t.email)}</div><span class="role">Competitor</span></div></div></div>
+      <div class="lsec">
+        <div class="kv"><span>Status</span><span>${statusChip(c.status)}</span></div>
+        ${c.status==="Disqualified"?`<div class="kv"><span>Reason</span><span style="max-width:190px;white-space:normal">${esc(t.dqReason)}</span></div>`:""}
+        ${c.status==="Out"?`<div class="kv"><span>Out on</span><span>Day ${c.outDay}</span></div>`:""}
+        <div class="kv"><span>KYC</span><span>${kycChip(t.kyc)}</span></div>
+        <div class="kv"><span>MFFU profile</span><span><a class="link-gold" onclick="toast('Demo: opens the MFFU customer profile ${t.mffu}')">Open ${t.mffu} ↗</a></span></div>
+        <div class="kv"><span>UUID</span><span class="mono">${t.uuid}</span></div>
+      </div>
+      <div class="lsec">
+        <div class="row" style="justify-content:space-between"><span class="cap">Contact info</span><a class="link-gold" onclick="reveal()">${t.revealed?"Hide":"Reveal"}</a></div>
+        <div class="kv"><span>Name</span><span>${esc(t.name)}</span></div>
+        <div class="kv"><span>Email</span><span>${esc(t.email)}</span></div>
+        <div class="kv"><span>Phone</span><span>${t.revealed?esc(t.phone):"+1 (•••) •••-••"+t.phone.slice(-2)}</span></div>
+        <div class="kv"><span>Country</span><span>${t.country}${t.state?", "+t.state:""}</span></div>
+        <div class="kv"><span>Registered</span><span>${t.registered}</span></div>
+        <div class="kv"><span>Source</span><span>${esc(t.source)}</span></div>
+      </div>
+      <div class="lsec">
+        <span class="cap">Competition stats</span>
+        <div class="tiles">
+          <div class="tile"><b>#${rank}</b><small>Rank</small></div>
+          <div class="tile"><b>${money(c.bal).replace(".00","")}</b><small>Balance</small></div>
+          <div class="tile"><b class="${cls(c.pnl)}">${money(c.pnl,1).replace(".00","")}</b><small>P&amp;L</small></div>
+          <div class="tile"><b>${c.played}/15</b><small>Days</small></div>
+        </div>
+        <div class="kv" style="margin-top:10px"><span>Drawdown floor (EOD trailing)</span><span>${money(c.floor)}</span></div>
+        <div class="kv"><span>Distance to floor</span><span class="${c.dist<500?"neg":""}">${c.status==="Out"?"Breached":money(c.dist)}</span></div>
+        <div class="meter"><i style="width:${c.status==="Out"?0:pct}%"></i></div>
+        <div class="kv" style="margin-top:8px"><span>Best day</span><span>${c.best?`Day ${c.best.rule.day} · <span class="${cls(c.best.pnl)}">${money(c.best.pnl,1)}</span>`:"-"}</span></div>
+        <div class="kv"><span>Account</span><span>$50K · 10/100 · No DLL</span></div>
+      </div>
+      <div class="btn-grid">
+        ${c.status==="Disqualified"
+          ?`<button class="btn o-green" onclick="openModal('reenable')">✓ Re-enable user</button>`
+          :`<button class="btn o-red" onclick="openModal('dq')">⊘ Disqualify user</button>`}
+        ${c.status==="Out"?`<button class="btn o-green" onclick="openModal('reenable')">✓ Re-enable user</button>`:`<button class="btn o-gold" onclick="openModal('bal')">± Adjust balance</button>`}
+        ${c.status==="Out"?`<button class="btn o-gold" onclick="openModal('bal')" style="grid-column:1/-1">± Adjust balance</button>`:""}
+        <button class="btn ghost" onclick="openModal('note')" style="grid-column:1/-1">+ Add note</button>
+      </div>
+    </div>
+    <div>
+      <div class="tabs">${[["days","Days played"],["trades","Trades"],["adj","Adjustments"],["notes","Notes"]].map(([k,l])=>`<button class="tab ${TAB===k?"on":""}" data-tab="${k}">${l}</button>`).join("")}</div>
+      <div class="card pad" id="panel"></div>
+    </div>
+  </div>`;
+  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{TAB=b.dataset.tab;renderUser()});
+  ({days:panelDays,trades:panelTrades,adj:panelAdj,notes:panelNotes})[TAB](c);
+}
+function reveal(){CUR.revealed=!CUR.revealed;if(CUR.revealed)log(CUR,"Contact revealed","Phone number viewed");renderUser()}
+
+function tradeRows(list,withDay){
+  return list.map(tr=>{const n=net(tr), b=tr.status==="Busted";
+    return `<tr class="${b?"strike":""}">
+      <td class="mono">${tr.id}</td>${withDay?`<td>Day ${tr.day}</td>`:""}<td>${tr.time}</td><td><b>${tr.sym}</b></td>
+      <td>${tr.side==="L"?'<span class="chip blue">Long</span>':'<span class="chip orange">Short</span>'}</td>
+      <td class="num">${tr.qty}</td><td class="num">${tr.entry.toFixed(2)}</td><td class="num">${tr.exit.toFixed(2)}</td>
+      <td class="num ${b?"":cls(n)}">${money(n,1)}</td>
+      <td>${b?'<span class="chip red">Busted</span>':tr.status==="Adjusted"?'<span class="chip gold">Adjusted</span>':'<span class="chip gray">Filled</span>'}</td>
+      <td><div class="row" style="gap:6px;flex-wrap:nowrap">
+        <button class="btn sm o-gold" ${b?"disabled":""} onclick="openModal('adjt','${tr.id}')">Adjust</button>
+        ${b?`<button class="btn sm o-green" onclick="openModal('restore','${tr.id}')">Restore</button>`:`<button class="btn sm o-red" onclick="openModal('bust','${tr.id}')">Bust</button>`}
+      </div></td></tr>`}).join("");
+}
+const TH_TRADES=withDay=>`<tr><th>Trade</th>${withDay?"<th>Day</th>":""}<th>Time (ET)</th><th>Symbol</th><th>Side</th><th class="num">Qty</th><th class="num">Entry</th><th class="num">Exit</th><th class="num">Net P&amp;L</th><th>Status</th><th>Actions</th></tr>`;
+
+function panelDays(c){
+  $("#panel").innerHTML=`<div class="subtabs"><button class="on">Days Played</button></div>
+  <div class="muted" style="font-size:13px">Every trading day so far. Open a day to see each trade; bust or adjust from there.</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th></th><th>Day</th><th>Date</th><th>Rule</th><th>Participated</th><th class="num">Trades</th><th class="num">P&amp;L</th><th class="num">End balance</th><th class="num">Floor at open</th></tr></thead>
+    <tbody>${c.days.slice().reverse().map(d=>{const o=OPEN.has(d.rule.day);const after=c.outDay!==null&&d.rule.day>c.outDay;
+      return `<tr class="click" data-day="${d.rule.day}"><td><span class="caret ${o?"open":""}">▸</span></td><td><b>${d.rule.day}</b></td><td>${d.rule.date}</td>
+      <td>${esc(d.rule.name)} <span class="chip gold">🌶 ${d.rule.spice}</span></td>
+      <td>${after?'<span class="muted">Out</span>':d.played?'<span class="pos">✓ Yes</span>':'<span class="muted">No</span>'}</td>
+      <td class="num">${d.count}</td><td class="num ${cls(d.pnl)}">${d.played||d.adjPnl?money(d.pnl,1):"-"}${d.adjPnl?' <span class="chip gold">adj</span>':""}</td>
+      <td class="num">${after?"-":money(d.eod)}${d.breached?' <span class="chip orange">breach</span>':""}</td><td class="num muted">${money(d.floor)}</td></tr>
+      ${o?`<tr class="expand"><td colspan="9"><div class="inner">${d.trades.length?`<table><thead>${TH_TRADES(false)}</thead><tbody>${tradeRows(d.trades,false)}</tbody></table>`:'<div class="muted">No trades this day.</div>'}</div></td></tr>`:""}`}).join("")}</tbody>
+  </table></div>`;
+  document.querySelectorAll("tr[data-day]").forEach(r=>r.onclick=e=>{if(e.target.closest("button"))return;const d=+r.dataset.day;OPEN.has(d)?OPEN.delete(d):OPEN.add(d);renderUser()});
+}
+function panelTrades(c){
+  const all=CUR.trades.filter(t=>(TF.day==="All"||t.day===+TF.day)&&(TF.sym==="All"||t.sym===TF.sym));
+  const syms=[...new Set(CUR.trades.map(t=>t.sym))];
+  $("#panel").innerHTML=`<div class="subtabs"><button class="on">All Trades</button></div>
+  <div class="row" style="margin-top:10px;align-items:flex-end">
+    <label class="fl">Day<select class="sel" id="fd"><option>All</option>${RULES.map(r=>`<option value="${r.day}" ${TF.day==r.day?"selected":""}>Day ${r.day} · ${r.name}</option>`).join("")}</select></label>
+    <label class="fl">Symbol<select class="sel" id="fs"><option>All</option>${syms.map(s=>`<option ${TF.sym===s?"selected":""}>${s}</option>`).join("")}</select></label>
+    <button class="btn ghost" style="margin-left:auto" onclick="exportCSV(CUR)">Export CSV <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></button>
+  </div>
+  <div class="tbl-wrap"><table><thead>${TH_TRADES(true)}</thead><tbody>${tradeRows(all,true)||'<tr><td colspan="11" class="muted" style="text-align:center;padding:30px">No Rows To Show</td></tr>'}</tbody></table>
+  <div class="foot"><span>Page Size: 20 ▾</span><span>${all.length?1:0} to ${all.length} of ${all.length}</span><span>Page 1 of 1</span></div></div>`;
+  $("#fd").onchange=e=>{TF.day=e.target.value;renderUser()};
+  $("#fs").onchange=e=>{TF.sym=e.target.value;renderUser()};
+}
+function panelAdj(){
+  const a=CUR.adj;
+  $("#panel").innerHTML=`<div class="subtabs"><button class="on">Adjustments &amp; Actions</button></div>
+  <div class="muted" style="font-size:13px">Every change an admin makes to this competitor, newest first. Nothing is overwritten.</div>
+  <div class="tbl-wrap"><table><thead><tr><th>Time</th><th>Action</th><th>Detail</th><th class="num">Amount</th><th>By</th></tr></thead>
+  <tbody>${a.length?a.map(x=>`<tr><td>${x.time}</td><td><span class="chip ${x.type.includes("Bust")||x.type.includes("Disq")?"red":x.type.includes("enable")||x.type.includes("Restore")?"green":"gold"}">${esc(x.type)}</span></td><td style="white-space:normal;max-width:360px">${esc(x.detail)}</td><td class="num ${cls(x.amount)}">${x.amount?money(x.amount,1):"-"}</td><td>${esc(x.by)}</td></tr>`).join(""):'<tr><td colspan="5" class="muted" style="text-align:center;padding:30px">No adjustments yet. Bust a trade or adjust the balance to see them here.</td></tr>'}</tbody></table></div>`;
+}
+function panelNotes(){
+  $("#panel").innerHTML=`<div class="subtabs"><button class="on">Notes</button></div>
+  ${CUR.notes.length?CUR.notes.map(n=>`<div style="padding:12px 0;border-bottom:1px solid var(--line)"><div class="muted" style="font-size:12px">${n.t} · ${esc(n.by)}</div><div style="margin-top:4px">${esc(n.text)}</div></div>`).join(""):'<div class="muted" style="padding:20px 0">No notes yet.</div>'}
+  <button class="btn o-gold" style="margin-top:14px" onclick="openModal('note')">+ Add note</button>`;
+}
+
+/* ---------------- modals / actions ---------------- */
+function findTrade(id){return CUR.trades.find(t=>t.id===id)}
+function openModal(kind,arg){
+  const t=CUR, c=calc(t); let body="", title="", sub="", ok="Confirm", okCls="gold";
+  const reason=(opts)=>`<label class="fl">Reason<select id="mr">${opts.map(o=>`<option>${o}</option>`).join("")}</select></label><label class="fl">Note (required)<textarea id="mn" placeholder="What happened and where the evidence is"></textarea></label>`;
+  if(kind==="dq"){title="Disqualify user";sub=`@${t.user} loses all prizes and can no longer trade.`;okCls="o-red";ok="Disqualify";
+    body=reason(["Copy trading","Multiple accounts","Account sharing","Bots or automation","Hedging across accounts","Collusion in a bracket match","Other banned conduct"])}
+  if(kind==="reenable"){title="Re-enable user";sub=`Restores @${t.user} to Active.`;okCls="o-green";ok="Re-enable";
+    body=(c.status==="Out"?`<div class="warn">This account is out on the drawdown floor. Re-enabling only makes sense if a platform fault caused the breach: adjust the balance back above the floor first.</div>`:"")+reason(["Review cleared","Platform fault reversed","Disqualified in error","Other"])}
+  if(kind==="bal"){title="Adjust balance";sub=`Current balance ${money(c.bal)}. Floor ${money(c.floor)}.`;
+    body=`<label class="fl">Amount (use a minus sign to deduct)<input id="ma" type="number" step="0.01" placeholder="e.g. 250 or -500"></label><label class="fl">Apply to day<select id="md">${RULES.map(r=>`<option value="${r.day}" ${r.day===6?"selected":""}>Day ${r.day} · ${r.name}</option>`).join("")}</select></label>`+reason(["Platform fault reversal","Fee correction","Reconciliation with Hyperprop","Other"])+`<div class="warn">Balance changes need a second approver before they go live. In this demo it applies right away.</div>`}
+  if(kind==="bust"||kind==="restore"){const tr=findTrade(arg);title=kind==="bust"?"Bust trade":"Restore trade";okCls=kind==="bust"?"o-red":"o-green";ok=kind==="bust"?"Bust trade":"Restore";
+    sub=`${tr.id} · Day ${tr.day} ${tr.time} · ${tr.side==="L"?"Long":"Short"} ${tr.qty} ${tr.sym} · ${money(net(tr),1)}`;
+    body=`<div class="muted" style="font-size:13px">${kind==="bust"?"The trade is removed from the balance, P&L and drawdown floor. It stays visible, struck through.":"The trade counts again in the balance, P&L and floor."}</div>`+reason(kind==="bust"?["Platform fault or bad fill","Filled outside session","Order should have been blocked by today's rule","Other"]:["Bust was an error","Review cleared","Other"])}
+  if(kind==="adjt"){const tr=findTrade(arg);title="Adjust trade";sub=`${tr.id} · Day ${tr.day} ${tr.time} · ${tr.sym}`;
+    body=`<div class="row" style="flex-wrap:nowrap"><label class="fl" style="flex:1">Quantity<input id="mq" type="number" min="1" value="${tr.qty}"></label><label class="fl" style="flex:1">Entry<input id="me" type="number" step="0.01" value="${tr.entry}"></label><label class="fl" style="flex:1">Exit<input id="mx" type="number" step="0.01" value="${tr.exit}"></label></div><div class="muted" id="mprev" style="font-size:13px"></div>`+reason(["Bad fill price from provider","Wrong quantity recorded","Reconciliation with Hyperprop","Other"])}
+  if(kind==="note"){title="Add note";sub=`Visible to admins only.`;ok="Save note";body=`<label class="fl">Note<textarea id="mn" placeholder="Ticket number, what you checked, next step"></textarea></label>`}
+  $("#modal").innerHTML=`<div class="scrim" onclick="if(event.target===this)closeModal()"><div class="modal" role="dialog" aria-modal="true">
+    <h3>${title}</h3><div class="muted" style="font-size:13px">${esc(sub)}</div><div class="grid">${body}</div>
+    <div class="row" style="justify-content:flex-end"><button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn ${okCls}" id="mok">${ok}</button></div></div></div>`;
+  if(kind==="adjt"){const tr=findTrade(arg);const prev=()=>{const tmp={...tr,qty:+$("#mq").value||tr.qty,entry:+$("#me").value,exit:+$("#mx").value,fee:INST[tr.sym].fee*(+$("#mq").value||tr.qty)};$("#mprev").innerHTML=`Net P&amp;L: ${money(net(tr),1)} → <b class="${cls(net(tmp))}">${money(net(tmp),1)}</b>`};["#mq","#me","#mx"].forEach(s=>$(s).oninput=prev);prev()}
+  $("#mok").onclick=()=>{
+    const note=($("#mn")||{}).value||"", r=($("#mr")||{}).value||"";
+    if(!note.trim()){$("#mn").style.borderColor="#ef4444";$("#mn").focus();return}
+    const why=r?r+": "+note.trim():note.trim();
+    if(kind==="dq"){t.dq=true;t.dqReason=why;log(t,"Disqualified",why);toast(`@${t.user} disqualified`)}
+    if(kind==="reenable"){t.dq=false;t.dqReason="";log(t,"Re-enabled",why);toast(`@${t.user} re-enabled`)}
+    if(kind==="bal"){const a=+$("#ma").value;if(!a){$("#ma").style.borderColor="#ef4444";return}const d=+$("#md").value;t.adj.unshift({time:nowStr(),type:"Balance adjustment",detail:`Day ${d}. ${why}`,amount:a,day:d,by:"Ops Admin (you)"});toast(`Balance ${a>0?"credited":"debited"} ${money(Math.abs(a))}`)}
+    if(kind==="bust"){const tr=findTrade(arg);tr.status="Busted";log(t,"Trade busted",`${tr.id} (Day ${tr.day}, ${tr.sym}). ${why}`,-net(tr),tr.day);toast(`${tr.id} busted`)}
+    if(kind==="restore"){const tr=findTrade(arg);tr.status=tr.orig?"Adjusted":"Filled";log(t,"Trade restored",`${tr.id}. ${why}`,net(tr),tr.day);toast(`${tr.id} restored`)}
+    if(kind==="adjt"){const tr=findTrade(arg);const before=net(tr);if(!tr.orig)tr.orig={qty:tr.qty,entry:tr.entry,exit:tr.exit};tr.qty=Math.max(1,+$("#mq").value||tr.qty);tr.entry=+$("#me").value;tr.exit=+$("#mx").value;tr.fee=INST[tr.sym].fee*tr.qty;tr.status="Adjusted";log(t,"Trade adjusted",`${tr.id}: qty ${tr.orig.qty}→${tr.qty}, entry ${tr.orig.entry}→${tr.entry}, exit ${tr.orig.exit}→${tr.exit}. ${why}`,net(tr)-before,tr.day);toast(`${tr.id} adjusted`)}
+    if(kind==="note"){t.notes.unshift({t:nowStr(),by:"Ops Admin (you)",text:note.trim()});toast("Note saved")}
+    closeModal();renderUser();
+  };
+}
+function closeModal(){$("#modal").innerHTML=""}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+
+function exportCSV(tr){
+  const list=tr?[tr]:TRADERS, lines=[["username","trade_id","day","rule","time_et","symbol","side","qty","entry","exit","net_pnl","status"]];
+  list.forEach(t=>t.trades.forEach(x=>lines.push([t.user,x.id,x.day,RULES[x.day-1].name,x.time,x.sym,x.side==="L"?"long":"short",x.qty,x.entry,x.exit,net(x),x.status])));
+  const blob=new Blob([lines.map(l=>l.join(",")).join("\n")],{type:"text/csv"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(tr?tr.user:"trader_royale_all")+"_trades_demo.csv";a.click();
+  toast("CSV exported (demo data)");
+}
+
+showList();
+</script>
+</body>
+</html>
