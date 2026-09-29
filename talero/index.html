@@ -2296,9 +2296,11 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
 (function(){
   var links = [].slice.call(document.querySelectorAll('.toc a[href^="#"]'));
   var secs = links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+  function top(el){ return el.getBoundingClientRect().top + window.scrollY; }
   function mark(){
-    var best = 0, y = window.scrollY + 90;
-    secs.forEach(function(s, i){ if (s && s.offsetTop <= y) { best = i; } });
+    // sections sit in different offset parents, so measure against the document
+    var best = 0, y = window.scrollY + 120;
+    secs.forEach(function(s, i){ if (s && top(s) <= y) { best = i; } });
     links.forEach(function(a, i){ a.classList.toggle('on', i === best); });
   }
   window.addEventListener('scroll', mark, { passive: true });
