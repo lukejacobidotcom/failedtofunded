@@ -1,382 +1,1251 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Talero card, stats page | My Funded Futures</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="The Talero Brokerage card on the trader stats page: replicated from the dashboard demo, with states, spec and recommended changes.">
-<meta name="theme-color" content="#02040E">
-</head>
-<body>
+<meta name="description" content="The Talero Brokerage card in the trader stats page, with recommended changes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Lexend:wght@300;400;500;600;700;800&family=Oswald:wght@500&display=swap">
 <style>
-/* ============================================================
-   Talero Brokerage card, replicated from
-   MyFundedClub_Dashboard_Demo_2026-09-29.html.
-   Class map, ours -> demo:  .mod .opp .tal-w .tal-wm .tal-h
-   .tal-reg .tag .quietchip .badge-new .opp-cta  are unchanged.
-   The red .is-new review outline is deliberately not carried over.
-   ============================================================ */
-.dash{
-  --line-2:#202A3B; --ink:#EEF1F7; --muted:#8B94A8; --dim:#5F6779;
-  --gold:#E2B862; --green:#4FC28C;
-  --tal-blue:#4FA3FF; --tal-navy:#0E1729; --tal-off:#F6F9FC;
-  --r-lg:14px; --r-md:10px; --r-sm:8px;
-  --mono:'Geist Mono','SF Mono',ui-monospace,Menlo,monospace;
-  --body:'Lexend',system-ui,-apple-system,sans-serif;
-  font-family:var(--body); color:var(--ink);
+@property --ang{syntax:"<angle>";inherits:false;initial-value:0deg}
+:root{
+  color-scheme:dark;
+  --bg:#04070D; --bar:#0A0F1B; --side:#090E1A; --main:#05080F; --panel:#0F141E; --panel-2:#161C29; --line:#222A3B;
+  --ink:#EEF1F7; --muted:#8B94A8; --dim:#5F6779; --gold:#E2B862; --gold-2:#F1E6CF; --blue:#5A83F7; --green:#4FC28C; --red:#FF6B6B;
+  --tal-navy:#0E1729; --tal-blue:#4FA3FF; --tal-slate:#475569; --tal-mute:#AFB6C2; --tal-off:#F6F9FC;
+  --line-2:#202A3B;
+  --body:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  /* one scale for every addition: radii + padding steps */
+  --r-lg:14px; --r-md:10px; --r-sm:6px;
 }
-.dash *,.dash *::before,.dash *::after{box-sizing:border-box}
-.mod{background:#0A0F19;border:1px solid var(--line-2);border-left:2px solid rgba(226,184,98,.45);
-  border-radius:var(--r-lg);
-  transition:border-color .17s ease-out,background-color .17s ease-out,transform .17s ease-out}
+*{box-sizing:border-box}
+.is-new{}/* review outline removed: this page is not the red-outline review */
+.new-key{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:400;color:#C6CDDB}
+.new-key i{width:14px;height:10px;border:2px solid #FF3B30;border-radius:3px;display:inline-block}
+[hidden]{display:none!important}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.45;font-weight:300;padding-inline:16px;padding-block:0 120px}
+h1,h2,h3,h4,h5,p{margin:0}
+b,strong{font-weight:600}
+button,select{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+
+/* ---------- demo bar ---------- */
+.demobar{max-width:1440px;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;padding-block:14px}
+.db-title{display:flex;align-items:center;gap:10px;font-weight:500}
+.db-chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;background:#1C2436;color:var(--muted);border-radius:4px;padding:2px 7px}
+.db-views{display:flex;gap:4px;background:var(--bar);border:1px solid var(--line);border-radius:10px;padding:3px}
+.db-views button{padding:6px 12px;border-radius:7px;font-size:13px;color:var(--muted)}
+.db-views button[aria-selected="true"]{background:#1C2436;color:var(--ink)}
+.db-actions{display:flex;gap:8px;flex-wrap:wrap}
+.db-actions button{border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:13px;color:var(--ink);background:var(--bar)}
+.db-actions button.primary{border-color:rgba(79,194,140,.5);color:var(--green)}
+.db-actions button.alt{border-color:rgba(90,131,247,.5);color:#9DB4FF}
+
+/* ---------- app shell ---------- */
+.app{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:234px minmax(0,1fr);min-height:820px;border:1px solid #141A28;border-radius:16px;overflow:hidden;background:var(--main)}
+.side{background:var(--side);border-right:1px solid #121827;padding:16px 14px;display:flex;flex-direction:column;gap:5px;position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto}
+.logo{display:flex;align-items:center;gap:9px;padding:2px 4px 14px;justify-content:space-between}
+.logo-l{display:flex;align-items:center;gap:9px;min-width:0}
+.crest{width:24px;height:27px;border-radius:4px 4px 11px 11px;background:linear-gradient(180deg,#E7C06E,#9C6B17);flex:none;position:relative}
+.crest::after{content:"";position:absolute;left:6px;right:6px;bottom:7px;height:9px;background:repeating-linear-gradient(90deg,#0A0F1C 0 3px,transparent 3px 5px)}
+.wm{font-family:"Oswald","Arial Narrow",sans-serif;font-weight:500;font-size:18px;white-space:nowrap}
+.logo .chev{color:var(--muted);font-size:14px}
+.nav{display:flex;flex-direction:column;gap:3px}
+.nav-item{display:flex;align-items:center;gap:10px;text-align:left;padding:8px 10px;border-radius:8px;color:#C6CDDB;font-size:14px}
+.nav-item .ico{width:17px;height:17px;flex:none;opacity:.85;display:grid;place-items:center;font-size:12px;color:#8FA0BF}
+.nav-item:hover{background:#111828}
+.nav-item[aria-current="page"]{color:#fff;background:#141C2E;box-shadow:inset 0 0 0 1px #223050}
+.nav-item .badge{margin-left:auto;font-family:var(--mono);font-size:10px;background:var(--gold);color:#0A0F1C;border-radius:4px;padding:1px 5px;font-weight:600}
+.side-comp{margin-top:14px;display:flex;align-items:center;gap:8px;text-align:left;width:100%;padding:9px 8px;border:1px solid #202A3B;border-left:2px solid var(--gold);border-radius:var(--r-md);background:#0B1119;transition:border-color .17s ease-out,background-color .17s ease-out,transform .17s ease-out}
+.side-comp:hover{background:#0E1520;border-color:#2B3850;border-left-color:var(--gold);transform:translateY(-1px)}
+.side-comp .sc-ic{width:24px;height:24px;border-radius:7px;flex:none;display:grid;place-items:center;font-size:12px;background:rgba(226,184,98,.12)}
+.side-comp .sc-txt{display:grid;gap:1px;min-width:0;flex:1}
+.side-comp .sc-txt b{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.2}
+.side-comp .sc-txt span{font-size:11px;letter-spacing:-.01em;color:var(--muted);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.side-comp .sc-badge{flex:none;align-self:flex-start;height:16px;padding:0 5px;font-size:8.5px}
+.side-comp.done{border-left-color:var(--green)}
+.side-comp.done .sc-ic{background:rgba(79,194,140,.14)}
+.side-foot{display:grid;gap:9px;padding-top:14px;margin-top:auto}
+.btn-copier{display:flex;align-items:center;justify-content:center;gap:9px;background:#131C2E;border:1px solid #223050;border-radius:10px;padding:11px;font-size:14px;font-weight:500}
+.btn-challenge{display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(90deg,#E2B862,#5A83F7);color:#0A0F1C;border-radius:10px;padding:11px;font-size:14px;font-weight:700}
+.logout{display:flex;align-items:center;gap:10px;padding:6px 10px;font-size:12.5px;letter-spacing:.06em;color:var(--muted)}
+.main{padding:22px 26px 60px;min-width:0}
+
+/* ---------- shared ---------- */
+.panel{background:#0A0F19;border:1px solid #141C2B;border-radius:var(--r-lg);padding:15px 17px;margin-bottom:12px}
+.panel-h{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin-bottom:11px}
+.panel-t{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:600}
+.panel-t::before{content:"";width:3px;height:19px;border-radius:2px;background:var(--gold)}
+.btn-grad{background:linear-gradient(90deg,#E2B862,#5A83F7);color:#0A0F1C;border-radius:9px;padding:9px 16px;font-weight:600;font-size:13.5px;white-space:nowrap}
+.btn-grad:hover{filter:brightness(1.08)}
+.btn-soft{background:#141C2E;border:1px solid #223050;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:500;white-space:nowrap}
+.field{flex:1;min-width:0;background:#070B14;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-family:var(--mono);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;user-select:all}
+.linkrow{display:flex;gap:8px;align-items:stretch}
+.bar{height:8px;border-radius:99px;background:#1A2130;overflow:hidden}
+.bar i{display:block;position:relative;overflow:hidden;height:100%;width:14%;border-radius:99px;background:linear-gradient(90deg,#E2B862,#5A83F7);transition:width .7s cubic-bezier(.2,.9,.3,1)}
+.bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:sweep 2.4s ease-in-out infinite}
+@keyframes sweep{0%{transform:translateX(-100%)}60%,100%{transform:translateX(220%)}}
+.share{display:flex;flex-wrap:wrap;gap:6px}
+.share button{background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12.5px;white-space:nowrap}
+.share button:hover{border-color:#39435A}
+.muted{color:var(--muted)}
+
+/* pack art */
+.pack{position:relative;display:grid;place-items:center;text-align:center;border-radius:6px;font-weight:800;letter-spacing:.14em;line-height:1.05;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.45)}
+.pack::before,.pack::after{content:"";position:absolute;left:0;right:0;height:7%;background:repeating-linear-gradient(90deg,rgba(255,255,255,.4) 0 2px,rgba(255,255,255,0) 2px 5px);z-index:1}
+.pack::before{top:0}.pack::after{bottom:0}
+.pack .glint{position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.65) 48%,transparent 60%);background-size:260% 100%;animation:glint 3.2s ease-in-out infinite}
+@keyframes glint{0%{background-position:130% 0}55%,100%{background-position:-40% 0}}
+.pack.micro{background:linear-gradient(165deg,#8EE3F2 0%,#A9B8F5 38%,#C39BEE 62%,#F1D38A 100%);color:#D9A034;text-shadow:0 1px 0 rgba(255,255,255,.45)}
+.pack.point{background:linear-gradient(165deg,#A48FDB,#6F58AF);color:#2F8F3A}
+.pack.mini{background:linear-gradient(165deg,#D5D9E1,#9098A8);color:#4A74D8}
+.pack.welcome{background:linear-gradient(165deg,#FFE9B0 0%,#F0C45E 45%,#C8902A 100%);color:#3A2708;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+.pack-sm{width:46px;height:62px;flex:none}
+.pack-xs{width:18px;height:24px;border-radius:3px;box-shadow:none;flex:none}
+.pack-xs::before,.pack-xs::after{height:3px}
+
+/* ---------- STATS PAGE ---------- */
+.stats-top{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.stats-title{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.stats-title h1{font-size:27px;font-weight:600}
+.acct-pill{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:#0E1521;border:1px solid #1C2537;border-radius:10px;padding:8px 12px}
+.acct-pill .id{font-weight:600;font-size:17px;letter-spacing:.01em}
+.chip{font-size:11.5px;border-radius:5px;padding:2px 8px;font-weight:500;white-space:nowrap}
+.chip.prog{background:rgba(226,184,98,.16);color:var(--gold)}
+.chip.eval{background:rgba(90,131,247,.18);color:#8FB0FF}
+.acct-pill .ic{color:var(--muted);font-size:12px}
+.stats-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.link-ic{display:inline-flex;align-items:center;gap:8px;color:#C6CDDB;font-size:13.5px}
+.btn-upgrade{display:inline-flex;align-items:center;gap:8px;background:#151D2F;border:1px solid #26314C;border-radius:9px;padding:9px 15px;font-size:13.5px;font-weight:500}
+.club-wrap{display:inline-flex;align-items:center;gap:6px}
+.club-chip{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;background:#0E1521;border:1px solid var(--line-2);border-radius:var(--r-md);font-size:13.5px;font-weight:500;color:#C6CDDB;transition:border-color .16s ease-out,background-color .16s ease-out}
+.club-chip:hover{border-color:#2B3850;background:#111A28}
+.club-chip b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.club-chip .cc-ic{color:var(--gold);font-size:13px;line-height:1}
+.tv-bar{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between;background:#0A0F19;border:1px solid #141C2B;border-radius:var(--r-md);padding:8px 14px;margin-bottom:12px}
+.tv-left{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center}
+.tv-logo{display:flex;align-items:center;gap:7px;font-weight:600;font-size:15px;color:#DCE6FF}
+.tv-logo i{width:18px;height:18px;background:linear-gradient(135deg,#4AA3F0,#1E63C7);border-radius:3px;display:block;transform:rotate(45deg)}
+.cred{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)}
+.cred b{background:#0C1220;border:1px solid #1C2537;border-radius:var(--r-sm);padding:4px 9px;color:var(--ink);font-weight:500;font-family:var(--mono);font-size:12.5px}
+.cred .mini{background:#141C2E;border:1px solid #223050;border-radius:var(--r-sm);padding:2px 8px;font-size:11.5px;color:#C6CDDB}
+.chart-wrap{display:grid;grid-template-columns:minmax(0,1fr) 236px;gap:14px}
+.chart-head{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.date-chip{background:#0E1521;border:1px solid #1C2537;border-radius:var(--r-md);padding:6px 12px;font-size:13.5px;font-weight:500}
+.session{font-size:12.5px;color:var(--muted)}
+.chart{position:relative;height:100%;min-height:292px}
+.chart svg{width:100%;height:100%;display:block}
+.tiles{display:grid;gap:8px;align-content:stretch;grid-auto-rows:1fr}
+.tile-m{background:#0C1220;border:1px solid #182135;border-radius:var(--r-md);padding:9px 12px;display:flex;align-items:center;gap:11px}
+.tile-ic{width:28px;height:28px;border-radius:8px;background:#16203A;display:grid;place-items:center;flex:none;color:#8FB0FF;font-size:13px}
+.tile-m small{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tile-m b{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile-m em{font-style:normal;font-size:12px;margin-left:6px}
+.up{color:var(--green)}.down{color:var(--red)}
+.adata{display:flex;flex-wrap:wrap;align-items:center;gap:10px 0;background:#0A0F19;border:1px solid #141C2B;border-radius:var(--r-lg);padding:10px 16px;margin-bottom:12px}
+.adata .lab{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;padding-right:16px}
+.adata .lab::before{content:"";width:3px;height:17px;border-radius:2px;background:var(--gold)}
+.adata .cell{padding-inline:14px;border-left:1px solid #1A2334;display:grid;gap:1px;font-size:13px}
+.adata .cell small{color:var(--muted);font-size:11.5px}
+.adata .cell b{font-weight:600}
+.adata .more{margin-left:auto;color:var(--muted);padding-left:12px}
+
+/* calendar */
+.cal-controls{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.seg{display:flex;background:#0E1521;border:1px solid #1C2537;border-radius:8px;padding:2px}
+.seg span{padding:5px 12px;border-radius:6px;font-size:12.5px;color:var(--muted)}
+.seg span.on{background:#2A2518;color:var(--gold);font-weight:500}
+.cal-right{display:flex;gap:16px;align-items:center;font-size:13px;color:var(--muted)}
+.cal-right b{color:var(--ink)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.cal-grid .dow{font-size:11px;letter-spacing:.08em;color:var(--muted);text-align:center;padding-bottom:2px}
+.cal-cell{background:#0C111B;border:1px solid #151D2B;border-radius:8px;min-height:50px;padding:5px 8px;text-align:right;font-size:12px;color:#6F7A90}
+.cal-cell.today{border-color:rgba(226,184,98,.6);color:var(--gold)}
+.cal-cell.today::before{content:"•";margin-right:4px}
+.cal-cell.blank{background:transparent;border-color:transparent}
+.legend{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:9px;font-size:12px;color:var(--muted)}
+.legend i{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+
+/* statistics */
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat-c{background:#0C1220;border:1px solid #182135;border-radius:var(--r-md);padding:10px 12px;display:flex;align-items:center;gap:10px}
+.stat-c small{display:block;font-size:12px;color:var(--muted)}
+.stat-c b{font-size:18px;font-weight:600;color:#8FB0FF;font-variant-numeric:tabular-nums}
+
+/* trade reports */
+.rep-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end;font-size:12.5px;color:var(--muted)}
+.rep-head .g{display:flex;gap:4px;background:#0E1521;border:1px solid #1C2537;border-radius:8px;padding:2px}
+.rep-head .g span{padding:4px 10px;border-radius:6px}
+.rep-head .g span.on{background:#2A2518;color:var(--gold)}
+.sub-panel{background:#0B101A;border:1px solid #141C2B;border-radius:var(--r-md);padding:12px 14px;margin-top:10px}
+.sub-h{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;margin-bottom:8px}
+.sub-h i{width:22px;height:22px;border-radius:var(--r-sm);background:#16203A;display:grid;place-items:center;font-size:11px;color:#8FB0FF;font-style:normal}
+.axis{display:flex;justify-content:space-between;font-size:10.5px;color:var(--dim);margin-bottom:5px;font-family:var(--mono)}
+.drow{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:center;margin-bottom:4px}
+.drow small{font-size:10.5px;color:var(--muted);text-align:right;font-family:var(--mono)}
+.drow .track{height:11px;border-radius:4px;background:#101725}
+.two-up{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.closed-head,.closed-row{display:grid;grid-template-columns:1.1fr .7fr 1.2fr 1fr .7fr 1fr 1.2fr 1fr .8fr;gap:8px;font-size:12px}
+.closed-head{color:var(--muted);letter-spacing:.06em;padding-bottom:10px;border-bottom:1px solid #151D2B}
+.closed-empty{text-align:center;color:var(--muted);padding:34px 0;font-size:13.5px}
+
+/* ---------- NEW-MODULE SYSTEM ----------
+   Discoverable, not advertised. Every new module shares: #202A3B border, --r-lg radius,
+   13/15px padding, a 2px gold left edge as the ONLY "this is new" decoration, one NEW
+   badge inside the card aligned to the title, and one hover behaviour.               */
+.tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;border-radius:var(--r-sm);padding:3px 7px;font-weight:600;white-space:nowrap;line-height:1.35}
+.tag.live{background:rgba(79,194,140,.16);color:var(--green)}
+.tag.wait{background:rgba(90,131,247,.16);color:#9DB4FF}
+.tag.club{background:rgba(226,184,98,.14);color:var(--gold)}
+.tag.tal{background:rgba(79,163,255,.13);color:var(--tal-blue)}
+.tag.quietchip{background:#141C2B;color:var(--muted)}
+.add-k{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;font-weight:600;color:var(--muted);line-height:1.35}
+
+/* the one standardised NEW badge */
+.badge-new{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:4px;background:var(--gold);color:#0A0F1C;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;line-height:1;flex:none}
+
+/* the one module shell */
+.mod{background:#0A0F19;border:1px solid var(--line-2);border-left:2px solid rgba(226,184,98,.45);border-radius:var(--r-lg);transition:border-color .17s ease-out,background-color .17s ease-out,transform .17s ease-out}
 .mod:hover{border-color:#2C3950;border-left-color:rgba(226,184,98,.8);background:#0C121E;transform:translateY(-1px)}
 .mod-h{display:flex;align-items:center;gap:8px;min-height:18px}
-.opp{padding:13px 15px 14px;display:grid;gap:8px;align-content:start}
-.tal-w{align-content:space-between}
-.tal-wm{font-family:var(--body);font-weight:700;font-size:11px;letter-spacing:.3em;color:#CBD6E6;line-height:1}
-.tal-wm i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--tal-blue);
-  margin-right:8px;vertical-align:middle;translate:0 -1px}
-.tal-h{font-size:17px;font-weight:600;line-height:1.2;letter-spacing:-.005em;color:var(--tal-off);
-  display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0}
-.tal-reg{font-size:10.5px;color:#5C6675;line-height:1.35;margin-top:1px}
-.tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
-  border-radius:var(--r-sm);padding:3px 7px;font-weight:600;white-space:nowrap;line-height:1.35}
-.quietchip{background:#141C2B;color:var(--muted)}
-.donechip{background:rgba(79,163,255,.13);color:var(--tal-blue)}
-.badge-new{display:inline-flex;align-items:center;height:18px;padding:0 6px;border-radius:4px;
-  background:var(--gold);color:#0A0F1C;font-family:var(--mono);font-size:9.5px;font-weight:600;
-  letter-spacing:.08em;text-transform:uppercase;line-height:1;flex:none}
-.opp-cta{display:inline-flex;align-items:center;justify-content:center;justify-self:start;height:34px;
-  padding:0 18px;border-radius:var(--r-md);font-size:13px;font-weight:600;white-space:nowrap;margin-top:2px;
-  font-family:inherit;border:0;cursor:pointer;text-decoration:none}
-.opp-cta.blue{background:var(--tal-blue);color:var(--tal-navy)}
-.opp-cta.blue:hover{filter:brightness(1.1)}
+.mod-ic{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:10px;flex:none;background:rgba(226,184,98,.14);color:var(--gold)}
+.mod-ic.blue{background:rgba(79,163,255,.14);color:var(--tal-blue)}
+.mod-t{font-size:15px;font-weight:600;line-height:1.2}
+.mod-x{margin-left:auto;color:var(--dim);font-size:12px;line-height:1;padding:2px 3px;flex:none}
+.mod-x:hover{color:var(--muted)}
+.mod-act{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
+.mod-act:hover{color:var(--ink)}
+
+/* the one CTA scale — gold is spent once per viewport (see .btn-grad on Copy link) */
+.opp-cta{display:inline-flex;align-items:center;justify-content:center;justify-self:start;height:34px;padding:0 18px;border-radius:var(--r-md);font-size:13px;font-weight:600;white-space:nowrap;margin-top:2px}
+.opp-cta.gold{background:linear-gradient(90deg,#E2B862,#5A83F7);color:#0A0F1C}
+.opp-cta.gold:hover{filter:brightness(1.08)}
 .opp-cta.neutral{background:#131A29;border:1px solid #2A3550;color:var(--ink)}
 .opp-cta.neutral:hover{background:#18213A;border-color:#3B4A6B}
+.opp-cta.blue{background:var(--tal-blue);color:var(--tal-navy)}
+.opp-cta.blue:hover{filter:brightness(1.1)}
+.opp-cta.done-n{background:rgba(79,194,140,.13);border:1px solid rgba(79,194,140,.45);color:var(--green)}
 .opp-cta.done-b{background:rgba(79,163,255,.13);border:1px solid rgba(79,163,255,.5);color:var(--tal-blue)}
-.opp-cta:focus-visible{outline:2px solid var(--tal-blue);outline-offset:2px}
-.opps-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;align-items:stretch}
-.ctx{padding:13px 15px 14px;display:grid;gap:8px;align-content:center;border-radius:var(--r-lg);
-  border:1px dashed #1C2434;background:rgba(255,255,255,.012);color:var(--dim);font-size:12px;
-  text-align:center;line-height:1.5}
-/* proposed variant, used only in the recommendations section */
-.mod.tal-edge{border-left-color:rgba(79,163,255,.55)}
-.mod.tal-edge:hover{border-left-color:rgba(79,163,255,.9)}
-.tal-why{font-size:12.5px;color:#A8B2C4;line-height:1.45;margin:0}
-@media (max-width:820px){ .opps-grid{grid-template-columns:minmax(0,1fr)} }
-@media (prefers-reduced-motion:reduce){ .dash *{transition-duration:.01ms !important} }
 
-/* ============================================================
-   Spec page chrome. Matches the other spec pages in this repo.
-   ============================================================ */
-:root{
-  --ink-p:#02040E;--ink-2:#070913;
-  --fg:#FFFFFF;--fg-2:#B9C0CE;--fg-3:#8A93A6;
-  --line:rgba(255,255,255,.09);--line-b:rgba(255,255,255,.14);
-  --gold-lt:#F2CB80;--talero-hi:#4FA3FF;
-  --f-mffu:'Lexend',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --f-mono:'Geist Mono','SF Mono',ui-monospace,Menlo,monospace;
-  --wrap:1180px;
+/* --- Refer a friend: utility module, directly above Account Data --- */
+.refer-strip{padding:9px 14px 10px;margin-bottom:12px;display:grid;gap:6px}
+.rs-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.rs-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:10px}
+/* refer (2/3) + Talero waitlist (1/3) share one row */
+.refer-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;margin-bottom:12px;align-items:stretch}
+.refer-row .refer-strip{margin-bottom:0}
+.refer-row .tal-w{align-content:space-between}
+/* competition runs full width beneath them */
+.opps-single{display:grid;gap:14px}
+.opp.wide{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;position:relative;padding-right:42px}
+.opp.wide .mod-h{flex:none}
+.opp.wide .mod-x{position:absolute;top:11px;right:13px}
+.opp.wide .cw-meta{flex:1 1 220px}
+.opp.wide .opp-cta{margin-left:auto}
+.rs-cell{background:#0C1220;border:1px solid #182135;border-radius:var(--r-md);padding:7px 10px;display:grid;gap:1px;align-content:start}
+.rs-cell.you .add-k{color:var(--gold)}
+.rs-cell.them .add-k{color:#9DB4FF}
+.rs-v{font-size:16px;font-weight:600;display:flex;align-items:center;gap:7px;line-height:1.25;font-variant-numeric:tabular-nums}
+.rs-n{font-size:10.5px;color:var(--muted);line-height:1.3}
+.rs-n b{color:#AEB7C7;font-weight:600}
+.rs-cell.link .linkrow{margin-top:2px}
+.rs-cell.link .field{font-size:11.5px;padding:6px 10px;border-radius:var(--r-sm)}
+/* the one filled CTA in this module — neutral, because gold is spent on Pre-register */
+.rs-copy{padding:6px 13px;font-size:12.5px;border-radius:var(--r-sm);background:#18213A;border:1px solid #2E3B59;color:var(--ink)}
+.rs-copy:hover{background:#1D2846;border-color:#3B4A6B;filter:none}
+.rs-foot{font-size:10.5px;color:var(--dim);line-height:1.3}
+.rs-foot b{color:#98A2B5;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* --- Opportunities: Competition + Talero as one product system --- */
+.opps{margin:10px 0 12px}
+.opps-k{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.opps-k::after{content:"";flex:1;height:1px;background:#1C2434}
+.opps-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:stretch}
+.opp{padding:13px 15px 14px;display:grid;gap:8px;align-content:start}
+
+.cw-prize{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:1px}
+.cw-prize b{font-size:30px;font-weight:700;letter-spacing:-.025em;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.cw-prize .add-k{color:var(--dim);font-size:9px}
+.cw-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:11px;color:var(--dim);line-height:1.35}
+.cw-meta .sep{color:#2A3346}
+.cw-meta .cw-count{font-family:var(--mono);letter-spacing:.02em}
+.opp.quiet{border-left-color:#202A3B}
+
+.tal-w{background:linear-gradient(158deg,#16243C 0%,var(--tal-navy) 62%);border-color:rgba(79,163,255,.24);border-left-color:rgba(226,184,98,.45);color:var(--tal-off)}
+.tal-w:hover{border-color:rgba(79,163,255,.42);background:linear-gradient(158deg,#182944 0%,#101B31 62%)}
+.tal-wm{font-family:var(--body);font-weight:700;font-size:11px;letter-spacing:.3em;color:#CBD6E6;line-height:1}
+.tal-wm i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--tal-blue);margin-right:8px;vertical-align:middle;translate:0 -1px}
+.tal-h{font-size:17px;font-weight:600;line-height:1.2;letter-spacing:-.005em;color:var(--tal-off);display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.tal-sub{font-size:12px;color:var(--tal-mute);line-height:1.4}
+.tal-reg{font-size:10.5px;color:#5C6675;line-height:1.35;margin-top:1px}
+
+/* --- Hyperprop: a quiet secondary link under Opportunities --- */
+.hp-line{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px;margin:-2px 0 12px}
+.hp-wrap{display:inline-flex;align-items:center}
+.btn-hp{display:inline-flex;align-items:center;gap:7px;padding:0 12px;height:32px;border-radius:8px;background:linear-gradient(100deg,#2F6FE0 0%,var(--tal-blue) 100%);color:#061224;font-size:12.5px;font-weight:600;white-space:nowrap;box-shadow:0 1px 0 rgba(255,255,255,.14) inset;transition:filter .17s ease-out}
+.btn-hp:hover{filter:brightness(1.08)}
+.hp-ic{width:16px;height:16px;border-radius:4px;flex:none;display:grid;place-items:center;font-size:9px;color:#EAF3FF;background:rgba(6,18,36,.24)}
+.hp-foot{display:none}
+
+/* --- What's new --- */
+.wn-wrap{position:relative;display:inline-flex}
+.wn-btn{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 11px;border:1px solid var(--line-2);border-radius:var(--r-md);background:#0E1521;font-size:13px;color:#C6CDDB;transition:border-color .17s ease-out,background-color .17s ease-out}
+.wn-btn:hover,.wn-btn[aria-expanded="true"]{border-color:#2C3950;background:#121A28}
+.wn-btn .wn-n{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;padding:0 5px;border-radius:999px;background:rgba(226,184,98,.16);color:var(--gold);font-family:var(--mono);font-size:10px;font-weight:600}
+.wn-panel{position:absolute;top:calc(100% + 8px);left:0;z-index:45;width:min(392px,calc(100vw - 48px));background:#0B101A;border:1px solid #232D3F;border-radius:var(--r-lg);box-shadow:0 22px 50px rgba(0,0,0,.6);padding:12px 14px 13px;display:grid;gap:9px}
+.wn-h{display:flex;align-items:center;gap:8px}
+.wn-h b{font-size:14px;font-weight:600}
+.wn-h .wn-x{margin-left:auto;color:var(--dim);font-size:13px;line-height:1;padding:2px 4px}
+.wn-h .wn-x:hover{color:var(--ink)}
+.wn-list{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.wn-list li{display:flex;gap:9px;align-items:flex-start}
+.wn-list .mod-ic{margin-top:1px}
+.wn-list b{display:block;font-size:12.5px;font-weight:600}
+.wn-list span{display:block;font-size:11.5px;color:var(--muted);line-height:1.4}
+
+@media (max-width:980px){
+  .opps-grid{grid-template-columns:1fr}
+  .refer-row{grid-template-columns:1fr}
 }
-html,body{margin:0}
-body{background:var(--ink-p);color:var(--fg);font-family:var(--f-mffu);-webkit-font-smoothing:antialiased}
-.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:24px}
-h1{font-size:38px;font-weight:600;letter-spacing:-1.1px;line-height:1.1;margin:0}
-h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
-.lede{margin-top:12px;color:var(--fg-2);max-width:66ch;font-size:15.5px;line-height:1.6;font-weight:300}
-.page{padding:44px 0 80px}
-.board{margin-top:34px;border:1px solid var(--line-b);border-radius:16px;padding:22px;background:#060A12}
-.board .cap{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
-  color:var(--fg-3);margin-bottom:14px}
-.states{display:grid;gap:18px;margin-top:40px}
-.state{border:1px solid var(--line-b);border-radius:16px;background:var(--ink-2);padding:22px 24px;
-  display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:center}
-.k{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--talero-hi)}
-.k b{display:block;font-family:var(--f-mffu);font-size:16px;font-weight:600;letter-spacing:-.3px;
-  text-transform:none;color:var(--fg);margin-top:7px}
-.k small{display:block;font-family:var(--f-mffu);font-size:12.5px;line-height:1.55;font-weight:300;
-  letter-spacing:normal;text-transform:none;color:var(--fg-3);margin-top:8px}
-.demo{padding:18px;background:var(--ink-p);border:1px solid var(--line);border-radius:12px}
-.demo>.dash{max-width:330px}
-.spec{margin-top:44px;border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.spec h2{padding:20px 24px;border-bottom:1px solid var(--line);background:var(--ink-2)}
-.spec dl{margin:0;display:grid;grid-template-columns:200px 1fr}
-.spec dt{padding:14px 24px;border-top:1px solid var(--line);font-family:var(--f-mono);font-size:11px;
-  letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
-.spec dd{padding:14px 24px 14px 0;border-top:1px solid var(--line);margin:0;font-size:13.5px;
-  line-height:1.6;color:var(--fg-2);font-weight:300}
-.spec dt:first-of-type,.spec dd:first-of-type{border-top:0}
-.spec code{font-family:var(--f-mono);font-size:12px;color:var(--gold-lt);background:rgba(216,174,94,.10);
-  padding:1px 5px;border-radius:4px}
-.recs{margin-top:44px;display:grid;gap:12px}
-.rec{border:1px solid var(--line-b);border-radius:14px;background:var(--ink-2);padding:18px 20px;
-  display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
-.rec .sev{font-family:var(--f-mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-  padding:4px 8px;border-radius:5px;white-space:nowrap;margin-top:2px}
-.sev.block{background:rgba(255,120,120,.14);color:#FFB4B4;border:1px solid rgba(255,120,120,.4)}
-.sev.high{background:rgba(226,184,98,.14);color:var(--gold-lt);border:1px solid rgba(226,184,98,.4)}
-.sev.med{background:rgba(79,163,255,.13);color:#8FC2FF;border:1px solid rgba(79,163,255,.4)}
-.rec h3{margin:0;font-size:16px;font-weight:600;letter-spacing:-.3px}
-.rec p{margin:8px 0 0;font-size:13.5px;line-height:1.6;color:var(--fg-2);font-weight:300}
-.rec p.fix{color:#9BE8CE;margin-top:9px}
-.rec p.fix b{color:#BFF3DF;font-weight:600}
-.rec code{font-family:var(--f-mono);font-size:12px;color:var(--gold-lt);background:rgba(216,174,94,.10);
-  padding:1px 5px;border-radius:4px}
-.note{margin-top:26px;border:1px solid rgba(216,174,94,.38);background:rgba(216,174,94,.09);
-  border-radius:12px;padding:13px 16px;color:var(--gold-lt);font-size:12.5px;line-height:1.6}
-.note b{font-weight:600}
-.sec{margin-top:60px}
-.sec h2{font-size:28px;font-weight:600;letter-spacing:-.8px}
+@media (max-width:900px){
+  .rs-grid{grid-template-columns:1fr 1fr}
+  .rs-cell.link{grid-column:1 / -1}
+}
+@media (max-width:560px){
+  .rs-grid{grid-template-columns:1fr}
+  .rs-h .mod-act{margin-left:0}
+  .opp-cta{width:100%}
+  .cw-meta{display:grid;gap:2px}
+  .cw-meta .sep{display:none}
+  .hp-cta{margin-left:0;flex-basis:100%;text-align:left;justify-content:flex-start}
+  .cw-prize b{font-size:27px}
+  .wn-panel{left:auto;right:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .mod:hover{transform:none}
+}
+
+/* ---------- accounts view ---------- */
+.ph{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:22px}
+.ph h1{font-size:27px;font-weight:600;line-height:1.15}
+.ph p{color:var(--muted);font-size:14px;margin-top:2px}
+.btn-line{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;font-weight:500;font-size:14px;border:1px solid transparent;border-radius:8px;background:linear-gradient(var(--main),var(--main)) padding-box,linear-gradient(90deg,#E2B862,#5A83F7) border-box}
+.packcard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;background:linear-gradient(100deg,rgba(226,184,98,.11),rgba(90,131,247,.08) 55%,var(--panel));border:1px solid rgba(226,184,98,.32);border-radius:14px;padding:16px 20px;margin-bottom:22px}
+.pc-progress{display:flex;align-items:center;gap:16px;min-width:0;padding-right:24px}
+.pc-txt{flex:1;display:grid;gap:7px;min-width:0}
+.pc-big{font-size:17px;font-weight:400}
+.pc-big b{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.pc-small{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.pc-ref{display:grid;gap:9px;min-width:0;padding-left:24px;border-left:1px solid rgba(255,255,255,.08)}
+.pc-ref-h{font-size:16px}
+.pc-ref-h span{color:var(--gold);font-weight:600}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.filters label{display:grid;gap:4px;font-size:11.5px;color:var(--muted)}
+.filters select{appearance:none;-webkit-appearance:none;background:var(--panel-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0h10L5 6z' fill='%238B94A8'/%3E%3C/svg%3E") no-repeat right 11px center;border:1px solid var(--line);border-radius:7px;padding:7px 32px 7px 11px;font-size:13.5px;color:var(--ink);cursor:pointer}
+.acct-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.acct{background:#0B1019;border:1px solid #1A2130;border-radius:12px;padding:16px 18px;display:grid;gap:14px;align-content:start}
+.acct-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.acct-id{font-weight:600;font-size:15px}
+.acct-plan{display:flex;gap:8px;align-items:center;font-size:13px;color:#C6CDDB;margin-top:5px}
+.status{font-size:12.5px;font-weight:500;white-space:nowrap}
+.st-progress{color:#8FB0FF}.st-passed{color:var(--green)}.st-failed,.st-closed{color:var(--red)}
+.acct-metrics{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:10px;align-items:end}
+.m small{display:block;font-size:11px;color:var(--muted);line-height:1.3;margin-bottom:3px}
+.m b{font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.btn-details{justify-self:start;border:1px solid #2A3348;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:500;background:#111726}
+.empty{background:#0A0E17;border:1px solid #151B28;border-radius:12px;padding:38px 24px;display:grid;justify-items:center;gap:10px;text-align:center}
+.empty b{font-size:16px}
+.empty p{color:var(--muted);max-width:42ch}
+
+/* ---------- club view ---------- */
+.club-hero{text-align:center;display:grid;justify-items:center;gap:12px;padding:26px 16px 30px;border-radius:16px;margin-bottom:34px;
+  background:radial-gradient(60% 55% at 50% 62%,rgba(226,184,98,.16),transparent 70%),repeating-conic-gradient(from 0deg at 50% 62%,rgba(226,184,98,.045) 0deg 5deg,transparent 5deg 16deg),radial-gradient(90% 90% at 50% 0%,#1A2346 0%,#05080F 72%)}
+.club-title{font-size:clamp(28px,4vw,42px);font-weight:700;color:var(--gold-2);line-height:1.08}
+.pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
+.pill-pts{border:1px solid #3A3A3A;background:rgba(255,255,255,.04);border-radius:999px;padding:7px 16px;font-weight:600;font-size:16px}
+.pill-pts i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-right:8px;vertical-align:middle}
+.pill-ref{display:inline-flex;align-items:center;gap:9px;border-radius:999px;padding:6px 16px 6px 8px;font-weight:600;font-size:15px;background:linear-gradient(90deg,#E2B862,#5A83F7);color:#0A0F1C}
+.tabs{display:flex;gap:22px;font-size:13.5px;color:#C6CDDB;flex-wrap:wrap;justify-content:center}
+.tabs em{font-style:normal;font-size:11px;background:var(--gold);color:#0A0F1C;border-radius:99px;padding:0 6px;font-weight:600;margin-left:4px}
+.packs{display:flex;align-items:center;justify-content:center;margin-block:18px 6px}
+.packs .pack.center{width:144px;height:202px;font-size:16px;z-index:2}
+.packs .pack.side{width:108px;height:154px;font-size:11px;opacity:.55}
+.packs .pack.side:first-child{margin-right:-18px}
+.packs .pack.side:last-child{margin-left:-18px}
+.pack-name{font-size:20px;font-weight:600}
+.pack-meta{font-size:13.5px;color:var(--muted)}
+.pack-meta b{color:var(--gold-2)}
+.pack-state{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+.missing{background:#161C29;border:1px solid var(--line);border-radius:999px;padding:7px 16px;color:var(--muted);font-weight:500}
+.missing.ready{background:rgba(79,194,140,.14);border-color:rgba(79,194,140,.45);color:var(--green)}
+.linkbtn{color:var(--gold);font-weight:500;text-decoration:underline;text-underline-offset:3px}
+.earn{max-width:880px;margin:0 auto;display:grid;gap:8px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.earn h2{font-size:28px;font-weight:600}
+.goals{margin-top:14px;background:#0A0E17;border:1px solid #151B28;border-radius:16px;padding:20px;display:grid;gap:16px}
+.goals h3{font-size:21px;font-weight:600}
+.refer{background:var(--panel);border:1px solid rgba(226,184,98,.35);border-radius:14px;padding:18px;display:grid;gap:14px;scroll-margin-top:90px;transition:box-shadow .4s ease}
+.refer.flash{box-shadow:0 0 0 3px rgba(226,184,98,.55)}
+.rf-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.rf-top h4{font-size:18px;font-weight:600}
+.rf-top p{font-size:13px;color:var(--muted)}
+.gold-pts{color:var(--gold);font-weight:600;white-space:nowrap}
+.deal{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.deal div{background:var(--panel-2);border-radius:11px;padding:12px 14px;display:grid;gap:3px}
+.deal small{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.deal .d-them small{color:#9DB4FF}
+.deal .d-you small{color:var(--gold)}
+.deal b{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px}
+.counts{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13.5px;color:var(--muted)}
+.counts b{color:var(--ink);font-variant-numeric:tabular-nums}
+.miles{display:grid;border-top:1px solid var(--line)}
+.mile{display:grid;grid-template-columns:minmax(0,1fr) 120px 80px;gap:14px;align-items:center;padding-block:9px;border-bottom:1px solid var(--line);font-size:13.5px}
+.mile:last-child{border-bottom:0}
+.mile .bar{height:6px}
+.mile .mpts{text-align:right;color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
+.mile .mcount{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:6px}
+
+/* ---------- REFER WIDGET ---------- */
+.rw{position:fixed;right:24px;bottom:24px;z-index:50;display:grid;justify-items:end;gap:12px}
+.rw-launch{position:relative;display:inline-flex;align-items:center;gap:12px;padding:9px 10px 9px 12px;border-radius:999px;border:2px solid transparent;
+  background:linear-gradient(#0E1526,#0E1526) padding-box,conic-gradient(from var(--ang),#E2B862,#FFF1C9,#5A83F7,#C39BEE,#E2B862) border-box;
+  box-shadow:0 0 28px rgba(226,184,98,.28),0 16px 36px rgba(0,0,0,.6);animation:spin 4s linear infinite}
+.rw-launch:hover{box-shadow:0 0 40px rgba(226,184,98,.45),0 16px 36px rgba(0,0,0,.6)}
+@keyframes spin{to{--ang:360deg}}
+.rw-peek{position:relative;width:32px;height:30px;flex:none}
+.pk-peek{position:absolute;left:1px;bottom:-4px;width:30px;height:42px;border-radius:4px;rotate:-8deg;animation:hop 8s ease-in-out 1.5s infinite;box-shadow:0 6px 14px rgba(0,0,0,.5)}
+.rw-launch:hover .pk-peek{animation:none;translate:0 -9px;rotate:8deg;transition:translate .25s ease,rotate .25s ease}
+@keyframes hop{0%,84%,100%{translate:0 0;rotate:-8deg}88%{translate:0 -12px;rotate:6deg}92%{translate:0 0;rotate:-12deg}96%{translate:0 -4px;rotate:-6deg}}
+.rw-dot{position:absolute;top:-9px;right:-3px;width:11px;height:11px;border-radius:50%;background:var(--green);border:2px solid #0E1526;animation:ping 1.8s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(79,194,140,.65)}70%{box-shadow:0 0 0 10px rgba(79,194,140,0)}100%{box-shadow:0 0 0 0 rgba(79,194,140,0)}}
+.rw-lt{display:grid;text-align:left;line-height:1.15}
+.rw-lt b{font-size:14.5px;font-weight:700}
+.rw-lt small{font-size:11.5px;color:#D9C38C;font-weight:400}
+.rw-chip{background:linear-gradient(90deg,#E2B862,#5A83F7);color:#0A0F1C;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;white-space:nowrap}
+.rw-launch.celebrate{animation:spin 4s linear infinite,bounce .9s cubic-bezier(.2,1.5,.4,1)}
+@keyframes bounce{0%{transform:scale(1)}30%{transform:scale(1.14)}60%{transform:scale(.96)}100%{transform:scale(1)}}
+.rw-tease{position:absolute;right:4px;bottom:calc(100% + 14px);background:#FBF3DF;color:#0A0F1C;font-weight:700;font-size:13.5px;border-radius:12px;padding:8px 13px;white-space:nowrap;box-shadow:0 12px 26px rgba(0,0,0,.45);animation:teaseIn .45s cubic-bezier(.2,1.4,.4,1)}
+.rw-tease::after{content:"";position:absolute;right:28px;top:100%;border:7px solid transparent;border-top-color:#FBF3DF}
+.rw-tease span{color:#9C6B17}
+@keyframes teaseIn{from{transform:translateY(10px) scale(.85);opacity:0}to{transform:none;opacity:1}}
+.rw-panel{width:364px;max-width:calc(100vw - 32px);border-radius:22px;overflow:hidden;background:#0B1120;border:1px solid rgba(226,184,98,.4);
+  box-shadow:0 34px 80px rgba(0,0,0,.7),0 0 50px rgba(226,184,98,.14);transform-origin:bottom right;animation:pop .42s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pop{from{transform:scale(.55) translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.rw-hero{position:relative;height:196px;overflow:hidden;background:radial-gradient(70% 85% at 50% 58%,#312F63 0%,#141A3A 45%,#0B1120 82%)}
+.rw-rays{position:absolute;left:50%;top:52%;width:560px;height:560px;margin:-280px 0 0 -280px;background:repeating-conic-gradient(rgba(241,211,138,.16) 0deg 6deg,transparent 6deg 18deg);animation:rot 28s linear infinite;-webkit-mask-image:radial-gradient(circle,#000 14%,transparent 58%);mask-image:radial-gradient(circle,#000 14%,transparent 58%)}
+@keyframes rot{to{transform:rotate(360deg)}}
+.rw-glow{position:absolute;left:50%;top:48%;width:190px;height:120px;margin:-60px 0 0 -95px;border-radius:50%;background:radial-gradient(closest-side,rgba(241,211,138,.45),transparent);filter:blur(6px);animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.6;transform:scale(.95)}50%{opacity:1;transform:scale(1.08)}}
+.spark{position:absolute;width:12px;height:12px;background:#FFF3C4;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);animation:twinkle 2.6s ease-in-out infinite}
+.spark.s1{top:24px;left:44px}.spark.s2{top:36px;right:52px;animation-delay:.7s;width:9px;height:9px}.spark.s3{top:104px;left:28px;animation-delay:1.3s;width:8px;height:8px}
+.spark.s4{top:82px;right:26px;animation-delay:.4s}.spark.s5{top:16px;left:58%;animation-delay:1.8s;width:7px;height:7px}.spark.s6{top:120px;right:84px;animation-delay:1s;width:8px;height:8px}
+@keyframes twinkle{0%,100%{transform:scale(.2) rotate(0);opacity:0}50%{transform:scale(1) rotate(45deg);opacity:1}}
+.rw-packs{position:absolute;left:50%;top:18px;width:210px;height:128px;margin-left:-105px}
+.rw-pk{position:absolute;top:6px;width:80px;height:112px;font-size:10px;box-shadow:0 18px 34px rgba(0,0,0,.55)}
+.rw-pk.left{left:16px;rotate:-13deg;animation:float 3.2s ease-in-out infinite,drop .6s cubic-bezier(.2,1.45,.4,1) both}
+.rw-pk.right{right:16px;rotate:13deg;animation:float 3.2s ease-in-out -1.6s infinite,drop .6s cubic-bezier(.2,1.45,.4,1) .1s both}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+@keyframes drop{from{transform:translateY(46px) scale(.6);opacity:0}to{transform:none;opacity:1}}
+.rw-plus{position:absolute;left:50%;top:54px;width:30px;height:30px;margin-left:-15px;border-radius:50%;background:#0B1120;border:2px solid #F1D38A;color:#F1D38A;display:grid;place-items:center;font-weight:800;font-size:17px;z-index:2;box-shadow:0 0 18px rgba(241,211,138,.55)}
+.rw-title{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:24px;font-weight:800;letter-spacing:-.015em;background:linear-gradient(90deg,#F6DE9E,#FFFFFF 50%,#B7CAFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rw-min{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);color:#E6EAF2;font-size:18px;line-height:1;z-index:3}
+.rw-body{padding:14px 16px 16px;display:grid;gap:12px}
+.rw-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{border-radius:14px;padding:11px 12px 12px;display:grid;gap:2px;background:#121A2C;border:1px solid #243049}
+.tile.them{background:linear-gradient(160deg,rgba(90,131,247,.16),#121A2C 70%);border-color:rgba(90,131,247,.35)}
+.tile.you{background:linear-gradient(160deg,rgba(226,184,98,.18),#121A2C 70%);border-color:rgba(226,184,98,.4)}
+.tile small{font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:700}
+.tile.them small{color:#A9C0FF}
+.tile.you small{color:var(--gold)}
+.tile b{font-size:26px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile span{font-size:14px;font-weight:600;color:var(--gold-2)}
+.rw-prog{display:grid;gap:7px}
+.rw-prog-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px;font-weight:500}
+.rw-prog-top em{font-style:normal;font-family:var(--mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.rw-prog .bar{height:10px}
+.rw .linkrow .field{font-size:12.5px}
+.rw-copy{padding:10px 16px;font-size:14px}
+.rw .share button{padding:5px 11px;font-size:12px}
+.rw-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12.5px;color:var(--muted)}
+.rw-foot b{color:var(--ink)}
+.rw-more{color:#9DB4FF;font-size:12.5px;white-space:nowrap}
+
+.confetti{position:fixed;width:8px;height:11px;border-radius:2px;pointer-events:none;z-index:90;animation:conf .95s cubic-bezier(.15,.7,.3,1) forwards}
+@keyframes conf{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#EEF1F7;color:#0A0F1C;border-radius:10px;padding:9px 16px;font-weight:500;font-size:13.5px;box-shadow:0 12px 30px rgba(0,0,0,.4);z-index:60;max-width:calc(100vw - 32px)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- responsive ---------- */
+@media (max-width:1180px){
+  .chart-wrap{grid-template-columns:1fr}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr));display:grid}
+  .chart{min-height:260px}
+  .acct-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .main{padding:20px 18px 60px}
+}
+@media (max-width:980px){
+  .opps-grid{grid-template-columns:1fr}
+  .refer-row{grid-template-columns:1fr}
+  .two-up{grid-template-columns:1fr}
+  .adata{gap:10px}
+  .adata .cell{border-left:0;padding-inline:0;padding-right:18px}
+}
 @media (max-width:820px){
-  .state{grid-template-columns:1fr;gap:14px}
-  .spec dl{grid-template-columns:1fr}
-  .spec dd{padding:0 24px 14px}
-  .spec dt{border-top:1px solid var(--line);padding-bottom:6px}
-  .rec{grid-template-columns:1fr}
-  h1{font-size:28px}
-  .wrap{padding-inline:18px}
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{min-width:0}
+  .main{min-width:0}
+  .side{flex-direction:row;align-items:center;overflow-x:auto;padding:10px 12px;border-right:0;border-bottom:1px solid #121827}
+  .logo{padding:0 8px 0 0}
+  .side{position:static;height:auto;overflow:visible}
+  .wm,.logo .chev,.side-foot,.logout{display:none}
+  .nav{flex-direction:row;align-items:center}
+  .nav-item{white-space:nowrap}
+  .nav-item .ico{display:none}
+  .acct-grid,.deal,.stat-grid,.rw-tiles{grid-template-columns:1fr}
+  .packcard{grid-template-columns:1fr}
+  .pc-progress{padding-right:0}
+  .pc-ref{padding-left:0;border-left:0;border-top:1px solid rgba(255,255,255,.08);padding-top:14px}
+  .cal-cell{min-height:46px}
+  .closed-head,.closed-row{grid-template-columns:repeat(4,1fr);font-size:11px}
+  .closed-head span:nth-child(n+5){display:none}
+  .main{padding:16px 14px 60px}
+}
+@media (max-width:560px){
+  .rw{right:16px;bottom:16px}
+  .rw-lt small{display:none}
+  .tiles{grid-template-columns:1fr}
+  .packs .pack.center{width:118px;height:164px;font-size:13px}
+  .packs .pack.side{width:82px;height:118px;font-size:9px}
+  .linkrow{flex-wrap:wrap}
+  .linkrow .field{flex-basis:100%}
+  .toast{bottom:90px}
+  .stats-title h1{font-size:22px}
 }
 </style>
 
-<div class="wrap page">
-  <h1>Talero Brokerage, stats page card</h1>
-  <p class="lede">Section 2.3 of the 2026-09-29 dashboard handoff, pulled out on its own. The card below is replicated from the demo, class for class, minus the red review outline. Underneath it, the behaviour spec, then ten changes I would make before this ships.</p>
+<div class="demobar">
+  <div class="db-title"><span class="db-chip">Demo</span>Ecosystem additions · example data<span class="new-key"><i aria-hidden="true"></i>New components outlined in red</span></div>
+  <div class="db-views" role="tablist" aria-label="Demo views">
+    <button role="tab" id="tab-stats" data-go="stats" aria-selected="true">Stats page</button>
+    <button role="tab" id="tab-accounts" data-go="accounts" aria-selected="false">Accounts</button>
+    <button role="tab" id="tab-club" data-go="club" aria-selected="false">Club page</button>
+  </div>
+</div>
 
-  <div class="board">
-    <div class="cap">In place &middot; the row above Account Data</div>
-    <div class="dash">
-      <div class="opps-grid">
-        <div class="ctx">Refer a friend<br><span style="font-size:11px">Specced separately, shown for placement only</span></div>
-        <section class="mod opp tal-w" aria-label="Talero Brokerage" data-tal>
+<div class="app">
+  <aside class="side">
+    <div class="logo">
+      <span class="logo-l"><span class="crest" aria-hidden="true"></span><span class="wm">My Funded Futures</span></span>
+      <span class="chev" aria-hidden="true">«</span>
+    </div>
+    <nav class="nav" aria-label="Main navigation">
+      <button class="nav-item" data-go="stats" id="nav-stats"><span class="ico">▤</span>Stats</button>
+      <button class="nav-item" data-toast="Opens the Leaderboard"><span class="ico">♛</span>Leaderboard</button>
+      <button class="nav-item" data-toast="Opens Affiliates"><span class="ico">⋈</span>Affiliates</button>
+      <button class="nav-item" data-toast="Opens Billing"><span class="ico">▦</span>Billing</button>
+      <button class="nav-item" data-go="accounts" id="nav-accounts"><span class="ico">✇</span>Accounts</button>
+      <button class="nav-item" data-toast="Opens Promotions"><span class="ico">▣</span>Promotions</button>
+      <button class="nav-item" data-toast="Opens Payouts"><span class="ico">$</span>Payouts</button>
+      <button class="nav-item" data-toast="Opens Certificates"><span class="ico">✓</span>Certificates</button>
+      <button class="nav-item" data-toast="Opens Platforms"><span class="ico">↓</span>Platforms</button>
+      <button class="nav-item" data-toast="Opens Personal Settings"><span class="ico">⚙</span>Personal Settings</button>
+      <button class="nav-item" data-toast="Opens Help Center"><span class="ico">?</span>Help Center</button>
+    </nav>
+    <button class="is-new side-comp" id="compBar" data-toast="Opens the competition">
+      <span class="sc-ic" aria-hidden="true">🏆</span>
+      <span class="sc-txt">
+        <b id="compTitle">Competition</b>
+        <span id="compSub">$1,000,000 · Free Entry</span>
+      </span>
+      <span class="badge-new sc-badge">New</span>
+      <span id="compCount" hidden>Opens in 15d 04h</span>
+      <span id="compCta" hidden></span>
+      <span id="compX" hidden></span>
+    </button>
+    <div class="side-foot">
+      <button class="btn-copier" data-toast="Opens Trade Copier">⟳ Trade Copier</button>
+      <button class="btn-challenge" data-toast="Opens plan selection">🏆 Start Challenge</button>
+      <div class="logout">⇥ LOG OUT</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- ================= STATS ================= -->
+    <section class="view" id="v-stats" aria-label="Account stats">
+      <div class="stats-top">
+        <div class="stats-title">
+          <h1>Analytics</h1>
+          <span class="acct-pill">
+            <span class="id">MFFUEVPRO230848001</span>
+            <span class="chip prog">In Progress</span>
+            <span class="chip eval">Evaluation</span>
+            <span class="ic">▾</span><span class="ic">👁</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="hp-line">
+      <div class="stats-actions">
+          <span class="wn-wrap">
+            <button class="is-new wn-btn" id="whatsNew" aria-expanded="false" aria-controls="whatsNewPanel">What's new <span class="wn-n">4</span></button>
+            <div class="wn-panel" id="whatsNewPanel" role="dialog" aria-label="What's new" hidden>
+              <div class="wn-h"><b>What's new</b><button class="wn-x" id="wnClose" aria-label="Close what's new">✕</button></div>
+              <ul class="wn-list">
+                <li><span class="mod-ic" aria-hidden="true">◈</span><div><b>Refer a friend</b><span>Share your link. You and your friend each get 2,000 points.</span></div></li>
+                <li><span class="mod-ic" aria-hidden="true">🏆</span><div><b>Competitions</b><span>A $1,000,000 prize pool. Rules change daily, starting long only.</span></div></li>
+                <li><span class="mod-ic blue" aria-hidden="true">◆</span><div><b>Talero Brokerage</b><span>Live futures from MFB Capital. Join the waitlist.</span></div></li>
+                <li><span class="mod-ic blue" aria-hidden="true">⬡</span><div><b>Hyperprop</b><span>A next-gen platform for evals.</span></div></li>
+              </ul>
+            </div>
+          </span>
+          <button class="btn-grad" data-toast="Opens reset checkout">⟳ Reset Now</button>
+        </div>
+        <span class="hp-wrap" id="hpCard"><button class="is-new btn-hp" id="hpCta" data-toast="Opens myfundedfutures.com/hyperprop"><span class="hp-ic" aria-hidden="true">⬡</span>Hyperprop: Next Gen Plans</button><span class="tag wait" id="hpTag" hidden>Waitlist</span></span>
+        <span class="hp-body" id="hpBody" hidden></span>
+        <span class="hp-foot" id="hpFoot"></span>
+      </div>
+
+      <div class="tv-bar">
+        <div class="tv-left">
+          <span class="tv-logo"><i aria-hidden="true"></i>tradovate</span>
+          <span class="cred">Username <b>MFFUhcsIMVjQvu</b><span class="mini">⧉ Copy</span></span>
+          <span class="cred">Password <b>••••••••</b><span class="mini">👁</span><span class="mini">⧉ Copy</span></span>
+        </div>
+        <div class="stats-actions">
+          <button class="btn-soft" data-toast="Opens Tradovate">Open Tradovate ↗</button>
+          <span class="muted">✕</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="chart-wrap">
+          <div>
+            <div class="chart-head">
+              <div class="panel-t">Trading Growth Curve <span class="muted" style="font-size:13px">ⓘ</span></div>
+              <span class="date-chip">🗓 18 Sep 2026 - 19 Sep 2026</span>
+              <span class="session">Session Ends In 19:25:37</span>
+            </div>
+            <div class="chart">
+              <svg viewBox="0 0 900 330" preserveAspectRatio="none" role="img" aria-label="Flat growth curve at $50,000 with the $55,000 profit target above">
+                <defs>
+                  <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#E2B862" stop-opacity=".35"/>
+                    <stop offset="100%" stop-color="#E2B862" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <line x1="40" y1="26" x2="880" y2="26" stroke="#4FC28C" stroke-width="2" stroke-dasharray="8 7"/>
+                <path d="M40 150 L880 150 L880 285 L40 285 Z" fill="url(#areaFill)"/>
+                <line x1="40" y1="150" x2="880" y2="150" stroke="#F0CE86" stroke-width="2"/>
+                <text x="6" y="30" fill="#6F7A90" font-size="12">$55K</text>
+                <text x="6" y="92" fill="#6F7A90" font-size="12">$51K</text>
+                <text x="6" y="154" fill="#6F7A90" font-size="12">$50K</text>
+                <text x="6" y="289" fill="#6F7A90" font-size="12">$48K</text>
+                <text x="40" y="312" fill="#6F7A90" font-size="12">Sep 18</text>
+                <text x="828" y="312" fill="#6F7A90" font-size="12">Sep 19</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="tiles">
+            <div class="tile-m"><span class="tile-ic">◪</span><span><small>Net Profit Loss</small><b>$0</b></span></div>
+            <div class="tile-m"><span class="tile-ic">◎</span><span><small>Profit Target</small><b>$3,000</b><em class="up">6.00%</em></span></div>
+            <div class="tile-m"><span class="tile-ic">◪</span><span><small>Current Balance</small><b>$50,000</b></span></div>
+            <div class="tile-m"><span class="tile-ic">🛡</span><span><small>Max Drawdown</small><b>$48,000</b><em class="down">-4.00%</em></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADDITIONS: refer a friend (2/3) + Talero waitlist (1/3) -->
+      <div class="refer-row">
+      <div class="is-new mod refer-strip" id="referStrip">
+        <div class="rs-h">
+          <span class="mod-ic" aria-hidden="true">◈</span>
+          <span class="mod-t">Refer a friend</span>
+          <span class="badge-new">New</span>
+          <button class="mod-act" data-go="club" data-scroll="referBlock">My referrals</button>
+        </div>
+        <div class="rs-grid">
+          <div class="rs-cell you">
+            <span class="add-k">You get</span>
+            <span class="rs-v">2,000 pts <span class="pack micro pack-xs" aria-hidden="true"></span></span>
+            <span class="rs-n">= a <b>Micro Pack</b>, which costs 1,500 pts, with 500 left over.</span>
+          </div>
+          <div class="rs-cell link">
+            <span class="add-k">Your referral link</span>
+            <div class="linkrow"><span class="field">mffu.com/f/7c41e2a9d0</span><button class="btn-grad rs-copy" data-copy="link" data-burst>Copy link</button></div>
+          </div>
+        </div>
+        <span class="rs-foot">Your friend gets <b>2,000 pts</b> + a Welcome Pack on their first eval · <b data-bind="joined">2</b> joined · <b data-bind="bought">1</b> bought · <b data-bind="earned">2,000</b> pts earned</span>
+      </div>
+
+          <section class="is-new mod opp tal-w" aria-label="Talero Brokerage">
           <div class="mod-h">
             <span class="tal-wm"><i aria-hidden="true"></i>TALERO</span>
             <span class="badge-new">New</span>
           </div>
-          <h4 class="tal-h">Talero Brokerage <span class="tag quietchip" data-tal-chip>Coming soon</span></h4>
-          <a class="opp-cta blue" data-tal-cta href="https://www.talero.com/waitlist?partner=MFFU" target="_blank" rel="noopener">Join the Waitlist</a>
-          <span class="tal-reg">Talero by MFB Capital &middot; CFTC &amp; NFA regulated &middot; NFA ID 0562645</span>
+          <h4 class="tal-h">Talero Brokerage <span class="tag quietchip" id="talTag">Coming soon</span></h4>
+          <a class="opp-cta blue" id="talCta" href="https://www.talero.com/waitlist?partner=MFFU" target="_blank" rel="noopener" data-cta="stats-talero" aria-label="Join the Talero waitlist, opens talero.com in a new tab">Join the Waitlist</a>
+          <span class="tal-reg">Talero by MFB Capital · CFTC &amp; NFA regulated · NFA ID 0562645</span>
         </section>
       </div>
-    </div>
-  </div>
 
-  <div class="states">
-    <div class="state">
-      <div class="k">State 1<b>At rest</b>
-        <small>One third width beside Refer a friend. Wordmark, title with a quiet chip, one CTA, regulatory line. The module border, hover lift and gold left edge all come from the shared <code>.mod</code> class.</small>
+      <div class="adata">
+        <span class="lab">Account Data</span>
+        <span class="cell"><small>🗓 Start Date</small><b>09/18/2026</b></span>
+        <span class="cell"><small>⚑ Account Type</small><b>Evaluation</b></span>
+        <span class="cell"><small>✓ Passed on</small><b>--</b></span>
+        <span class="cell"><small>$ Starting Balance</small><b>$50,000</b></span>
+        <span class="cell"><small>$ Current Balance</small><b>+$50,000</b></span>
+        <span class="cell"><small>▤ Broker</small><b>Tradovate</b></span>
+        <span class="cell"><small>▭ Platform</small><b>TradingView</b></span>
+        <span class="more">›</span>
       </div>
-      <div class="demo"><div class="dash">
-        <section class="mod opp tal-w" aria-label="Talero Brokerage">
-          <div class="mod-h"><span class="tal-wm"><i aria-hidden="true"></i>TALERO</span><span class="badge-new">New</span></div>
-          <h4 class="tal-h">Talero Brokerage <span class="tag quietchip">Coming soon</span></h4>
-          <span class="opp-cta blue">Join the Waitlist</span>
-          <span class="tal-reg">Talero by MFB Capital &middot; CFTC &amp; NFA regulated &middot; NFA ID 0562645</span>
-        </section>
-      </div></div>
-    </div>
 
-    <div class="state">
-      <div class="k">State 2<b>On the list</b>
-        <small>The handoff says the chip becomes "You're on the list" and the CTA goes quiet. Rendered here so it can be reviewed, but see recommendation 1: as specced there is no mechanism that can ever put the card into this state.</small>
+      <div class="panel">
+        <div class="panel-h">
+          <div class="panel-t">Calendar</div>
+          <div class="seg"><span class="on">P&amp;L</span><span>T1 NEWS</span></div>
+          <div class="cal-right"><span>⊕ Payout Requests <b>$0</b></span><span>Net P&amp;L <b class="up">+$0</b></span></div>
+        </div>
+        <div class="cal-controls">
+          <div class="stats-actions"><span class="muted">‹</span><span class="muted">›</span><b style="font-size:16px">September 2026</b></div>
+          <div class="cal-right"><span>⟳ Sync</span><span>⤓ Save</span><span>⇗ Share</span></div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="legend">
+          <span><i style="background:#4FC28C"></i>Profit</span><span><i style="background:#FF6B6B"></i>Loss</span>
+          <span><i style="background:#5A83F7"></i>Payout</span><span><i style="background:#E2B862"></i>Today</span>
+          <span><i style="background:#C39BEE"></i>% of Profit</span>
+        </div>
       </div>
-      <div class="demo"><div class="dash">
-        <section class="mod opp tal-w" aria-label="Talero Brokerage">
-          <div class="mod-h"><span class="tal-wm"><i aria-hidden="true"></i>TALERO</span></div>
-          <h4 class="tal-h">Talero Brokerage <span class="tag donechip">You're on the list</span></h4>
-          <span class="opp-cta done-b">Waitlist joined</span>
-          <span class="tal-reg">Talero by MFB Capital &middot; CFTC &amp; NFA regulated &middot; NFA ID 0562645</span>
-        </section>
-      </div></div>
-    </div>
 
-    <div class="state">
-      <div class="k">State 3<b>Recommended</b>
-        <small>Every change from the list below applied at once: blue left edge, a reason to care, an honest chip, the entity said out loud, and the neutral CTA so it stops competing with Refer a friend's Copy button.</small>
+      <div class="panel">
+        <div class="panel-h">
+          <div class="panel-t">Statistics <span class="chip eval" style="font-weight:400">All Time</span></div>
+          <div class="cal-right"><span>$</span><span>⟳ Sync</span></div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-c"><span class="tile-ic">🏆</span><span><small>Best Trade</small><b>$0</b></span></div>
+          <div class="stat-c"><span class="tile-ic">👎</span><span><small>Worst Trade</small><b>$0</b></span></div>
+          <div class="stat-c"><span class="tile-ic">↗</span><span><small>Avg. Win</small><b>$0</b></span></div>
+          <div class="stat-c"><span class="tile-ic">↘</span><span><small>Avg. Loss</small><b>$0</b></span></div>
+          <div class="stat-c"><span class="tile-ic">▤</span><span><small>No. of Trades</small><b>0</b></span></div>
+          <div class="stat-c"><span class="tile-ic">▦</span><span><small>Contracts</small><b>0</b></span></div>
+          <div class="stat-c"><span class="tile-ic">%</span><span><small>Win Rate</small><b>0%</b></span></div>
+          <div class="stat-c"><span class="tile-ic">◎</span><span><small>Profit Factor</small><b>0</b></span></div>
+        </div>
       </div>
-      <div class="demo"><div class="dash">
-        <section class="mod tal-edge opp tal-w" aria-label="Talero Brokerage">
-          <div class="mod-h"><span class="tal-wm"><i aria-hidden="true"></i>TALERO</span><span class="badge-new">New</span></div>
-          <h4 class="tal-h">Talero Brokerage <span class="tag quietchip">Waitlist open</span></h4>
-          <p class="tal-why">Your own account, your own capital, your own rules.</p>
-          <span class="opp-cta neutral">Join the Waitlist</span>
-          <span class="tal-reg">Talero by MFB Capital, a separate company &middot; CFTC &amp; NFA regulated &middot; NFA ID [CONFIRM]</span>
-        </section>
-      </div></div>
-    </div>
-  </div>
 
-  <div class="spec">
-    <h2>Behaviour spec, as handed off</h2>
-    <dl>
-      <dt>Placement</dt>
-      <dd>One third width, on the row with Refer a friend, directly above Account Data.</dd>
-      <dt>Copy</dt>
-      <dd>Wordmark <code>TALERO</code>, title <code>Talero Brokerage</code> with a quiet <code>Coming soon</code> chip, CTA <code>Join the Waitlist</code>, footnote <code>Talero by MFB Capital &middot; CFTC &amp; NFA regulated &middot; NFA ID 0562645</code>.</dd>
-      <dt>Branding</dt>
-      <dd>Navy <code>#0E1729</code> with accent <code>#4FA3FF</code>, taken from talero.com so it reads as Talero and not as MFFU gold.</dd>
-      <dt>Behaviour</dt>
-      <dd>The CTA opens talero.com. After signing up the chip becomes <code>You're on the list</code> and the CTA goes quiet.</dd>
-      <dt>Tracking</dt>
-      <dd><code>talero_waitlist_click</code>.</dd>
-      <dt>Compliance</dt>
-      <dd>Regulated entity copy. Keep the regulatory line intact and confirm with Christine before it ships.</dd>
-      <dt>Open decision</dt>
-      <dd>Which URL. talero.com is the live waitlist, talix.com does not resolve.</dd>
-    </dl>
-  </div>
-
-  <div class="sec"><h2>Ten changes I would make</h2>
-    <p class="lede">Ordered by what stops the ship, then by what the card is worth once it does.</p>
-  </div>
-
-  <div class="recs">
-
-    <div class="rec">
-      <span class="sev block">Blocker</span>
-      <div>
-        <h3>1. The "on the list" state has no way to happen</h3>
-        <p>talero.com is a different company on a different domain. There is no shared session, so the dashboard has no way of knowing a trader joined. As written the chip can never flip, and a trader who signed up last week keeps being asked to sign up.</p>
-        <p class="fix"><b>Fix:</b> pick one. Either the CTA opens an in-dashboard panel that posts to an MFFU endpoint and MFFU forwards the signup, which keeps the state locally and makes the one tap join possible. Or Talero calls back to MFFU on signup, which is a cross entity data flow and needs its own agreement before anyone builds it. The first is far cheaper and is the only one that can ship in the copy-only phase.</p>
+      <div class="panel">
+        <div class="panel-h">
+          <div class="panel-t">Trade Reports</div>
+          <div class="rep-head">
+            <span>ⓘ Help</span>
+            <span class="g"><span class="on">Overall</span><span>Long</span><span>Short</span></span>
+            <span class="g"><span class="on">Trade Duration</span><span>Daily</span><span>Weekly</span><span>Monthly</span></span>
+          </div>
+        </div>
+        <div class="sub-panel">
+          <div class="sub-h"><i>▥</i>Performance By Trade Duration</div>
+          <div class="axis"><span>-$500</span><span>$0</span><span>$500</span><span>$1,000</span></div>
+          <div id="durPerf"></div>
+        </div>
+        <div class="two-up">
+          <div class="sub-panel">
+            <div class="sub-h"><i>◷</i>Trade Count By Trade Duration</div>
+            <div class="axis"><span>0</span><span>5</span><span>7</span><span>10</span></div>
+            <div id="durCount"></div>
+          </div>
+          <div class="sub-panel">
+            <div class="sub-h"><i>%</i>Win Rate By Trade Duration</div>
+            <div class="axis"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+            <div id="durWin"></div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="rec">
-      <span class="sev block">Blocker</span>
-      <div>
-        <h3>2. The NFA ID may be the wrong one</h3>
-        <p>talero.com prints two different NFA IDs for MFB Capital on the same page: <code>0562645</code> in the Why Talero section and <code>0573109</code> in the footer regulatory block. The handoff says keep the line intact, which would copy one of them onto the dashboard without anyone checking which is right.</p>
-        <p class="fix"><b>Fix:</b> confirm against NFA BASIC before build, not at review. A wrong registration number on a regulated entity's marketing is the one error on this card that is genuinely expensive.</p>
+      <div class="panel">
+        <div class="panel-t" style="margin-bottom:14px">Closed Trades</div>
+        <div class="closed-head">
+          <span>SYMBOL</span><span>VOLUME</span><span>OPEN TIME</span><span>AVG ENTRY</span><span>BIAS</span><span>DURATION</span><span>CLOSE TIME</span><span>AVG CLOSE</span><span>PROFIT</span>
+        </div>
+        <div class="closed-empty">No trades to display.</div>
       </div>
-    </div>
+    </section>
 
-    <div class="rec">
-      <span class="sev high">High</span>
-      <div>
-        <h3>3. Nothing suppresses it after a breach</h3>
-        <p>The card renders for every trader, including one who blew an account this morning. Pointing that trader at a real money brokerage is the single worst thing this programme could do, and it will be screenshotted.</p>
-        <p class="fix"><b>Fix:</b> <code>suppressIfBreachedWithinDays: 30</code> as a rule in the component, not a thing to remember. Same rule belongs on every Talero surface.</p>
+    <!-- ================= ACCOUNTS ================= -->
+    <section class="view" id="v-accounts" aria-label="Accounts" hidden>
+      <div class="ph">
+        <div><h1>Trading Accounts</h1><p>Manage and monitor your trading accounts</p></div>
+        <button class="btn-line" type="button" data-toast="Opens plan selection">Start New Challenge</button>
       </div>
-    </div>
-
-    <div class="rec">
-      <span class="sev high">High</span>
-      <div>
-        <h3>4. The card never says why anyone would want it</h3>
-        <p>Wordmark, product name, button, legal line. A funded trader reading it learns that a brokerage exists, not what changes if they use one. That is the whole job of the card and it is the one thing missing.</p>
-        <p class="fix"><b>Fix:</b> one line above the CTA. <b>"Your own account, your own capital, your own rules."</b> Factual, no outcome claim, no comparison to the funded product, and it answers the only question the reader actually has. It is the cheapest improvement on this list by a distance.</p>
+      <div class="is-new packcard">
+        <div class="pc-progress">
+          <div class="pack micro pack-sm" aria-hidden="true"><span class="glint"></span></div>
+          <div class="pc-txt">
+            <div class="pc-big" data-bind="toGoLine"><b>1,290</b> pts to your next pack</div>
+            <div class="bar"><i data-bind="bar"></i></div>
+            <div class="pc-small"><span data-bind="pts">210</span> / 1,500 pts</div>
+          </div>
+          <button class="btn-grad" data-go="club" data-show="ready" hidden>Open pack</button>
+        </div>
+        <div class="pc-ref">
+          <div class="pc-ref-h"><b>Refer 1 friend</b> <span>= 2,000 Points</span></div>
+          <div class="linkrow"><span class="field">mffu.com/f/7c41e2a9d0</span><button class="btn-grad" data-copy="link" data-burst>Copy</button></div>
+        </div>
       </div>
-    </div>
-
-    <div class="rec">
-      <span class="sev high">High</span>
-      <div>
-        <h3>5. The gold left edge puts MFFU branding on another company's card</h3>
-        <p>Section 2.3 says the palette exists so the card "reads as Talero and not as MFFU gold", but the shared <code>.mod</code> class gives every module a 2px gold left edge, Talero included. The one deliberate brand signal in the design rules is working against the one deliberate brand decision in the component.</p>
-        <p class="fix"><b>Fix:</b> <code>border-left-color: rgba(79,163,255,.55)</code> on this card only. It still reads as a new module, in the right company's colour.</p>
+      <div class="filters">
+        <label for="stageFilter">Funded Stage:
+          <select id="stageFilter"><option value="all">All Stages</option><option value="evaluation">Evaluation</option><option value="funded">Funded</option></select>
+        </label>
+        <label for="statusFilter">Status:
+          <select id="statusFilter"><option value="all">All Statuses</option><option value="progress">In Progress</option><option value="passed">Passed</option><option value="failed">Failed</option><option value="closed">Closed</option></select>
+        </label>
       </div>
-    </div>
-
-    <div class="rec">
-      <span class="sev med">Medium</span>
-      <div>
-        <h3>6. "Coming soon" tells people there is nothing to do</h3>
-        <p>The waitlist is open right now. "Coming soon" describes the brokerage accurately and the action inaccurately, and it is the reason to scroll past.</p>
-        <p class="fix"><b>Fix:</b> <code>Waitlist open</code>. Equally true, and it is the difference between an announcement and an invitation.</p>
+      <div class="acct-grid" id="acctGrid">
+        <article class="acct" data-status="progress" data-stage="evaluation">
+          <div class="acct-top"><div><div class="acct-id">MFFUEVPRO230848001</div><div class="acct-plan">Pro <span class="chip eval">Evaluation</span></div></div><span class="status st-progress">In Progress</span></div>
+          <div class="acct-metrics"><div class="m"><small>Profit Target</small><b>$0/$3,000</b></div><div class="m"><small>Balance</small><b>$50,000</b></div><div class="m"><small>Minimum Balance</small><b>$48,000</b></div></div>
+          <button class="btn-details" data-go="stats">View Details</button>
+        </article>
+        <article class="acct" data-status="progress" data-stage="evaluation">
+          <div class="acct-top"><div><div class="acct-id">MFFUEVCORE310448206</div><div class="acct-plan">Core Normal <span class="chip eval">Evaluation</span></div></div><span class="status st-progress">In Progress</span></div>
+          <div class="acct-metrics"><div class="m"><small>Profit Target</small><b>$415.5/$3,000</b></div><div class="m"><small>Balance</small><b>$50,415.5</b></div><div class="m"><small>Minimum Balance</small><b>$48,000</b></div></div>
+          <button class="btn-details" data-toast="Opens account analytics">View Details</button>
+        </article>
+        <article class="acct" data-status="passed" data-stage="evaluation">
+          <div class="acct-top"><div><div class="acct-id">MFFUEVRPD310448205</div><div class="acct-plan">Rapid <span class="chip eval">Evaluation</span></div></div><span class="status st-passed">Passed</span></div>
+          <div class="acct-metrics"><div class="m"><small>Profit Target</small><b>$4,020/$4,000</b></div><div class="m"><small>Balance</small><b>$54,020</b></div><div class="m"><small>Minimum Balance</small><b>$48,000</b></div></div>
+          <button class="btn-details" data-toast="Opens account analytics">View Details</button>
+        </article>
+        <article class="acct" data-status="failed" data-stage="evaluation">
+          <div class="acct-top"><div><div class="acct-id">MFFUEVRPD310448204</div><div class="acct-plan">Rapid <span class="chip eval">Evaluation</span></div></div><span class="status st-failed">Failed</span></div>
+          <div class="acct-metrics"><div class="m"><small>Profit Target</small><b>$-2,010/$3,000</b></div><div class="m"><small>Balance</small><b>$47,990</b></div><div class="m"><small>Minimum Balance</small><b>$48,000</b></div></div>
+          <button class="btn-details" data-toast="Opens account analytics">View Details</button>
+        </article>
+        <article class="acct" data-status="closed" data-stage="evaluation">
+          <div class="acct-top"><div><div class="acct-id">MFFUEVRPD310448203</div><div class="acct-plan">Rapid <span class="chip eval">Evaluation</span></div></div><span class="status st-closed">Closed</span></div>
+          <div class="acct-metrics"><div class="m"><small>Profit Target</small><b>$-314.6/$3,000</b></div><div class="m"><small>Balance</small><b>$49,685.4</b></div><div class="m"><small>Minimum Balance</small><b>$48,000</b></div></div>
+          <button class="btn-details" data-toast="Opens account analytics">View Details</button>
+        </article>
       </div>
-    </div>
-
-    <div class="rec">
-      <span class="sev med">Medium</span>
-      <div>
-        <h3>7. Two filled buttons in one row</h3>
-        <p>Refer a friend ships a filled Copy link button and Talero ships a filled blue CTA, side by side. The design rules say one action per view and reserve fills for the most useful thing on screen. For most traders that is the referral link, not a brokerage that has not opened.</p>
-        <p class="fix"><b>Fix:</b> Talero takes <code>.opp-cta.neutral</code> until the brokerage actually opens, then earns the fill.</p>
+      <div class="empty" id="acctEmpty" hidden>
+        <b>No Active Challenges</b>
+        <p>You don't have any challenges in progress. Start your trading journey by taking on a new challenge.</p>
+        <button class="btn-line" type="button" data-toast="Opens plan selection">Start New Challenge</button>
       </div>
-    </div>
+    </section>
 
-    <div class="rec">
-      <span class="sev med">Medium</span>
-      <div>
-        <h3>8. You cannot tell whether the card works</h3>
-        <p>Only <code>talero_waitlist_click</code> fires. With no impression event there is no denominator, so there is no click through rate and no way to compare this surface against the header tab or the homepage rail.</p>
-        <p class="fix"><b>Fix:</b> add <code>talero_card_view</code> on render with the suppression state as a property, so suppressed impressions are counted separately rather than silently missing.</p>
+    <!-- ================= CLUB ================= -->
+    <section class="view" id="v-club" aria-label="MyFundedClub" hidden>
+      <div class="club-hero">
+        <h1 class="club-title">MyFundedClub, Invite Only</h1>
+        <p class="muted">Gain points, open packs, earn rewards.</p>
+        <div class="pills">
+          <span class="pill-pts"><i></i><span data-bind="pts">210</span> points available</span>
+          <button class="is-new pill-ref" data-scroll="referBlock"><span class="pack welcome pack-xs" aria-hidden="true"></span>Refer a friend · 1 pack</button>
+        </div>
+        <div class="tabs"><span>Tasks</span><span>Rewards</span><span>Inventory<em>11</em></span><span>Activity</span></div>
+        <div class="packs" aria-hidden="true">
+          <div class="pack point side">POINT<br>PACK</div>
+          <div class="pack micro center"><span class="glint"></span>MICRO<br>PACK</div>
+          <div class="pack mini side">MINI<br>PACK</div>
+        </div>
+        <div class="pack-name">Micro Pack</div>
+        <div class="pack-meta"><b>1,500 pts</b> · 5 possible rewards</div>
+        <div class="pack-state">
+          <span class="missing" data-bind="missing">Missing 1,290 points</span>
+          <button class="is-new linkbtn" data-scroll="referBlock" data-hide="ready">or refer 1 friend</button>
+        </div>
       </div>
-    </div>
-
-    <div class="rec">
-      <span class="sev med">Medium</span>
-      <div>
-        <h3>9. "Talero by MFB Capital" implies separateness without saying it</h3>
-        <p>A trader reading a card inside their MFFU dashboard will reasonably assume it is an MFFU product with a different name. The regulatory line names the entity but never says it is a different company.</p>
-        <p class="fix"><b>Fix:</b> three words. <b>"Talero by MFB Capital, a separate company"</b>. It costs nothing and it is the sentence a regulator would look for.</p>
+      <div class="earn">
+        <span class="eyebrow">Earn</span>
+        <h2>Tasks &amp; milestones</h2>
+        <p class="muted">Complete habits and one-time achievements to fund your point balance.</p>
+        <div class="goals">
+          <h3>My Goals</h3>
+          <div class="is-new refer" id="referBlock">
+            <div class="rf-top">
+              <div><h4>Refer a friend</h4><p>For traders new to MyFundedFutures.</p></div>
+              <span class="gold-pts">+2,000 pts</span>
+            </div>
+            <div class="deal">
+              <div class="d-them"><small>Your friend gets</small><b>2,000 pts + Welcome Pack <span class="pack welcome pack-xs" aria-hidden="true"></span></b></div>
+              <div class="d-you"><small>You get</small><b>2,000 pts = 1 pack <span class="pack micro pack-xs" aria-hidden="true"></span></b></div>
+            </div>
+            <div class="linkrow"><span class="field">mffu.com/f/7c41e2a9d0</span><button class="btn-grad" data-copy="link" data-burst>Copy link</button></div>
+            <div class="share">
+              <button data-share="X">X</button><button data-share="WhatsApp">WhatsApp</button><button data-share="Telegram">Telegram</button><button data-share="Text">Text</button><button data-copy="message">Copy Discord message</button>
+            </div>
+            <div class="counts">
+              <span><b data-bind="joined">2</b> joined</span><span><b data-bind="bought">1</b> bought</span><span><b data-bind="earned">2,000</b> pts earned</span>
+            </div>
+            <div class="miles">
+              <div class="mile" data-target="5"><span>Refer 5 friends<span class="mcount" data-bind="mcount">1/5</span></span><div class="bar"><i></i></div><span class="mpts">+1,000</span></div>
+              <div class="mile" data-target="10"><span>Refer 10 friends<span class="mcount" data-bind="mcount">1/10</span></span><div class="bar"><i></i></div><span class="mpts">+3,000</span></div>
+              <div class="mile" data-target="15"><span>Refer 15 friends<span class="mcount" data-bind="mcount">1/15</span></span><div class="bar"><i></i></div><span class="mpts">+4,000</span></div>
+              <div class="mile" data-target="25"><span>Refer 25 friends<span class="mcount" data-bind="mcount">1/25</span></span><div class="bar"><i></i></div><span class="mpts">+6,000</span></div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div class="rec">
-      <span class="sev med">Medium</span>
-      <div>
-        <h3>10. The CTA should not take a funded trader out of their dashboard</h3>
-        <p>The spec says the CTA opens talero.com but does not say how. A same tab navigation drops a trader out of a live session, possibly with positions open.</p>
-        <p class="fix"><b>Fix:</b> <code>target="_blank" rel="noopener"</code>, and say so in the aria-label. Applied on the card at the top of this page.</p>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="note"><b>Not compliance approved.</b> Every Talero surface is introducing broker promotional material and needs pre-review, versioning and archiving. The card at the top of this page carries the handoff copy unchanged apart from the link target, so it can be reviewed as specced. State 3 shows the recommended version.</div>
+    </section>
+  </main>
 </div>
+
+<!-- REFER WIDGET -->
+<div class="rw" id="rw">
+  <div class="is-new rw-panel" id="rwPanel" role="dialog" aria-label="Refer a friend" hidden>
+    <div class="rw-hero">
+      <div class="rw-rays" aria-hidden="true"></div><div class="rw-glow" aria-hidden="true"></div>
+      <span class="spark s1"></span><span class="spark s2"></span><span class="spark s3"></span><span class="spark s4"></span><span class="spark s5"></span><span class="spark s6"></span>
+      <button class="rw-min" id="rwMin" aria-label="Minimize">–</button>
+      <div class="rw-packs" aria-hidden="true">
+        <div class="pack welcome rw-pk left"><span class="glint"></span>WELCOME<br>PACK</div>
+        <div class="rw-plus">+</div>
+        <div class="pack micro rw-pk right"><span class="glint"></span>MICRO<br>PACK</div>
+      </div>
+      <h3 class="rw-title">Give a pack. Get a pack.</h3>
+    </div>
+    <div class="rw-body">
+      <div class="rw-tiles">
+        <div class="tile them"><small>Your friend gets</small><b>2,000 pts</b><span>+ Welcome Pack</span></div>
+        <div class="tile you"><small>You get</small><b>2,000 pts</b><span>= 1 Micro Pack</span></div>
+      </div>
+      <div class="rw-prog">
+        <div class="rw-prog-top"><span data-bind="friendsAway">1 friend away from your next pack</span><em><span data-bind="pts">210</span> / 1,500</em></div>
+        <div class="bar"><i data-bind="bar"></i></div>
+      </div>
+      <div class="linkrow"><span class="field">mffu.com/f/7c41e2a9d0</span><button class="btn-grad rw-copy" data-copy="link" data-burst>Copy link</button></div>
+      <div class="share">
+        <button data-share="X">X</button><button data-share="WhatsApp">WhatsApp</button><button data-share="Telegram">Telegram</button><button data-share="Text">Text</button><button data-copy="message">Discord</button>
+      </div>
+      <div class="rw-foot">
+        <span><b data-bind="joined">2</b> joined · <b data-bind="bought">1</b> bought</span>
+        <button class="rw-more" data-go="club" data-scroll="referBlock">My referrals →</button>
+      </div>
+    </div>
+  </div>
+  <div class="rw-tease" id="rwTease" hidden>Give a pack. <span>Get a pack.</span></div>
+  <button class="is-new rw-launch" id="rwPill" aria-expanded="false" aria-controls="rwPanel">
+    <span class="rw-peek" aria-hidden="true"><span class="pack welcome pk-peek"><span class="glint"></span></span><span class="rw-dot"></span></span>
+    <span class="rw-lt"><b>Refer a friend</b><small>Give a pack, get a pack</small></span>
+    <span class="rw-chip" data-bind="chip">+2,000 pts</span>
+  </button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
 (function(){
-  'use strict';
-  var CONFIG = {
-    // Talero is a separate company on a separate domain, so the dashboard
-    // cannot observe a signup. Until recommendation 1 is resolved this stays
-    // null and the card never reaches its "on the list" state.
-    joinedEndpoint: null,
-    // Hide the card entirely for accounts that breached recently.
-    suppressIfBreachedWithinDays: 30,
-    breachedRecently: false,
-    waitlistUrl: 'https://www.talero.com/waitlist?partner=MFFU'
-  };
+  var PACK = 1500, LINK = "mffu.com/f/7c41e2a9d0";
+  var MESSAGE = "I trade with MyFundedFutures. Sign up with my link and you'll get 2,000 points + a Welcome Pack with your first eval: https://" + LINK;
+  var START = { pts: 210, joined: 2, bought: 1 };
+  var state = { pts: START.pts, joined: START.joined, bought: START.bought, hp: false, talero: false, compPre: false, compDismissed: false };
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var fmt = function(n){ return n.toLocaleString("en-US"); };
+  var $all = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var $ = function(id){ return document.getElementById(id); };
 
-  var card = document.querySelector('[data-tal]');
-  if (!card) { return; }
+  /* build the repeated bits of the real page */
+  var DURATIONS = ["0s-15s","15s-45s","45s-1m","1m-2m","2m-5m","5m-10m","10m-30m","30m-1h","1h-2h","2h-4h","4h-24h"];
+  ["durPerf","durCount","durWin"].forEach(function(id){
+    $(id).innerHTML = DURATIONS.map(function(d){
+      return '<div class="drow"><small>' + d + '</small><div class="track"></div></div>';
+    }).join("");
+  });
+  (function buildCalendar(){
+    var html = ["SUN","MON","TUE","WED","THU","FRI","SAT"].map(function(d){ return '<div class="dow">' + d + '</div>'; }).join("");
+    for (var b = 0; b < 2; b++) html += '<div class="cal-cell blank"></div>';      /* Sep 2026 starts Tuesday */
+    for (var d = 1; d <= 30; d++) html += '<div class="cal-cell' + (d === 19 ? " today" : "") + '">' + d + '</div>';
+    $("calGrid").innerHTML = html;
+  })();
 
-  function track(name, props){
-    if (typeof window.mffTrack === 'function') { window.mffTrack(name, props || {}); }
+  function render(){
+    var toGo = Math.max(0, PACK - state.pts), ready = toGo === 0;
+    var pct = Math.min(100, Math.max(4, state.pts / PACK * 100));
+    $all('[data-bind="pts"]').forEach(function(e){ e.textContent = fmt(state.pts); });
+    $all('[data-bind="bar"]').forEach(function(e){ e.style.width = pct + "%"; });
+    $all('[data-bind="toGoLine"]').forEach(function(e){ e.innerHTML = ready ? "<b>Pack ready</b> to open" : "<b>" + fmt(toGo) + "</b> pts to your next pack"; });
+    $all('[data-bind="friendsAway"]').forEach(function(e){ e.textContent = ready ? "Your pack is ready to open!" : (toGo <= 2000 ? "1 friend away from your next pack" : fmt(toGo) + " pts to your next pack"); });
+    $all('[data-bind="chip"]').forEach(function(e){ e.textContent = ready ? "Pack ready!" : "+2,000 pts"; });
+    $all('[data-bind="missing"]').forEach(function(e){ e.textContent = ready ? "Ready to open" : "Missing " + fmt(toGo) + " points"; e.classList.toggle("ready", ready); });
+    $all('[data-show="ready"]').forEach(function(e){ e.hidden = !ready; });
+    $all('[data-hide="ready"]').forEach(function(e){ e.hidden = ready; });
+    $all('[data-bind="joined"]').forEach(function(e){ e.textContent = fmt(state.joined); });
+    $all('[data-bind="bought"]').forEach(function(e){ e.textContent = fmt(state.bought); });
+    $all('[data-bind="earned"]').forEach(function(e){ e.textContent = fmt(state.bought * 2000); });
+    $all(".mile").forEach(function(m){
+      var t = +m.getAttribute("data-target");
+      m.querySelector(".bar i").style.width = Math.min(100, state.bought / t * 100) + "%";
+      m.querySelector('[data-bind="mcount"]').textContent = Math.min(state.bought, t) + "/" + t;
+    });
+    /* HyperProp state */
+    var tag = $("hpTag"), cta = $("hpCta");
+    if (state.hp){
+      tag.textContent = "Whitelisted"; tag.className = "tag live";
+      cta.setAttribute("data-toast", "Opens Hyperprop · this account is whitelisted");
+    } else {
+      tag.textContent = "Waitlist"; tag.className = "tag wait";
+      cta.setAttribute("data-toast", "Opens myfundedfutures.com/hyperprop");
+    }
+    /* Talero state */
+    if (state.talero){
+      $("talTag").textContent = "You're on the list"; $("talTag").className = "tag tal";
+      /* joined state removed: Talero is a separate domain, the dashboard cannot observe a signup */
+    }
+    /* Competition — sidebar entry, two rows */
+    var cb = $("compBar");
+    cb.classList.toggle("done", state.compPre);
+    $("compTitle").textContent = state.compPre ? "Pre-registered" : "Competition";
+    $("compSub").textContent = state.compPre ? "We'll email you" : "$1,000,000 \u00b7 Free Entry";
   }
 
-  if (CONFIG.breachedRecently) {
-    card.remove();
-    track('talero_card_view', { rendered: false, reason: 'breach_suppression' });
-    return;
+  function applyFilters(){
+    var stage = $("stageFilter").value, status = $("statusFilter").value, shown = 0;
+    $all("#acctGrid .acct").forEach(function(c){
+      var ok = (stage === "all" || c.getAttribute("data-stage") === stage) && (status === "all" || c.getAttribute("data-status") === status);
+      c.hidden = !ok; if (ok) shown++;
+    });
+    $("acctGrid").hidden = shown === 0;
+    $("acctEmpty").hidden = shown !== 0;
   }
-  track('talero_card_view', { rendered: true });
 
-  var cta = card.querySelector('[data-tal-cta]');
-  cta.setAttribute('href', CONFIG.waitlistUrl);
-  cta.setAttribute('aria-label', 'Join the Talero waitlist, opens talero.com in a new tab');
-  cta.addEventListener('click', function(){ track('talero_waitlist_click', {}); });
+  var toastTimer;
+  function toast(msg){
+    var t = $("toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.hidden = true; }, 2600);
+  }
 
-  if (!CONFIG.joinedEndpoint) { return; }
-  fetch(CONFIG.joinedEndpoint).then(function(r){ return r.json(); }).then(function(d){
-    if (!d || !d.joined) { return; }
-    var chip = card.querySelector('[data-tal-chip]');
-    chip.textContent = "You're on the list";
-    chip.classList.remove('quietchip'); chip.classList.add('donechip');
-    cta.textContent = 'Waitlist joined';
-    cta.classList.remove('blue'); cta.classList.add('done-b');
-    cta.removeAttribute('href');
-    card.querySelector('.badge-new') && card.querySelector('.badge-new').remove();
-  }).catch(function(){});
+  function burst(el){
+    if (reduced || !el) return;
+    var r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    var colors = ["#E2B862","#FFF1C9","#5A83F7","#C39BEE","#4FC28C","#FFFFFF"];
+    for (var i = 0; i < 34; i++){
+      var s = document.createElement("i"), a = Math.random() * Math.PI * 2, d = 50 + Math.random() * 110;
+      s.className = "confetti";
+      s.style.left = cx + "px"; s.style.top = cy + "px"; s.style.background = colors[i % colors.length];
+      s.style.setProperty("--dx", (Math.cos(a) * d) + "px");
+      s.style.setProperty("--dy", (Math.sin(a) * d - 60) + "px");
+      s.style.setProperty("--r", (Math.random() * 720 - 360) + "deg");
+      document.body.appendChild(s);
+      (function(n){ setTimeout(function(){ n.remove(); }, 1000); })(s);
+    }
+  }
+
+  var teaseOn, teaseOff;
+  function scheduleTease(){
+    clearTimeout(teaseOn); clearTimeout(teaseOff);
+    $("rwTease").hidden = true;
+    teaseOn = setTimeout(function(){
+      if (!$("rwPanel").hidden) return;
+      $("rwTease").hidden = false;
+      teaseOff = setTimeout(function(){ $("rwTease").hidden = true; }, 5000);
+    }, 1200);
+  }
+
+  function setWidget(open){
+    $("rwPanel").hidden = !open; $("rwPill").hidden = open;
+    $("rwPill").setAttribute("aria-expanded", String(open));
+    if (open){ $("rwTease").hidden = true; clearTimeout(teaseOn); clearTimeout(teaseOff); }
+  }
+
+  function flashTo(id){
+    var el = $(id); if (!el) return;
+    requestAnimationFrame(function(){
+      el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+      el.classList.add("flash"); setTimeout(function(){ el.classList.remove("flash"); }, 1400);
+    });
+  }
+
+  function go(view, scrollId){
+    ["stats","accounts","club"].forEach(function(v){ $("v-" + v).hidden = v !== view; });
+    $all(".nav [data-go]").forEach(function(b){
+      if (b.getAttribute("data-go") === view) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+    });
+    $all(".db-views [data-go]").forEach(function(b){ b.setAttribute("aria-selected", String(b.getAttribute("data-go") === view)); });
+    setWidget(false); scheduleTease();
+    if (scrollId) flashTo(scrollId); else window.scrollTo({ top: 0 });
+  }
+
+  function copyText(text){
+    function fallback(){
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select();
+        var ok = document.execCommand("copy"); ta.remove(); return ok;
+      } catch (e) { return false; }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(text).then(function(){ return true; }, fallback);
+    }
+    return Promise.resolve(fallback());
+  }
+
+  /* What's new popover — click, Escape and click-away, all keyboard reachable */
+  function setWhatsNew(open){
+    $("whatsNewPanel").hidden = !open;
+    $("whatsNew").setAttribute("aria-expanded", String(open));
+  }
+  function closeWhatsNew(){
+    if (!$("whatsNewPanel").hidden){ setWhatsNew(false); $("whatsNew").focus(); }
+  }
+
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape") closeWhatsNew();
+  });
+
+  document.addEventListener("click", function(e){
+    if ($("whatsNewPanel").hidden) return;
+    if (e.target.closest("#whatsNewPanel") || e.target.closest("#whatsNew")) return;
+    setWhatsNew(false);
+  });
+
+  document.addEventListener("change", function(e){
+    if (e.target.id === "stageFilter" || e.target.id === "statusFilter") applyFilters();
+  });
+
+  document.addEventListener("click", function(e){
+    var el = e.target.closest("button"); if (!el) return;
+    if (el.id === "whatsNew"){ setWhatsNew($("whatsNewPanel").hidden); return; }
+    if (el.id === "wnClose"){ closeWhatsNew(); return; }
+    if (el.id === "rwPill"){ setWidget(true); return; }
+    if (el.id === "rwMin"){ setWidget(false); return; }
+    if (el.id === "compBar"){
+      if (!state.compPre){ state.compPre = true; render(); burst(el); toast("Pre-registered \u00b7 we'll email you when it opens"); }
+      else toast("Opens the competition");
+      return;
+    }
+    /* talCta is a plain outbound link now; let the browser handle it */
+    var copy = el.getAttribute("data-copy");
+    if (copy){
+      var text = copy === "message" ? MESSAGE : "https://" + LINK;
+      if (el.hasAttribute("data-burst")) burst(el);
+      copyText(text).then(function(ok){
+        if (copy === "link" && el.classList.contains("btn-grad")){
+          var label = el.getAttribute("data-label") || el.textContent;
+          el.setAttribute("data-label", label); el.textContent = "Copied!";
+          setTimeout(function(){ el.textContent = label; }, 1500);
+        }
+        toast(ok ? (copy === "message" ? "Message copied, paste it in Discord" : "Link copied, send it to a friend") : "Copy is blocked in this preview");
+      });
+      return;
+    }
+    var share = el.getAttribute("data-share");
+    if (share){ toast("Opens " + share + " with the message filled in"); return; }
+    var dest = el.getAttribute("data-go"), scroll = el.getAttribute("data-scroll");
+    if (dest){ go(dest, scroll); return; }
+    if (scroll){ flashTo(scroll); return; }
+    var t = el.getAttribute("data-toast");
+    if (t){ toast(t); return; }
+  });
+
+  render(); applyFilters(); go("stats");
 })();
 </script>
+
+<style>
+  .rx{background:#04070D;border-top:1px solid #222A3B;padding:52px 0 80px;
+    font-family:'Lexend',system-ui,-apple-system,sans-serif;color:#EEF1F7}
+  .rx-w{width:100%;max-width:1060px;margin-inline:auto;padding-inline:24px}
+  .rx h2{font-size:30px;font-weight:600;letter-spacing:-.9px;line-height:1.12;margin:0}
+  .rx .lede{margin-top:12px;color:#B9C0CE;max-width:66ch;font-size:15px;line-height:1.6;font-weight:300}
+  .rx-grid{display:grid;gap:12px;margin-top:30px}
+  .rx-c{border:1px solid #202A3B;border-radius:14px;background:#080D16;padding:18px 20px;
+    display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+  .rx-s{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;font-weight:500;letter-spacing:.1em;
+    text-transform:uppercase;padding:4px 8px;border-radius:5px;white-space:nowrap;margin-top:2px}
+  .rx-s.b{background:rgba(255,107,107,.14);color:#FFB4B4;border:1px solid rgba(255,107,107,.42)}
+  .rx-s.h{background:rgba(226,184,98,.14);color:#F1E6CF;border:1px solid rgba(226,184,98,.42)}
+  .rx-s.m{background:rgba(79,163,255,.13);color:#8FC2FF;border:1px solid rgba(79,163,255,.42)}
+  .rx-s.d{background:rgba(79,194,140,.14);color:#9BE8CE;border:1px solid rgba(79,194,140,.45)}
+  .rx-c h3{margin:0;font-size:16px;font-weight:600;letter-spacing:-.3px}
+  .rx-c p{margin:8px 0 0;font-size:13.5px;line-height:1.6;color:#B9C0CE;font-weight:300}
+  .rx-c p.f{color:#9BE8CE;margin-top:9px}
+  .rx-c p.f b{color:#BFF3DF;font-weight:600}
+  .rx code{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px;color:#F1E6CF;
+    background:rgba(226,184,98,.10);padding:1px 5px;border-radius:4px}
+  .rx-note{margin-top:26px;border:1px solid rgba(226,184,98,.38);background:rgba(226,184,98,.09);
+    border-radius:12px;padding:13px 16px;color:#F1E6CF;font-size:12.5px;line-height:1.6}
+  .rx-note b{font-weight:600}
+  @media (max-width:820px){ .rx-c{grid-template-columns:1fr} .rx h2{font-size:24px} }
+</style>
+<section class="rx">
+  <div class="rx-w">
+    <h2>The Talero card, and what I would change</h2>
+    <p class="lede">The page above is the approved dashboard demo with two edits: the red review outlines are gone, and Join the Waitlist is now a plain link to talero.com in a new tab. Everything else is untouched. Below, what I would change about the Talero card before it ships, worst first.</p>
+
+    <div class="rx-grid">
+
+      <div class="rx-c"><span class="rx-s d">Decided</span><div>
+        <h3>1. The joined state is gone, on purpose</h3>
+        <p>The handoff said the chip becomes "You're on the list" after signup. Talero is a separate company on a separate domain, so the dashboard has no session to read and no way to know. That state could never have fired.</p>
+        <p class="f"><b>Done:</b> the CTA is a plain outbound link and the joined state is removed from the markup and the script. <b>Live consequence:</b> the card keeps asking traders who already joined. Acceptable for now, and it is the reason to eventually move the signup into the dashboard.</p>
+      </div></div>
+
+      <div class="rx-c"><span class="rx-s b">Blocker</span><div>
+        <h3>2. The NFA ID may be the wrong one</h3>
+        <p>talero.com prints two different NFA IDs for MFB Capital on the same page: <code>0562645</code> in the Why Talero section and <code>0573109</code> in the footer regulatory block. The card carries <code>0562645</code> because the handoff said keep the line intact.</p>
+        <p class="f"><b>Fix:</b> confirm against NFA BASIC before build, not at review. A wrong registration number on a regulated entity's marketing is the one error here that is genuinely expensive.</p>
+      </div></div>
+
+      <div class="rx-c"><span class="rx-s h">High</span><div>
+        <h3>3. Nothing suppresses it after a breach</h3>
+        <p>The card renders for every trader, including one who blew an account this morning. Pointing that trader at a real money brokerage is the worst thing this programme could do, and it is the screenshot that will circulate.</p>
+        <p class="f"><b>Fix:</b> <code>suppressIfBreachedWithinDays: 30</code> as a rule in the component, not a thing to remember. The same rule belongs on every Talero surface.</p>
+      </div></div>
+
+      <div class="rx-c"><span class="rx-s h">High</span><div>
+        <h3>4. The card never says why anyone would want it</h3>
+        <p>Wordmark, product name, button, legal line. A funded trader reading it learns that a brokerage exists, not what changes if they use one. That is the whole job of the card and it is the one thing missing.</p>
+        <p class="f"><b>Fix:</b> one line above the CTA. <b>"Your own account, your own capital, your own rules."</b> Factual, no outcome claim, no comparison to the funded product, and it answers the only question the reader has. Cheapest improvement on this list by a distance.</p>
+      </div></div>
+
+      <div class="rx-c"><span class="rx-s h">High</span><div>
+        <h3>5. The gold left edge is MFFU branding on another company's card</h3>
+        <p>Section 2.3 says the palette exists so the card reads as Talero and not as MFFU gold, but the shared <code>.mod</code> class gives every module a 2px gold left edge, Talero included. The design rule is working against the component decision.</p>
+        <p class="f"><b>Fix:</b> <code>border-left-color: rgba(79,163,255,.55)</code> on this card only. It still reads as a new module, in the right company's colour.</p>
+      </div></div>
+
+      <div class="rx-c"><span class="rx-s m">Medium</span><div>
+        <h3>6. "Coming soon" tells people there is nothing to do</h3>
+        <p>The waitlist is open right now. "Coming soon" describes the brokerage accurately and the action inaccurately, and it is the reason to scroll past.</p>
+        <p class="f"><b>Fix:</b> <code>Waitlist open</code>. Equally true, and it is the difference between an announcement and an invitation.</p>
+      </div></div>
+
+      <div class="rx-c"><span class="rx-s m">Medium</span><div>
+        <h3>7. Two filled buttons in one row</h3>
+        <p>Refer a friend ships a filled Copy link button and Talero ships a filled blue CTA, side by side. The design rules say one action per view and reserve fills for the most useful thing on screen. For most traders that is the referral link, not a brokerage that has not opened.</p>
+        <p class="f"><b>Fix:</b> Talero takes <code>.opp-cta.neutral</code> until the brokerage actually opens, then earns the fill.</p>
+      </div></div>
+
+      <div class="rx-c"><span class="rx-s m">Medium</span><div>
+        <h3>8. You cannot tell whether the card works</h3>
+        <p>Only a click event was specced. With no impression event there is no denominator, so no click through rate, and no way to compare this surface against the header tab or the homepage rail.</p>
+        <p class="f"><b>Fix:</b> add <code>talero_card_view</code> on render, carrying the suppression state, so suppressed impressions are counted rather than silently missing.</p>
+      </div></div>
+
+      <div class="rx-c"><span class="rx-s m">Medium</span><div>
+        <h3>9. "Talero by MFB Capital" implies separateness without saying it</h3>
+        <p>A trader reading a card inside their MFFU dashboard will reasonably assume it is an MFFU product with a different name. The regulatory line names the entity but never says it is a different company.</p>
+        <p class="f"><b>Fix:</b> three words. <b>"Talero by MFB Capital, a separate company"</b>. Costs nothing, and it is the sentence a regulator would look for.</p>
+      </div></div>
+
+      <div class="rx-c"><span class="rx-s d">Decided</span><div>
+        <h3>10. The CTA no longer drops a trader out of their session</h3>
+        <p>The spec said the CTA opens talero.com but not how. A same tab navigation pulls a funded trader out of a live dashboard, possibly with positions open.</p>
+        <p class="f"><b>Done:</b> <code>target="_blank" rel="noopener"</code>, with the aria-label saying it opens in a new tab.</p>
+      </div></div>
+
+    </div>
+
+    <div class="rx-note"><b>Not compliance approved.</b> Every Talero surface is introducing broker promotional material and needs pre-review, versioning and archiving. The card above carries the handoff copy unchanged apart from the link behaviour, so it can be reviewed as specced.</div>
+  </div>
+</section>
 
 </body>
 </html>
