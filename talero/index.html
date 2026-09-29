@@ -380,7 +380,10 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
 @media (max-width: 1080px) {
   .mff-rail { --mff-card-w: 88%; --mff-gutter: 24px; }
   .mff-card { grid-template-columns: minmax(0,1fr); gap: 20px; }
+  /* the desktop height budget does not apply once the card stacks */
+  .mff-card__right > .mff-panel { max-height: none; }
   .mff-list { max-height: 260px; }
+  .mff-ben { max-height: 300px; }
   .mff-ben, .mff-term, .mff-rs { min-height: 300px; }
 }
 @media (max-width: 640px) {
