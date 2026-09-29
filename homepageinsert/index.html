@@ -393,6 +393,28 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
   @media (max-width:820px){ .sec{margin-top:44px} .sec h2{font-size:22px} }
 </style>
 
+<style>
+  .specnav{position:relative;z-index:70;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;
+    background:#02040E;border-bottom:1px solid rgba(147,197,253,.16);padding:10px 24px;
+    font-family:'Lexend',system-ui,-apple-system,sans-serif;margin:0}
+  .specnav__k{font-family:'IBM Plex Mono','Geist Mono',ui-monospace,monospace;font-size:9.5px;font-weight:500;
+    letter-spacing:.14em;text-transform:uppercase;color:#5F6779;margin-right:2px}
+  .specnav a{font-size:12.5px;font-weight:400;color:#8B94A8;text-decoration:none;padding:5px 10px;
+    border-radius:7px;border:1px solid transparent;transition:color .18s,background-color .18s,border-color .18s}
+  .specnav a:hover{color:#EEF1F7;background:rgba(255,255,255,.05)}
+  .specnav a[aria-current="page"]{color:#6FB0FF;border-color:rgba(0,72,255,.5);background:rgba(0,72,255,.12)}
+  .specnav a:focus-visible{outline:2px solid #6FB0FF;outline-offset:2px}
+  .specnav__note{margin-left:auto;font-size:11px;color:#5F6779;font-weight:300}
+  @media (max-width:700px){ .specnav{padding:9px 16px} .specnav__note{display:none} }
+</style>
+<nav class="specnav" aria-label="Talero spec pages">
+  <span class="specnav__k">Talero</span>
+  <a href="/homepageinsert/" data-nav="homepageinsert" aria-current="page">Homepage insert</a>
+  <a href="/statscta/" data-nav="statscta">Stats page card</a>
+  <a href="/talerowaitlist/" data-nav="talerowaitlist">Waitlist page</a>
+  <span class="specnav__note">Internal spec pages, not compliance approved</span>
+</nav>
+
 <!-- the live bar, replicated -->
 <div class="psb">
   <div class="psb-texture" aria-hidden="true"></div>
