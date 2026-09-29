@@ -1,0 +1,1128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homepage insert | My Funded Futures</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="The MyFundedFutures homepage insert: the Talero tab in the product switcher, and the four card product rail. States and behaviour spec.">
+<meta name="theme-color" content="#02040E">
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap">
+
+<style>
+/* ============================================================
+   ProductSwitcherBar, replicated 1:1 from myfundedfutures.com.
+   Every declaration below the divider was read out of the live
+   stylesheet. Class map, ours -> theirs:
+     .psb            ProductSwitcherBar_banner
+     .psb-texture    ProductSwitcherBar_texture
+     .psb-shade      ProductSwitcherBar_shade
+     .psb-inner      ProductSwitcherBar_inner
+     .psb-tabs       ProductSwitcherBar_tabs
+     .psb-tab        ProductSwitcherBar_tab
+     .psb-active     ProductSwitcherBar_futuresActive
+     .psb-perps      ProductSwitcherBar_perps
+     .psb-labels     ProductSwitcherBar_labels
+     .psb-title      ProductSwitcherBar_title
+     .psb-subtitle   ProductSwitcherBar_subtitle
+     .psb-badge      ProductSwitcherBar_badge
+     .psb-promo      ProductSwitcherBar_promo
+   Only .psb-talero and .psb-rule are new.
+   ============================================================ */
+.psb, .psb *{box-sizing:border-box}
+.psb{position:relative;overflow:hidden;background:rgb(2,4,14);
+  font-family:var(--font-lexend,"Lexend"),system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  border-bottom:1px solid rgba(52,199,89,.3)}
+.psb-texture{position:absolute;inset:0;pointer-events:none;
+  background-image:url("https://myfundedfutures.com/images/mffu/static/product-switcher-texture.62f0a247e406.png");
+  background-size:max(1200px,100vw) 1350px;background-repeat:repeat-y;
+  animation:psbDrift 7s linear 0s infinite normal none running;opacity:.85}
+@keyframes psbDrift{0%{background-position:0 0}100%{background-position:0 1350px}}
+.psb-shade{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(2,4,14,.82),rgba(2,4,14,.35) 35%,rgba(2,4,14,.45) 70%,rgba(2,4,14,.85))}
+.psb-inner{position:relative;display:flex;align-items:stretch;min-width:0;overflow-x:auto;
+  scrollbar-width:thin;padding-inline:24px;max-width:1280px;margin-inline:auto}
+.psb-tabs{display:flex;min-width:0}
+.psb-tab{display:flex;align-items:center;gap:11px;padding:14px 26px;flex:0 0 auto;white-space:nowrap;
+  text-decoration:none;color:rgb(199,203,212);transition:background .2s,color .2s}
+.psb-tab img{display:block;height:24px;width:auto;object-fit:contain;flex-shrink:0;opacity:.55}
+.psb-labels{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.psb-title{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700}
+.psb-subtitle{font-size:11px;font-weight:500;color:rgb(139,149,161)}
+.psb-perps .psb-subtitle{color:rgb(127,199,154)}
+.psb-active{color:rgb(255,255,255);
+  background:linear-gradient(rgba(255,255,255,.16),rgba(255,255,255,.06));
+  backdrop-filter:blur(14px) saturate(1.4);
+  box-shadow:rgb(58,130,247) 0 -2px 0 inset,rgba(255,255,255,.28) 0 1px 0 inset,
+             rgba(255,255,255,.12) 1px 0 0 inset,rgba(255,255,255,.12) -1px 0 0 inset}
+.psb-active img{opacity:1}
+.psb-active .psb-subtitle{color:rgb(159,176,190)}
+.psb-badge{display:inline-flex;align-items:center;height:15px;padding:0 6px;border-radius:9999px;
+  font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  background:rgb(52,199,89);color:rgb(2,4,14)}
+.psb-tab:hover{color:rgb(255,255,255);background-color:rgba(255,255,255,.06)}
+.psb-tab:focus-visible{outline:rgb(52,199,89) solid 2px;outline-offset:-3px}
+.psb-promo{display:flex;flex:1 1 auto;min-width:0;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:0 7px;margin:0;padding:10px 16px;text-align:center;font-size:12px;font-weight:400;line-height:1.3;
+  color:rgb(229,231,235);text-decoration:none}
+a.psb-promo:hover{color:rgb(255,255,255);background-color:rgba(255,255,255,.06)}
+a.psb-promo:focus-visible{outline:rgb(52,199,89) solid 2px;outline-offset:-3px}
+.psb-promoCta{font-weight:700;color:rgb(243,204,129);text-decoration:underline}
+@media (max-width:860px){
+  .psb-inner{flex-wrap:wrap;justify-content:center}
+  .psb-tabs{width:100%;justify-content:center}
+}
+@media (min-width:861px){ .psb-inner{padding-inline:40px} .psb-tabs{flex:0 0 auto} }
+@media (max-width:420px){ .psb-tab{padding:12px 14px;gap:8px} .psb-subtitle{font-size:10px} }
+@media (prefers-reduced-motion:reduce){ .psb-texture{animation:none} .psb-tab{transition:none} }
+
+/* ---------- the only new parts ---------- */
+.psb-rule{width:1px;align-self:center;height:30px;background:rgba(255,255,255,.14);margin-inline:6px;flex:none}
+.psb-talero .psb-subtitle{color:rgb(143,180,255)}
+.psb-talero .psb-badge{background:rgb(0,72,255);color:#fff}
+.psb-talero .psb-icon{height:24px;width:20px;flex-shrink:0;opacity:.55;border-radius:5px;
+  background:linear-gradient(145deg,#4FA3FF,#0048FF)}
+.psb-talero:hover .psb-icon,.psb-talero:focus-visible .psb-icon{opacity:1}
+.psb-ent{display:block;font-size:10px;font-weight:500;color:rgb(143,180,255);max-height:0;overflow:hidden;
+  opacity:0;transition:max-height .2s ease-out,opacity .2s ease-out}
+.psb-talero:hover .psb-ent,.psb-talero:focus-visible .psb-ent,.psb-talero.is-hover .psb-ent{max-height:14px;opacity:1}
+.psb-talero.is-hover{color:#fff;background-color:rgba(255,255,255,.06)}
+.psb-talero.is-hover .psb-icon{opacity:1}
+.psb-talero.is-focus{outline:rgb(52,199,89) solid 2px;outline-offset:-3px}
+@media (prefers-reduced-motion:reduce){ .psb-ent{transition:none} }
+
+/* ============================================================
+   Spec page chrome. Matches /header and /perpsheader.
+   ============================================================ */
+:root{
+  --ink:#02040E;--ink-2:#070913;
+  --fg:#FFFFFF;--fg-2:#B9C0CE;--fg-3:#8A93A6;
+  --line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.14);
+  --gold-lt:#F2CB80;--talero-hi:#4FA3FF;
+  --f-mffu:'Lexend',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'Geist Mono','SF Mono',ui-monospace,Menlo,monospace;
+  --wrap:1180px;
+}
+html,body{margin:0}
+body{background:var(--ink);color:var(--fg);font-family:var(--f-mffu);-webkit-font-smoothing:antialiased}
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:24px}
+h1{font-size:38px;font-weight:600;letter-spacing:-1.1px;line-height:1.1;margin:0}
+h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
+.lede{margin-top:12px;color:var(--fg-2);max-width:66ch;font-size:15.5px;line-height:1.6;font-weight:300}
+.page{padding:44px 0 80px}
+.states{display:grid;gap:18px;margin-top:40px}
+.state{border:1px solid var(--line-2);border-radius:16px;background:var(--ink-2);padding:22px 24px;
+  display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:center}
+.k{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--talero-hi)}
+.k b{display:block;font-family:var(--f-mffu);font-size:16px;font-weight:600;letter-spacing:-.3px;
+  text-transform:none;color:var(--fg);margin-top:7px}
+.k small{display:block;font-family:var(--f-mffu);font-size:12.5px;line-height:1.55;font-weight:300;
+  letter-spacing:normal;text-transform:none;color:var(--fg-3);margin-top:8px}
+.demo{display:flex;align-items:center;min-height:64px;overflow-x:auto;background:var(--ink);
+  border:1px solid var(--line);border-radius:12px}
+.demo.phone{justify-content:center;padding:14px}
+.ph{width:340px;border:1px solid var(--line-2);border-radius:18px;overflow:hidden;background:var(--ink)}
+.ph .psb-inner{padding-inline:0;flex-wrap:wrap}
+.ph .psb-tabs{width:100%}
+.ph .psb-tab{padding:12px 14px;gap:8px;flex:1 1 0}
+.ph .psb-talero{flex:1 1 100%;border-top:1px solid var(--line);background:rgba(0,72,255,.10)}
+.spec{margin-top:44px;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.spec h2{padding:20px 24px;border-bottom:1px solid var(--line);background:var(--ink-2)}
+.spec dl{margin:0;display:grid;grid-template-columns:200px 1fr}
+.spec dt{padding:14px 24px;border-top:1px solid var(--line);font-family:var(--f-mono);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
+.spec dd{padding:14px 24px 14px 0;border-top:1px solid var(--line);margin:0;font-size:13.5px;
+  line-height:1.6;color:var(--fg-2);font-weight:300}
+.spec dt:first-of-type,.spec dd:first-of-type{border-top:0}
+.spec code{font-family:var(--f-mono);font-size:12px;color:var(--gold-lt);background:rgba(216,174,94,.10);
+  padding:1px 5px;border-radius:4px}
+.note{margin-top:26px;border:1px solid rgba(216,174,94,.38);background:rgba(216,174,94,.09);
+  border-radius:12px;padding:13px 16px;color:var(--gold-lt);font-size:12.5px;line-height:1.6}
+.note b{font-weight:600}
+@media (max-width:820px){
+  .state{grid-template-columns:1fr;gap:14px}
+  .spec dl{grid-template-columns:1fr}
+  .spec dd{padding:0 24px 14px}
+  .spec dt{border-top:1px solid var(--line);padding-bottom:6px}
+  h1{font-size:28px}
+  .wrap{padding-inline:18px}
+}
+</style>
+
+<style>
+.mff-rail {
+  /* Read off myfundedfutures.com computed styles. */
+  --mff-line:      rgba(147,197,253,.16);
+  --mff-line-hi:   rgba(147,197,253,.34);
+  --mff-inner-bg:  #0C1220;
+  --mff-inner-bd:  #182135;
+  --mff-text:      #E8ECFF;
+  --mff-text-hi:   #FFFFFF;
+  --mff-muted:     #7D8AA0;
+  --mff-dim:       #59637A;
+  --mff-blue:      #3A82F7;
+  --mff-talero:    #0048FF;
+  --mff-talero-hi: #6FB0FF;
+  --mff-gold:      #D8AE5E;
+  --mff-gold-hi:   #F3CC81;
+  --mff-green:     #4FC28C;
+  --mff-red:       #FF6B6B;
+  --mff-radius:    24px;
+  --mff-r-md:      12px;
+  --mff-r-sm:      9px;
+  --mff-gutter:    40px;
+  --mff-gap:       20px;
+  --mff-card-w:    66.666%;
+  --mff-shadow:    inset 0 1px 0 0 rgba(255,255,255,.043), 0 18px 44px rgba(0,0,0,.42);
+
+  font-family: var(--mff-font, 'Lexend', system-ui, -apple-system, sans-serif);
+  color: var(--mff-text);
+  max-width: 1400px; margin: 0 auto; padding: 28px 0 8px;
+}
+.mff-rail *, .mff-rail *::before, .mff-rail *::after { box-sizing: border-box; }
+
+/* ---------- rail ---------- */
+.mff-rail__viewport {
+  display: flex; gap: var(--mff-gap); overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-padding-inline: var(--mff-gutter);
+  padding: 4px var(--mff-gutter) 24px; scrollbar-width: none;
+}
+.mff-rail__viewport::-webkit-scrollbar { display: none; }
+.mff-rail__viewport:focus-visible { outline: 2px solid var(--mff-blue); outline-offset: -2px; border-radius: 8px; }
+
+.mff-card {
+  flex: 0 0 var(--mff-card-w); scroll-snap-align: start;
+  background: transparent; border: 1px solid var(--mff-line);
+  border-radius: var(--mff-radius); box-shadow: var(--mff-shadow); padding: 30px;
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.05fr); gap: 28px;
+  min-height: 330px; transition: border-color .2s, box-shadow .2s;
+}
+.mff-card:hover { border-color: var(--mff-line-hi); }
+.mff-card__left { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.mff-card__right { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+/* Panels are the height budget: they scroll internally rather than growing the
+   card. Without these the 20 item Club list stretches every card in the rail. */
+.mff-card__right > .mff-panel { max-height: 286px; }
+.mff-rail [hidden] { display: none !important; }
+
+/* ---------- shared ---------- */
+.mff-eyebrow { display: flex; align-items: center; gap: 9px; margin-bottom: 14px; }
+.mff-mark { width: 24px; height: 24px; border-radius: 6px; flex: none; }
+.mff-eyebrow__name { font-size: 12.5px; font-weight: 500; color: var(--mff-text-hi); }
+.mff-chip { font-size: 9px; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; padding: 3px 7px; border-radius: 5px; }
+.mff-h { font-size: 23px; font-weight: 500; line-height: 1.2; letter-spacing: -.575px; color: #F5F7FF; margin: 0; }
+.mff-p { font-size: 13.5px; font-weight: 300; line-height: 1.6; color: var(--mff-muted); margin: 9px 0 0; }
+.mff-grow { flex: 1 1 auto; min-height: 12px; }
+.mff-fine { font-size: 10.5px; font-weight: 300; line-height: 1.35; color: var(--mff-dim); margin: 9px 0 0; }
+.mff-fine a { color: var(--mff-talero-hi); }
+.mff-panel { background: var(--mff-inner-bg); border: 1px solid var(--mff-inner-bd); border-radius: var(--mff-r-md); }
+.mff-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.mff-btn {
+  font: inherit; font-size: 16px; font-weight: 700; line-height: 1; text-align: center;
+  border: 0; border-radius: var(--mff-r-md); padding: 13px 22px; cursor: pointer;
+  transition: background-color .2s, color .2s, box-shadow .2s; display: block; text-decoration: none;
+}
+.mff-btn--blue { background: var(--mff-blue); color: #fff; }
+.mff-btn--blue:hover { background: #2C6FDE; }
+.mff-btn--talero { background: var(--mff-talero); color: #fff; }
+.mff-btn--talero:hover { background: #0039CC; }
+.mff-btn--green { background: rgba(79,194,140,.14); color: var(--mff-green); box-shadow: inset 0 0 0 1px rgba(79,194,140,.35); }
+.mff-btn--green:hover { background: rgba(79,194,140,.22); }
+.mff-btn--gold { background: rgba(216,174,94,.14); color: var(--mff-gold-hi); box-shadow: inset 0 0 0 1px rgba(216,174,94,.35); }
+.mff-btn--gold:hover { background: rgba(216,174,94,.22); }
+.mff-btn--ghost { background: #18213A; border: 1px solid #2E3B59; color: var(--mff-text); font-size: 12.5px; font-weight: 600; padding: 8px 14px; border-radius: var(--mff-r-sm); }
+.mff-btn--ghost:hover { background: #1D2846; border-color: #3B4A6B; }
+.mff-btn:focus-visible { outline: 2px solid var(--mff-talero-hi); outline-offset: 2px; }
+
+.mff-rail__controls { display: flex; align-items: center; gap: 12px; padding: 0 var(--mff-gutter) 4px; }
+.mff-dots { display: flex; gap: 6px; flex: 1 1 auto; }
+.mff-dot { width: 26px; height: 4px; border-radius: 99px; border: 0; padding: 0; background: rgba(147,197,253,.2); cursor: pointer; transition: background-color .25s, width .25s; }
+.mff-dot[aria-current="true"] { background: var(--mff-blue); width: 42px; }
+.mff-dot:focus-visible { outline: 2px solid var(--mff-blue); outline-offset: 3px; }
+.mff-arrow { width: 38px; height: 38px; border-radius: 50%; flex: none; cursor: pointer; background: transparent; color: var(--mff-text); border: 1px solid var(--mff-line); display: grid; place-items: center; transition: background-color .2s, border-color .2s, opacity .2s; }
+.mff-arrow:hover:not(:disabled) { background: rgba(168,181,201,.10); border-color: var(--mff-line-hi); }
+.mff-arrow:disabled { opacity: .3; cursor: default; }
+.mff-arrow:focus-visible { outline: 2px solid var(--mff-blue); outline-offset: 2px; }
+.mff-arrow svg { width: 16px; height: 16px; }
+
+/* ---------- 1. Talero: your account benefits ---------- */
+.mff-ben { display: flex; flex-direction: column; height: 100%; padding: 6px; gap: 2px; overflow-y: auto; scrollbar-width: thin; }
+.mff-ben::-webkit-scrollbar { width: 6px; }
+.mff-ben::-webkit-scrollbar-thumb { background: #1E2941; border-radius: 99px; }
+.mff-ben__i { width: 100%; text-align: left; font: inherit; background: transparent; border: 0; cursor: pointer; border-radius: var(--mff-r-sm); padding: 9px 11px; transition: background-color .2s; }
+.mff-ben__i:hover { background: rgba(255,255,255,.035); }
+.mff-ben__i[aria-expanded="true"] { background: rgba(0,72,255,.16); }
+.mff-ben__i:focus-visible { outline: 2px solid var(--mff-talero-hi); outline-offset: -2px; }
+.mff-ben__r { display: flex; align-items: center; gap: 10px; }
+.mff-ben__t { font-size: 13px; font-weight: 500; color: var(--mff-text-hi); flex: 1 1 auto; }
+.mff-ben__c { width: 16px; height: 16px; border-radius: 50%; flex: none; display: grid; place-items: center; background: rgba(0,72,255,.30); }
+.mff-ben__c::after { content: ""; width: 5px; height: 8px; border: solid var(--mff-talero-hi); border-width: 0 1.8px 1.8px 0; transform: rotate(45deg) translate(-1px,-1px); }
+.mff-ben__x { font-size: 11.5px; font-weight: 300; line-height: 1.5; color: var(--mff-muted); margin: 6px 0 0 26px; display: none; }
+.mff-ben__i[aria-expanded="true"] .mff-ben__x { display: block; }
+
+/* ---------- 2. Perps terminal ---------- */
+.mff-term { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+.mff-term__tabs { display: flex; gap: 4px; padding: 8px; border-bottom: 1px solid var(--mff-inner-bd); overflow-x: auto; scrollbar-width: none; }
+.mff-term__tabs::-webkit-scrollbar { display: none; }
+.mff-tab { font: inherit; font-size: 11.5px; font-weight: 500; white-space: nowrap; border: 1px solid transparent; background: transparent; color: var(--mff-muted); padding: 6px 10px; border-radius: 7px; cursor: pointer; transition: background-color .2s, color .2s, border-color .2s; }
+.mff-tab:hover { color: var(--mff-text); }
+.mff-tab[aria-pressed="true"] { background: rgba(79,194,140,.14); border-color: rgba(79,194,140,.4); color: var(--mff-green); }
+.mff-tab:focus-visible { outline: 2px solid var(--mff-green); outline-offset: 1px; }
+.mff-term__top { display: flex; align-items: baseline; gap: 10px; padding: 10px 12px 2px; }
+.mff-term__px { font-size: 22px; font-weight: 600; letter-spacing: -.8px; font-variant-numeric: tabular-nums; color: var(--mff-text-hi); transition: color .3s; }
+.mff-term__px.up { color: var(--mff-green); } .mff-term__px.down { color: var(--mff-red); }
+.mff-term__chg { font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.mff-term__chg.up { color: var(--mff-green); } .mff-term__chg.down { color: var(--mff-red); }
+.mff-live { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--mff-green); }
+.mff-live::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--mff-green); animation: mffPulse 1.8s ease-out infinite; }
+@keyframes mffPulse { 0% { box-shadow: 0 0 0 0 rgba(79,194,140,.6); } 70% { box-shadow: 0 0 0 7px rgba(79,194,140,0); } 100% { box-shadow: 0 0 0 0 rgba(79,194,140,0); } }
+.mff-term__meta { display: flex; gap: 14px; padding: 0 12px 8px; }
+.mff-term__meta span { font-size: 10px; color: var(--mff-dim); }
+.mff-term__meta b { color: var(--mff-muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+.mff-term__body { flex: 1 1 auto; display: grid; grid-template-columns: minmax(0,1.35fr) minmax(0,1fr); gap: 0; min-height: 0; }
+.mff-term__chart { padding: 0 8px 8px 12px; display: flex; align-items: stretch; }
+.mff-term__chart svg { width: 100%; height: 100%; min-height: 96px; display: block; }
+.mff-depth { border-left: 1px solid var(--mff-inner-bd); padding: 4px 10px 8px; display: flex; flex-direction: column; justify-content: center; gap: 1px; }
+.mff-depth__h { display: flex; justify-content: space-between; font-size: 8.5px; font-weight: 600; letter-spacing: .7px; text-transform: uppercase; color: var(--mff-dim); padding-bottom: 3px; }
+.mff-dep { position: relative; display: flex; justify-content: space-between; font-size: 10.5px; font-variant-numeric: tabular-nums; padding: 2.5px 4px; border-radius: 3px; overflow: hidden; }
+.mff-dep i { position: absolute; inset: 0 auto 0 0; opacity: .16; transition: width .5s ease; }
+.mff-dep span { position: relative; }
+.mff-dep.ask span:first-child { color: var(--mff-red); } .mff-dep.ask i { background: var(--mff-red); }
+.mff-dep.bid span:first-child { color: var(--mff-green); } .mff-dep.bid i { background: var(--mff-green); }
+.mff-dep span:last-child { color: var(--mff-muted); }
+.mff-spread { display: flex; justify-content: center; gap: 6px; font-size: 9.5px; color: var(--mff-dim); padding: 4px 0; border-block: 1px solid var(--mff-inner-bd); margin: 3px 0; font-variant-numeric: tabular-nums; }
+
+/* ---------- 3. Club packs ---------- */
+.mff-pack { padding: 12px 14px 13px; border-bottom: 1px solid var(--mff-inner-bd); }
+.mff-pack__k { font-size: 9.5px; font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; color: var(--mff-muted); }
+.mff-card-face {
+  margin-top: 9px; border-radius: 10px; padding: 12px 13px; display: flex; align-items: center; gap: 11px;
+  background: rgba(255,255,255,.03); border: 1px solid var(--mff-inner-bd); border-left: 3px solid var(--rar, #7D8AA0);
+  transition: opacity .18s ease-out, transform .18s ease-out;
+}
+.mff-card-face.swap { opacity: 0; transform: translateY(5px); }
+.mff-card-face__b { flex: 1 1 auto; min-width: 0; }
+.mff-card-face__n { font-size: 14px; font-weight: 600; color: var(--mff-text-hi); line-height: 1.25; }
+.mff-card-face__m { font-size: 10.5px; color: var(--mff-muted); margin-top: 3px; }
+.mff-rar { font-size: 8.5px; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; padding: 3px 7px; border-radius: 4px; color: #0A0F19; background: var(--rar, #7D8AA0); white-space: nowrap; }
+.mff-pack__next { margin-top: 9px; font: inherit; font-size: 12px; font-weight: 500; width: 100%; background: #18213A; border: 1px solid #2E3B59; color: var(--mff-text); border-radius: 8px; padding: 8px; cursor: pointer; transition: background-color .2s, border-color .2s; }
+.mff-pack__next:hover { background: #1D2846; border-color: #3B4A6B; }
+.mff-pack__next:focus-visible { outline: 2px solid var(--mff-gold); outline-offset: 2px; }
+.mff-list { flex: 1 1 auto; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 5px; min-height: 0; }
+.mff-list::-webkit-scrollbar { width: 6px; }
+.mff-list::-webkit-scrollbar-thumb { background: #1E2941; border-radius: 99px; }
+.mff-grp { font-size: 9.5px; font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; color: var(--mff-gold); padding: 8px 6px 3px; }
+.mff-task { width: 100%; text-align: left; font: inherit; display: block; background: rgba(255,255,255,.028); border: 1px solid var(--mff-inner-bd); border-radius: var(--mff-r-sm); padding: 9px 11px; }
+.mff-task__r1 { display: flex; align-items: center; gap: 7px; }
+.mff-task__t { font-size: 12px; font-weight: 500; color: var(--mff-text-hi); }
+.mff-task__pts { margin-left: auto; font-size: 11.5px; font-weight: 600; color: var(--mff-gold-hi); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mff-task__d { font-size: 10.5px; font-weight: 300; color: var(--mff-muted); margin-top: 3px; line-height: 1.4; }
+.mff-count { font-size: 9px; font-weight: 500; color: var(--mff-muted); background: rgba(255,255,255,.07); padding: 2px 5px; border-radius: 4px; }
+.mff-count.done { color: #9BE8CE; background: rgba(79,194,140,.16); }
+
+/* ---------- 4. Refer strip ----------
+   Built to Refer_a_Friend_Homepage_Card_Handoff_2026-09-28.md section 4.
+   Tokens are the handoff's, not this component's, so it stays identical to
+   the module shipping above Account Data on the dashboard. */
+.mff-card--wide { grid-template-columns: minmax(0,1fr); }
+.mff-rs {
+  background: #0A0F19; border: 1px solid #202A3B; border-left: 2px solid rgba(226,184,98,.45);
+  border-radius: 14px; padding: 9px 14px 10px; display: grid; gap: 6px;
+  transition: border-color .17s ease-out, background-color .17s ease-out, transform .17s ease-out;
+}
+.mff-rs:hover { border-color: #2B384E; background: #0C1220; transform: translateY(-1px); }
+.mff-rs__h { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.mff-rs__ic { color: var(--mff-gold); font-size: 12px; line-height: 1; }
+.mff-rs__t { font-size: 13px; font-weight: 600; color: var(--mff-text-hi); }
+.mff-rs__new { height: 18px; padding: 0 6px; border-radius: 4px; font-size: 9.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; background: var(--mff-gold); color: #1A1204; display: inline-flex; align-items: center; margin-left: 2px; }
+.mff-rs__act { margin-left: auto; font: inherit; font-size: 11.5px; background: none; border: 0; color: var(--mff-muted); cursor: pointer; padding: 4px 2px; border-radius: 4px; transition: color .2s; }
+.mff-rs__act:hover { color: var(--mff-text); }
+.mff-rs__act:focus-visible { outline: 2px solid var(--mff-blue); outline-offset: 2px; }
+.mff-rs__grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.5fr); gap: 10px; }
+.mff-rs__cell { background: #0C1220; border: 1px solid #182135; border-radius: 10px; padding: 7px 10px; display: grid; gap: 1px; align-content: start; }
+.mff-rs__k { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.5px; text-transform: uppercase; letter-spacing: .11em; color: var(--mff-muted); }
+.mff-rs__cell.you .mff-rs__k { color: var(--mff-gold); }
+.mff-rs__v { font-size: 16px; font-weight: 600; line-height: 1.25; font-variant-numeric: tabular-nums; color: var(--mff-text-hi); }
+.mff-rs__n { font-size: 10.5px; color: var(--mff-muted); line-height: 1.35; }
+.mff-rs__n b { color: #AEB7C7; font-weight: 600; }
+.mff-rs__linkrow { display: flex; gap: 7px; margin-top: 2px; }
+.mff-rs__field { font: inherit; font-size: 11.5px; flex: 1 1 auto; min-width: 0; background: transparent; border: 0; color: var(--mff-text); padding: 6px 0; }
+.mff-rs__copy { font: inherit; font-size: 12.5px; font-weight: 500; background: #18213A; border: 1px solid #2E3B59; color: var(--mff-text); border-radius: 8px; padding: 7px 13px; cursor: pointer; white-space: nowrap; text-decoration: none; display: inline-block; transition: background-color .2s, border-color .2s; }
+.mff-rs__copy:hover { background: #1D2846; border-color: #3B4A6B; }
+.mff-rs__copy:focus-visible { outline: 2px solid var(--mff-blue); outline-offset: 2px; }
+.mff-rs__club { font-size: 11.5px; color: var(--mff-gold); text-decoration: none; align-self: center; white-space: nowrap; transition: color .2s; }
+.mff-rs__club:hover { color: var(--mff-gold-hi); text-decoration: underline; }
+.mff-rs__club:focus-visible { outline: 2px solid var(--mff-gold); outline-offset: 2px; border-radius: 3px; }
+.mff-rs__foot { font-size: 10.5px; color: var(--mff-dim); line-height: 1.35; }
+.mff-rs__foot b { color: #98A2B5; font-weight: 600; font-variant-numeric: tabular-nums; }
+.mff-toast { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 14px); background: #0C1220; border: 1px solid #2E3B59; color: var(--mff-text); font-size: 12.5px; padding: 10px 16px; border-radius: 10px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 60; }
+.mff-toast.on { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 820px) { .mff-rs__grid { grid-template-columns: minmax(0,1fr); } }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1080px) {
+  .mff-rail { --mff-card-w: 88%; --mff-gutter: 24px; }
+  .mff-card { grid-template-columns: minmax(0,1fr); gap: 20px; }
+  .mff-list { max-height: 260px; }
+  .mff-ben, .mff-term, .mff-rs { min-height: 300px; }
+}
+@media (max-width: 640px) {
+  .mff-rail { --mff-card-w: 91%; --mff-gutter: 16px; --mff-gap: 14px; }
+  .mff-card { padding: 22px; border-radius: 20px; }
+  .mff-term__body { grid-template-columns: minmax(0,1fr); }
+  .mff-depth { border-left: 0; border-top: 1px solid var(--mff-inner-bd); }
+  .mff-rs__grid { grid-template-columns: minmax(0,1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mff-rail *, .mff-rail *::before { animation: none !important; transition-duration: .01ms !important; }
+  .mff-rail__viewport { scroll-behavior: auto; }
+}
+</style>
+
+<style>
+  .sec{margin-top:64px}
+  .sec h2{font-size:28px;font-weight:600;letter-spacing:-.8px;line-height:1.15}
+  .sec .lede{margin-top:10px}
+  .railhost{margin-top:26px}
+  .note.first{margin-top:22px}
+  @media (max-width:820px){ .sec{margin-top:44px} .sec h2{font-size:22px} }
+</style>
+
+<!-- the live bar, replicated -->
+<div class="psb">
+  <div class="psb-texture" aria-hidden="true"></div>
+  <div class="psb-shade" aria-hidden="true"></div>
+  <div class="psb-inner">
+    <nav class="psb-tabs" aria-label="Products">
+      <a href="https://myfundedfutures.com/" class="psb-tab psb-active" aria-current="page">
+        <img src="https://myfundedfutures.com/images/mffu/static/futures-icon.ac5bdd1e869c.svg" alt="" width="20" height="24">
+        <span class="psb-labels">
+          <span class="psb-title">Futures</span>
+          <span class="psb-subtitle">CME futures trading</span>
+        </span>
+      </a>
+      <a href="https://myfundedperpetuals.com/?partner=MFFU" class="psb-tab psb-perps">
+        <img src="https://myfundedfutures.com/images/mffu/static/perps-icon.f5f8c4664e9b.png" alt="" width="24" height="24">
+        <span class="psb-labels">
+          <span class="psb-title">Perps <span class="psb-badge">New</span></span>
+          <span class="psb-subtitle">24/7 perps trading</span>
+        </span>
+      </a>
+      <span class="psb-rule" aria-hidden="true"></span>
+      <a href="https://www.talero.com/waitlist?partner=MFFU" class="psb-tab psb-talero"
+         target="_blank" rel="noopener" data-cta="header-talero"
+         aria-label="Talero waitlist, a futures brokerage from MFB Capital, opens in a new tab">
+        <span class="psb-icon" aria-hidden="true"></span>
+        <span class="psb-labels">
+          <span class="psb-title">Talero <span class="psb-badge">Waitlist</span></span>
+          <span class="psb-subtitle">Futures brokerage, coming soon</span>
+          <span class="psb-ent">MFB Capital, LLC &middot; a separate company</span>
+        </span>
+      </a>
+    </nav>
+    <a class="psb-promo" href="https://myfundedfutures.com/challenge?id=70&amp;coupon=CLUB">
+      <span>Save 40% On Any Plan With Code CLUB.</span>
+      <span>New to MFFU? Get 50% off your first eval.</span>
+      <span class="psb-promoCta">Claim 40% off</span>
+    </a>
+  </div>
+</div>
+
+<div class="wrap page">
+  <h1>Homepage insert</h1>
+  <p class="lede">Two pieces of the logged out homepage. The product switcher above this line is the live component, replicated declaration for declaration, with the Talero tab added as a third tab. The product rail below is the four card block that sits under the hero.</p>
+  <div class="note first"><div><b>Internal spec page, not live copy.</b> Market prices, sizes and the order book on the Perps card are
+  placeholder motion, not a real feed, and are there only to show the component working. Point totals, referral
+  codes and the Talero NFA ID are placeholders. Nothing on this page is compliance approved.</div></div>
+
+  <div class="sec">
+    <h2>1. The product rail</h2>
+    <p class="lede">Four cards under the hero. Scroll the rail sideways or use the arrows. Every card responds.</p>
+  </div>
+</div>
+
+<div class="railhost">
+<section class="mff-rail" aria-label="More from My Funded Futures" data-mff-rail>
+  <div class="mff-rail__viewport" tabindex="0" role="group" aria-label="Product cards, scrollable" data-mff-viewport>
+
+    <!-- 1. TALERO -->
+    <article class="mff-card" aria-labelledby="mff-t-h">
+      <div class="mff-card__left">
+        <div class="mff-eyebrow">
+          <span class="mff-mark" style="background:linear-gradient(145deg,#4FA3FF,#0048FF)"></span>
+          <span class="mff-eyebrow__name">Talero</span>
+          <span class="mff-chip" style="background:#0048FF;color:#fff">Coming soon</span>
+        </div>
+        <h3 class="mff-h" id="mff-t-h">An account that is yours.</h3>
+        <p class="mff-p">Talero Brokerage is a futures brokerage from the MFFU family. Tap any line to see what it means.</p>
+        <div class="mff-grow"></div>
+        <a class="mff-btn mff-btn--talero" href="https://www.talero.com/waitlist" target="_blank" rel="noopener">Join the Waitlist</a>
+        <p class="mff-fine">Talero by MFB Capital &middot; CFTC &amp; NFA regulated &middot; NFA ID [CONFIRM]. A separate company from My Funded Futures. Joining the waitlist does not open an account. <a href="https://www.talero.com/waitlist" target="_blank" rel="noopener">Disclosures</a>.</p>
+      </div>
+      <div class="mff-card__right">
+        <div class="mff-panel mff-ben" data-mff-ben></div>
+      </div>
+    </article>
+
+    <!-- 2. PERPS -->
+    <article class="mff-card" aria-labelledby="mff-p-h">
+      <div class="mff-card__left">
+        <div class="mff-eyebrow">
+          <span class="mff-mark" style="background:linear-gradient(145deg,#4FC28C,#1E7A5E)"></span>
+          <span class="mff-eyebrow__name">MyFundedPerps</span>
+          <span class="mff-chip" style="background:#4FC28C;color:#04120C">New</span>
+        </div>
+        <h3 class="mff-h" id="mff-p-h">Hundreds of perpetual pairs. The market never closes.</h3>
+        <p class="mff-p">Evaluations and funded accounts on perpetuals, held to the same payout standard you already know.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px">
+          <span style="font-size:10.5px;padding:5px 9px;border-radius:6px;background:rgba(79,194,140,.12);color:var(--mff-green)">Funding up to $500K</span>
+          <span style="font-size:10.5px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.06);color:var(--mff-muted)">No consistency rule</span>
+          <span style="font-size:10.5px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.06);color:var(--mff-muted)">No time limits</span>
+        </div>
+        <div class="mff-grow"></div>
+        <a class="mff-btn mff-btn--green" href="https://myfundedperps.com" target="_blank" rel="noopener">Trade Perps</a>
+      </div>
+      <div class="mff-card__right">
+        <div class="mff-panel mff-term">
+          <div class="mff-term__tabs" role="group" aria-label="Instrument" data-mff-tabs></div>
+          <div class="mff-term__top">
+            <span class="mff-term__px" data-mff-px>&mdash;&mdash;</span>
+            <span class="mff-term__chg" data-mff-chg>&mdash;&mdash;</span>
+            <span class="mff-live" data-mff-live>Live</span>
+          </div>
+          <div class="mff-term__meta">
+            <span>Mark <b data-mff-mark>&mdash;</b></span>
+            <span>Funding <b data-mff-fund>&mdash;</b></span>
+            <span>24h Vol <b data-mff-vol>&mdash;</b></span>
+          </div>
+          <div class="mff-term__body">
+            <div class="mff-term__chart">
+              <svg viewBox="0 0 200 110" preserveAspectRatio="none" role="img" aria-label="Recent price candles" data-mff-candles></svg>
+            </div>
+            <div class="mff-depth">
+              <div class="mff-depth__h"><span>Price</span><span>Size</span></div>
+              <div data-mff-asks></div>
+              <div class="mff-spread"><span data-mff-spread>&mdash;</span><span>spread</span></div>
+              <div data-mff-bids></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3. CLUB -->
+    <article class="mff-card" aria-labelledby="mff-c-h">
+      <div class="mff-card__left">
+        <div class="mff-eyebrow">
+          <span class="mff-mark" style="background:linear-gradient(145deg,#F0CE88,#A8802E)"></span>
+          <span class="mff-eyebrow__name">MyFundedClub</span>
+          <span class="mff-chip" style="background:#D8AE5E;color:#1A1204">Earn</span>
+        </div>
+        <h3 class="mff-h" id="mff-c-h">Open packs. Pull free evals.</h3>
+        <p class="mff-p">Packs hold free evaluations, resets, discounts and access. Keep tapping to see what is in them, and scroll for the ways to earn one.</p>
+        <div class="mff-grow"></div>
+        <a class="mff-btn mff-btn--gold" href="/club">Open The Club</a>
+      </div>
+      <div class="mff-card__right">
+        <div class="mff-panel" style="display:flex;flex-direction:column;overflow:hidden;height:100%;min-height:0">
+          <div class="mff-pack">
+            <span class="mff-pack__k">Inside a pack</span>
+            <div class="mff-card-face" data-mff-face>
+              <div class="mff-card-face__b">
+                <div class="mff-card-face__n" data-mff-face-n>&mdash;</div>
+                <div class="mff-card-face__m" data-mff-face-m>&mdash;</div>
+              </div>
+              <span class="mff-rar" data-mff-face-r>&mdash;</span>
+            </div>
+            <button class="mff-pack__next" type="button" data-mff-face-next>Show me another</button>
+          </div>
+          <div class="mff-list" data-mff-list role="group" aria-label="Ways to earn a pack"></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4. REFER. Component per Refer_a_Friend_Homepage_Card_Handoff_2026-09-28.md -->
+    <article class="mff-card mff-card--wide" aria-labelledby="mff-r-h" data-mff-refcard>
+      <div class="mff-card__left">
+        <div class="mff-eyebrow">
+          <span class="mff-mark" style="background:linear-gradient(145deg,#D8AE5E,#8A6B2E)"></span>
+          <span class="mff-eyebrow__name">MyFundedClub</span>
+        </div>
+        <h3 class="mff-h" id="mff-r-h">Share your link. You both get a pack.</h3>
+        <p class="mff-p">The same module that sits above Account Data on your dashboard, at homepage width.</p>
+
+        <div class="mff-rs" style="margin-top:16px">
+          <div class="mff-rs__h">
+            <span class="mff-rs__ic" aria-hidden="true">&#9670;</span>
+            <span class="mff-rs__t">Refer a friend</span>
+            <span class="mff-rs__new" data-mff-newbadge>New</span>
+            <button class="mff-rs__act" type="button" data-mff-myref>My referrals</button>
+          </div>
+          <div class="mff-rs__grid">
+            <div class="mff-rs__cell you">
+              <span class="mff-rs__k">You get</span>
+              <span class="mff-rs__v">2,000 pts</span>
+              <span class="mff-rs__n">= a <b>Micro Pack</b>, which costs 1,500 pts, with 500 left over.</span>
+            </div>
+            <div class="mff-rs__cell link">
+              <span class="mff-rs__k">Your referral link</span>
+              <span class="mff-rs__n" style="margin-top:2px">Your link lives on your dashboard. Sign in to grab it.</span>
+              <div class="mff-rs__linkrow">
+                <a class="mff-rs__copy" href="/dashboard" data-mff-godash>Go to dashboard</a>
+                <a class="mff-rs__club" href="/club" data-mff-goclub>What is MyFundedClub?</a>
+              </div>
+            </div>
+          </div>
+          <span class="mff-rs__foot">Your friend gets <b>2,000 pts</b> + a Welcome Pack on their first eval.</span>
+        </div>
+
+        <div class="mff-grow"></div>
+        <p class="mff-fine">Referral points are for traders new to MyFundedFutures, on a first purchase, and are reversed on refund or chargeback. Referral points do not stack with affiliate attribution. Club terms are linked from the refer page.</p>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="mff-rail__controls">
+    <div class="mff-dots" role="tablist" aria-label="Jump to card" data-mff-dots></div>
+    <button class="mff-arrow" type="button" data-mff-prev aria-label="Previous card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="mff-arrow" type="button" data-mff-next aria-label="Next card">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</section>
+</div>
+
+<div class="wrap">
+  <div class="sec">
+    <h2>2. The Talero tab</h2>
+    <p class="lede">The live tab is in the switcher at the top of this page. Below are its states, frozen so they can be compared, and the behaviour spec for whoever builds it into the production component.</p>
+  </div>
+
+  <div class="states">
+
+    <div class="state">
+      <div class="k">State 1<b>At rest</b>
+        <small>Third tab, same icon plus title plus subtitle pattern, same 14px by 26px padding and 11px gap. Its icon sits at the 0.55 opacity every inactive tab uses. A vertical rule sits before it because Futures and Perps are My Funded Futures and Talero is not.</small>
+      </div>
+      <div class="demo">
+        <span class="psb-tab psb-perps"><img src="https://myfundedfutures.com/images/mffu/static/perps-icon.f5f8c4664e9b.png" alt="" width="24" height="24"><span class="psb-labels"><span class="psb-title">Perps <span class="psb-badge">New</span></span><span class="psb-subtitle">24/7 perps trading</span></span></span>
+        <span class="psb-rule" aria-hidden="true"></span>
+        <span class="psb-tab psb-talero"><span class="psb-icon" aria-hidden="true"></span><span class="psb-labels"><span class="psb-title">Talero <span class="psb-badge">Waitlist</span></span><span class="psb-subtitle">Futures brokerage, coming soon</span><span class="psb-ent">MFB Capital, LLC &middot; a separate company</span></span></span>
+      </div>
+    </div>
+
+    <div class="state">
+      <div class="k">State 2<b>Hover</b>
+        <small>Exactly the component's own hover, white at 6 percent with the label going to full white and the icon to full opacity. The one addition is the entity line unfolding underneath, so the disclosure appears at the moment of interest rather than in a footer.</small>
+      </div>
+      <div class="demo">
+        <span class="psb-tab psb-talero is-hover"><span class="psb-icon" aria-hidden="true"></span><span class="psb-labels"><span class="psb-title">Talero <span class="psb-badge">Waitlist</span></span><span class="psb-subtitle">Futures brokerage, coming soon</span><span class="psb-ent">MFB Capital, LLC &middot; a separate company</span></span></span>
+      </div>
+    </div>
+
+    <div class="state">
+      <div class="k">State 3<b>Keyboard focus</b>
+        <small>The component's existing focus treatment, a 2px green outline inset by 3px. Green is the bar's focus colour for every tab, so Talero keeps it rather than inventing a blue one. Tab reaches it, Enter follows it, and it opens in a new tab, which the aria-label says.</small>
+      </div>
+      <div class="demo">
+        <span class="psb-tab psb-talero is-hover is-focus"><span class="psb-icon" aria-hidden="true"></span><span class="psb-labels"><span class="psb-title">Talero <span class="psb-badge">Waitlist</span></span><span class="psb-subtitle">Futures brokerage, coming soon</span><span class="psb-ent">MFB Capital, LLC &middot; a separate company</span></span></span>
+      </div>
+    </div>
+
+    <div class="state">
+      <div class="k">State 4<b>Under 860px</b>
+        <small>The bar already wraps and centres the tab row at this breakpoint. Talero takes a full width row beneath Futures and Perps, which keeps all three reachable without side scrolling and keeps the entity separation legible. Under 420px the existing 12px by 14px padding rule applies unchanged.</small>
+      </div>
+      <div class="demo phone">
+        <div class="ph">
+          <div class="psb" style="border-bottom:0">
+            <div class="psb-inner">
+              <nav class="psb-tabs" aria-label="Products">
+                <span class="psb-tab psb-active"><img src="https://myfundedfutures.com/images/mffu/static/futures-icon.ac5bdd1e869c.svg" alt="" width="20" height="24"><span class="psb-labels"><span class="psb-title">Futures</span><span class="psb-subtitle">CME futures</span></span></span>
+                <span class="psb-tab psb-perps"><img src="https://myfundedfutures.com/images/mffu/static/perps-icon.f5f8c4664e9b.png" alt="" width="24" height="24"><span class="psb-labels"><span class="psb-title">Perps <span class="psb-badge">New</span></span><span class="psb-subtitle">24/7 perps</span></span></span>
+                <span class="psb-tab psb-talero"><span class="psb-icon" aria-hidden="true"></span><span class="psb-labels"><span class="psb-title">Talero <span class="psb-badge">Waitlist</span></span><span class="psb-subtitle">Futures brokerage, coming soon</span></span></span>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="spec">
+    <h2>Behaviour spec</h2>
+    <dl>
+      <dt>Component</dt>
+      <dd>Add one tab to <code>ProductSwitcherBar</code>. No new component. The markup mirrors the existing tabs exactly: an <code>&lt;a class="tab"&gt;</code> holding an icon, then <code>labels</code> with <code>title</code> and <code>subtitle</code>, and the badge nested inside the title span.</dd>
+
+      <dt>Icon</dt>
+      <dd>Needs a real asset. Futures ships <code>futures-icon.ac5bdd1e869c.svg</code> at 20&times;24 and Perps ships <code>perps-icon.f5f8c4664e9b.png</code> at 24&times;24. Add <code>talero-icon.svg</code> under <code>/images/mffu/static/</code>. The blue square standing in for it here is a placeholder, not artwork.</dd>
+
+      <dt>Label</dt>
+      <dd>The word is <code>Talero</code> with a <code>Waitlist</code> badge. Never "Brokerage", never "Open an account". A waitlist is a notification list; an account is a solicitation. That one word decides which compliance category the tab sits in.</dd>
+
+      <dt>Badge</dt>
+      <dd>Same badge component, recoloured: background <code>#0048FF</code> with white text. Perps green <code>#34C759</code> with <code>#02040E</code> text is reserved for live products, and the dark text fails contrast on blue anyway. The word is <code>WAITLIST</code>, never <code>NEW</code>.</dd>
+
+      <dt>Destination</dt>
+      <dd><code>https://www.talero.com/waitlist?partner=MFFU</code>, matching the <code>?partner=MFFU</code> convention the Perps tab already uses rather than introducing a UTM string. Unlike the other two tabs it is <code>target="_blank" rel="noopener"</code>, because it leaves the estate.</dd>
+
+      <dt>Subtitle</dt>
+      <dd><code>Futures brokerage, coming soon</code>, tinted <code>rgb(143,180,255)</code>. This mirrors how the Perps tab tints its subtitle <code>rgb(127,199,154)</code> to carry its own brand colour.</dd>
+
+      <dt>Separation</dt>
+      <dd>A 1px vertical rule before the tab, plus Talero blue on the icon, badge and subtitle. Futures and Perps are My Funded Futures. Talero is MFB Capital, LLC. The bar must not imply one firm.</dd>
+
+      <dt>Disclosure</dt>
+      <dd>Hover and focus reveal <code>MFB Capital, LLC &middot; a separate company</code> under the subtitle, 200ms ease-out, disabled under <code>prefers-reduced-motion</code>. The full CFTC and NFA line lives on the destination page.</dd>
+
+      <dt>Active state</dt>
+      <dd>Not needed yet: the tab always navigates away, so it never carries <code>aria-current</code>. If Talero ever gets pages inside the estate, follow the existing pattern and give it a <code>taleroActive</code> class whose inset box shadow is <code>#0048FF</code>, matching how Futures uses <code>#3A82F7</code> and Perps uses <code>#34C759</code>.</dd>
+
+      <dt>Focus</dt>
+      <dd>Unchanged from the component: <code>outline: rgb(52,199,89) solid 2px; outline-offset: -3px</code>. Green is the bar's focus colour for every tab and Talero should not invent its own.</dd>
+
+      <dt>Analytics</dt>
+      <dd><code>data-cta="header-talero"</code>. Report clicks against waitlist signups so we can tell whether the bar is doing the work.</dd>
+
+      <dt>Sequencing</dt>
+      <dd>This is the highest reach surface we own: every page, every visitor, logged out included. Ship it after talero.com carries commissions, the FCM name and its how it works ladder above the fold. Opening this tap into the page as it stands today wastes the best impression we get.</dd>
+    </dl>
+  </div>
+
+  <div class="note"><b>Not compliance approved.</b> Every Talero surface is introducing broker promotional material and needs pre-review, versioning and archiving before it ships. One blocker to clear first: talero.com currently prints two different NFA IDs for MFB Capital, <code>0562645</code> in the body and <code>0573109</code> in the footer. Confirm which is correct before this tab points anyone at that page.</div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     CONFIG. The only block that should need editing on merge.
+     ============================================================ */
+  var CONFIG = {
+    // Placeholder motion so the rail is never empty while feeds are wired.
+    // false in production: em-dashes instead of anything synthesised.
+    useSampleMotion: true,
+
+    talero: {
+      waitlistUrl: 'https://www.talero.com/waitlist',
+      // Benefits of a Talero account only. No comparison, no outcome claims.
+      // Compliance owns this copy.
+      benefits: [
+        { t: 'Your choice',        x: 'No firm drawdown rules, no consistency rule, no profit targets. You set how you trade.' },
+        { t: 'Your capital',       x: 'You fund the account and the balance is yours, not allocated to you by a firm.' },
+        { t: 'All your profit',    x: 'No profit split. What the account makes is the account’s.' },
+        { t: 'Held at an FCM',     x: 'MFB Capital does not hold customer funds. Accounts are carried by a Futures Commission Merchant.' },
+        { t: 'Withdraw any time',  x: 'Move money out when you want, subject to margin. No payout request, no approval window.' },
+        { t: '100+ futures products', x: 'CME Group, ICE, Eurex and CBOE. Indices, commodities, currencies and more.' },
+        { t: 'CFTC registered',    x: 'MFB Capital, LLC is a registered introducing broker and a member of the NFA.' }
+      ]
+    },
+
+    perps: {
+      // Instruments on the terminal. Crypto, an index and a single name, to
+      // show the breadth behind "hundreds of perpetual pairs".
+      instruments: ['BTC-USD', 'NAS100', 'NVDA', 'ETH-USD'],
+      // subscribe(symbol, cb) -> unsubscribe
+      // cb receives { mark, changePct, fundingPct, vol24h,
+      //               candles:[{o,h,l,c}], book:{asks:[[px,size]], bids:[[px,size]]} }
+      subscribe: null,
+      refreshMs: 1400,
+      depthLevels: 5,
+      candleCount: 26
+    },
+
+    club: {
+      // Reward types drawn from the live pack tables. No odds are shown here:
+      // odds belong on the Club page, where they are disclosed in full.
+      // Rarity colours follow the ladder in MyFundedClub_Pack_Spec.md.
+      rarity: { Common: '#8B97AB', Uncommon: '#4FC28C', Rare: '#5A9BF7', Epic: '#B98BEE', Legendary: '#D8AE5E' },
+      cards: [
+        { n: 'Free 25K Rapid eval',       m: 'Booster, 100% off',                r: 'Rare' },
+        { n: 'Free 50K Builder eval',     m: 'Booster, 100% off',                r: 'Rare' },
+        { n: 'Free 50K Rapid eval',       m: 'Booster, 100% off',                r: 'Epic' },
+        { n: 'Free 50K Pro eval',         m: 'Booster, 100% off',                r: 'Epic' },
+        { n: 'Sim funded $50K Rapid',     m: 'Booster, account credit',          r: 'Legendary' },
+        { n: '1 free reset',              m: 'Booster',                          r: 'Uncommon' },
+        { n: 'Gift a friend a free eval', m: 'Booster, POGO',                    r: 'Rare' },
+        { n: 'A free Rare pack',          m: 'Booster',                          r: 'Uncommon' },
+        { n: 'Seat at a live AMA',        m: 'Promo, access',                    r: 'Uncommon' },
+        { n: '50% off a reset',           m: 'Booster, discount',                r: 'Common' },
+        { n: 'Second eval discounted',    m: 'Booster, BOGO',                    r: 'Common' },
+        { n: 'Bonus points',              m: 'Point card, back to your balance', r: 'Common' }
+      ],
+      // How a pack is actually earned. Verbatim from Tasks and Milestones.
+      // Referral tasks live on the refer card, not here.
+      groups: [
+        { g: 'Daily Eval Packs, resets daily', items: [
+          { t: 'Tier 1 Evaluation Started', pack: 1, c: '0/1', d: 'Start one eval and get a pack. Resets daily.' },
+          { t: 'Tier 2 Evaluations Started', pack: 1, c: '0/1', d: 'Start two evals and get a pack. Resets daily.' },
+          { t: 'Tier 3 Evaluations Started', pack: 1, c: '0/1', d: 'Start three evals and get a pack. Resets daily.' }
+        ]},
+        { g: 'Or bank points and redeem a pack', items: [
+          { t: 'Daily Login', pts: 10, c: '1/1', done: true, d: 'Sign in to the dashboard daily. Triggered at sign in.' },
+          { t: 'Pass Evaluation', pts: 100, c: '1 earned', done: true, d: 'Earn 100 points for each evaluation passed.' },
+          { t: 'Daily Payout Reward', pts: 250, c: '0/1', d: 'Earn points for each payout received. Resets daily.' },
+          { t: 'First Payout', pts: 500, c: '0/1', d: 'Celebration bonus for your first payout.' },
+          { t: 'Pass 5 Evaluations', pts: 500, c: '0/1', d: 'Earn 500 points for passing 5 evaluations.' },
+          { t: 'Start 10 Evals Bonus', pts: 1000, c: '0/1', d: 'Start 10 evaluations and receive bonus points.' },
+          { t: 'Pass 10 Evaluations', pts: 1000, c: '0/1', d: 'Earn 1000 points for passing 10 evaluations.' },
+          { t: '$10K Payout Milestone', pts: 1000, c: '0/1', d: 'Milestone bonus when lifetime payouts reach $10K.' },
+          { t: 'Start 20 Evals Bonus', pts: 2000, c: '0/1', d: 'Start 20 evaluations and receive bonus points.' },
+          { t: 'Pass 20 Evaluations', pts: 2000, c: '0/1', d: 'Earn 2000 points for passing 20 evaluations.' },
+          { t: '$25K Payout Milestone', pts: 2000, c: '0/1', d: 'Milestone bonus when lifetime payouts reach $25K.' },
+          { t: '$50K Payout Milestone', pts: 5000, c: '0/1', d: 'Milestone bonus when lifetime payouts reach $50K.' }
+        ]}
+      ]
+    },
+
+    refer: {
+      // Public homepage variant: no member link or counts are rendered here.
+      // The logged in dashboard card above Account Data keeps those, and reuses
+      // the MF-2472 endpoint. Bought must exclude $0 orders, per the
+      // 2026-09-14 scorecard fix.
+      dashboardUrl: '/dashboard',
+      clubUrl: '/club',
+      myReferralsUrl: '/loyalty/refer',
+      badgeViews: 3
+    }
+  };
+
+  var root = document.querySelector('[data-mff-rail]');
+  if (!root) { return; }
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (s, c) { return (c || root).querySelector(s); };
+  var fmt = function (n) { return Number(n).toLocaleString('en-US'); };
+
+  /* ---------- rail ---------- */
+  var vp = $('[data-mff-viewport]');
+  var cards = Array.prototype.slice.call(vp.children);
+  var prev = $('[data-mff-prev]'), next = $('[data-mff-next]'), dotsHost = $('[data-mff-dots]');
+  var dots = cards.map(function (c, i) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'mff-dot'; b.setAttribute('role', 'tab');
+    b.setAttribute('aria-label', 'Card ' + (i + 1) + ' of ' + cards.length);
+    b.addEventListener('click', function () { go(i); });
+    dotsHost.appendChild(b); return b;
+  });
+  function go(i) {
+    var t = cards[Math.max(0, Math.min(cards.length - 1, i))];
+    vp.scrollTo({ left: t.offsetLeft - vp.offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
+  }
+  function at() {
+    var best = 0, bd = Infinity;
+    cards.forEach(function (c, i) {
+      var d = Math.abs((c.offsetLeft - vp.offsetLeft) - vp.scrollLeft);
+      if (d < bd) { bd = d; best = i; }
+    });
+    return best;
+  }
+  function sync() {
+    var i = at();
+    dots.forEach(function (d, n) { d.setAttribute('aria-current', n === i ? 'true' : 'false'); });
+    prev.disabled = vp.scrollLeft <= 2;
+    next.disabled = vp.scrollLeft >= vp.scrollWidth - vp.clientWidth - 2;
+  }
+  prev.addEventListener('click', function () { go(at() - 1); });
+  next.addEventListener('click', function () { go(at() + 1); });
+  vp.addEventListener('scroll', function () { clearTimeout(vp._t); vp._t = setTimeout(sync, 60); }, { passive: true });
+  vp.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(at() + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(at() - 1); }
+  });
+  window.addEventListener('resize', sync);
+  sync();
+
+  function countTo(el, target) {
+    el.textContent = fmt(Math.round(target));
+    if (reduce) { return; }
+    var from = Number(el.dataset.v || 0), start = performance.now(), dur = 480;
+    el.dataset.v = String(target);
+    requestAnimationFrame(function step(now) {
+      var p = Math.min(1, (now - start) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(Math.round(from + (target - from) * e));
+      if (p < 1) { requestAnimationFrame(step); }
+    });
+  }
+
+  /* ---------- 1. Talero benefits ---------- */
+  (function () {
+    var host = $('[data-mff-ben]');
+    CONFIG.talero.benefits.forEach(function (b, i) {
+      var el = document.createElement('button');
+      el.type = 'button'; el.className = 'mff-ben__i';
+      el.setAttribute('aria-expanded', i === 0 ? 'true' : 'false');
+      el.innerHTML = '<span class="mff-ben__r"><span class="mff-ben__c" aria-hidden="true"></span><span class="mff-ben__t"></span></span><span class="mff-ben__x"></span>';
+      el.querySelector('.mff-ben__t').textContent = b.t;
+      el.querySelector('.mff-ben__x').textContent = b.x;
+      el.addEventListener('click', function () {
+        var open = el.getAttribute('aria-expanded') === 'true';
+        host.querySelectorAll('.mff-ben__i').forEach(function (n) { n.setAttribute('aria-expanded', 'false'); });
+        el.setAttribute('aria-expanded', open ? 'false' : 'true');
+      });
+      host.appendChild(el);
+    });
+  })();
+
+  /* ---------- 2. Perps terminal ---------- */
+  (function () {
+    var tabsHost = $('[data-mff-tabs]'), pxEl = $('[data-mff-px]'), chgEl = $('[data-mff-chg]');
+    var markEl = $('[data-mff-mark]'), fundEl = $('[data-mff-fund]'), volEl = $('[data-mff-vol]');
+    var svg = $('[data-mff-candles]');
+    var asksHost = $('[data-mff-asks]'), bidsHost = $('[data-mff-bids]'), spreadEl = $('[data-mff-spread]');
+    var liveTag = $('[data-mff-live]');
+    var NS = 'http://www.w3.org/2000/svg';
+    var W = 200, H = 110, N = CONFIG.perps.candleCount, LV = CONFIG.perps.depthLevels;
+    var cur = 0, last = null, unsub = null, timer = null, sim = null;
+
+    var tabs = CONFIG.perps.instruments.map(function (sym, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'mff-tab'; b.textContent = sym;
+      b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+      b.addEventListener('click', function () { select(i); });
+      tabsHost.appendChild(b); return b;
+    });
+
+    var askRows = [], bidRows = [];
+    for (var k = 0; k < LV; k++) {
+      askRows.push(mkRow(asksHost, 'ask'));
+      bidRows.push(mkRow(bidsHost, 'bid'));
+    }
+    function mkRow(host, cls) {
+      var d = document.createElement('div');
+      d.className = 'mff-dep ' + cls;
+      d.innerHTML = '<i></i><span></span><span></span>';
+      host.appendChild(d); return d;
+    }
+
+    function dp(v) { return v >= 1000 ? 2 : (v >= 10 ? 2 : 4); }
+    function n2(v) { return v.toLocaleString('en-US', { minimumFractionDigits: dp(v), maximumFractionDigits: dp(v) }); }
+
+    function drawCandles(candles) {
+      if (!candles || !candles.length) { return; }
+      var hi = -Infinity, lo = Infinity;
+      candles.forEach(function (c) { if (c.h > hi) { hi = c.h; } if (c.l < lo) { lo = c.l; } });
+      var sp = (hi - lo) || 1, top = 6, bot = H - 6, usable = bot - top;
+      var slot = W / candles.length, bw = Math.max(2, slot * 0.6);
+      var y = function (v) { return bot - ((v - lo) / sp) * usable; };
+
+      while (svg.firstChild) { svg.removeChild(svg.firstChild); }
+      candles.forEach(function (c, i) {
+        var cx = i * slot + slot / 2;
+        var up = c.c >= c.o;
+        var col = up ? '#4FC28C' : '#FF6B6B';
+
+        var wick = document.createElementNS(NS, 'line');
+        wick.setAttribute('x1', cx.toFixed(2)); wick.setAttribute('x2', cx.toFixed(2));
+        wick.setAttribute('y1', y(c.h).toFixed(2)); wick.setAttribute('y2', y(c.l).toFixed(2));
+        wick.setAttribute('stroke', col); wick.setAttribute('stroke-width', '0.9');
+        svg.appendChild(wick);
+
+        var oy = y(c.o), cy = y(c.c);
+        var body = document.createElementNS(NS, 'rect');
+        body.setAttribute('x', (cx - bw / 2).toFixed(2));
+        body.setAttribute('y', Math.min(oy, cy).toFixed(2));
+        body.setAttribute('width', bw.toFixed(2));
+        body.setAttribute('height', Math.max(1, Math.abs(cy - oy)).toFixed(2));
+        body.setAttribute('fill', up ? col : 'none');
+        body.setAttribute('stroke', col);
+        body.setAttribute('stroke-width', '0.9');
+        svg.appendChild(body);
+      });
+    }
+
+    function drawBook(book) {
+      if (!book) { return; }
+      var all = book.asks.concat(book.bids).map(function (r) { return r[1]; });
+      var max = Math.max.apply(null, all) || 1;
+      askRows.forEach(function (row, i) {
+        var r = book.asks[i]; if (!r) { row.style.visibility = 'hidden'; return; }
+        row.style.visibility = ''; row.children[0].style.width = ((r[1] / max) * 100) + '%';
+        row.children[1].textContent = n2(r[0]); row.children[2].textContent = r[1].toFixed(2);
+      });
+      bidRows.forEach(function (row, i) {
+        var r = book.bids[i]; if (!r) { row.style.visibility = 'hidden'; return; }
+        row.style.visibility = ''; row.children[0].style.width = ((r[1] / max) * 100) + '%';
+        row.children[1].textContent = n2(r[0]); row.children[2].textContent = r[1].toFixed(2);
+      });
+      if (book.asks[0] && book.bids[0]) {
+        spreadEl.textContent = n2(book.asks[0][0] - book.bids[0][0]);
+      }
+    }
+
+    function paint(q) {
+      if (last !== null) { pxEl.classList.remove('up', 'down'); void pxEl.offsetWidth; pxEl.classList.add(q.mark >= last ? 'up' : 'down'); }
+      last = q.mark;
+      pxEl.textContent = n2(q.mark);
+      chgEl.textContent = (q.changePct >= 0 ? '+' : '') + q.changePct.toFixed(2) + '%';
+      chgEl.className = 'mff-term__chg ' + (q.changePct >= 0 ? 'up' : 'down');
+      markEl.textContent = n2(q.mark);
+      fundEl.textContent = (q.fundingPct >= 0 ? '+' : '') + q.fundingPct.toFixed(3) + '%';
+      volEl.textContent = q.vol24h || '[LIVE]';
+      drawCandles(q.candles);
+      drawBook(q.book);
+    }
+
+    function makeBook(mid) {
+      var tick = mid > 1000 ? 0.5 : (mid > 10 ? 0.01 : 0.0001);
+      var asks = [], bids = [];
+      for (var i = 0; i < LV; i++) {
+        asks.push([mid + tick * (i + 1), 0.4 + Math.random() * 3.2]);
+        bids.push([mid - tick * (i + 1), 0.4 + Math.random() * 3.2]);
+      }
+      return { asks: asks, bids: bids };
+    }
+
+    function select(i) {
+      cur = i; last = null;
+      tabs.forEach(function (b, n) { b.setAttribute('aria-pressed', n === i ? 'true' : 'false'); });
+      if (unsub) { unsub(); unsub = null; }
+      if (timer) { clearInterval(timer); timer = null; }
+
+      var sym = CONFIG.perps.instruments[i];
+      if (typeof CONFIG.perps.subscribe === 'function') {
+        unsub = CONFIG.perps.subscribe(sym, paint);
+        return;
+      }
+      if (!CONFIG.useSampleMotion) {
+        pxEl.textContent = '——'; chgEl.textContent = '——';
+        liveTag.textContent = 'Feed not connected'; liveTag.style.color = 'var(--mff-muted)';
+        while (svg.firstChild) { svg.removeChild(svg.firstChild); }
+        return;
+      }
+
+      // Placeholder motion only. Replaced entirely by CONFIG.perps.subscribe.
+      var seeds = { 'BTC-USD': 64000, 'NAS100': 20400, 'NVDA': 128, 'ETH-USD': 3100 };
+      var base = seeds[sym] || 100, v = base, candles = [];
+      var newCandle = function (open) {
+        return { o: open, h: open, l: open, c: open };
+      };
+      for (var k2 = 0; k2 < N; k2++) {
+        var c = newCandle(v);
+        for (var s = 0; s < 5; s++) {
+          v *= 1 + (Math.random() - 0.5) * 0.004;
+          c.c = v; if (v > c.h) { c.h = v; } if (v < c.l) { c.l = v; }
+        }
+        candles.push(c);
+      }
+      sim = { v: v, base: base, candles: candles, funding: (Math.random() - 0.45) * 0.04, step: 0 };
+
+      var tickIt = function () {
+        sim.v *= 1 + (Math.random() - 0.5) * 0.004;
+        var cc = sim.candles[sim.candles.length - 1];
+        cc.c = sim.v;
+        if (sim.v > cc.h) { cc.h = sim.v; }
+        if (sim.v < cc.l) { cc.l = sim.v; }
+        sim.step++;
+        if (sim.step % 4 === 0) {
+          sim.candles.push(newCandle(sim.v));
+          if (sim.candles.length > N) { sim.candles.shift(); }
+        }
+        paint({
+          mark: sim.v, changePct: ((sim.v - sim.base) / sim.base) * 100,
+          fundingPct: sim.funding, vol24h: '[LIVE]', candles: sim.candles, book: makeBook(sim.v)
+        });
+      };
+      tickIt();
+      if (!reduce) { timer = setInterval(tickIt, CONFIG.perps.refreshMs); }
+    }
+    select(0);
+  })();
+
+  /* ---------- 3. Club packs ---------- */
+  (function () {
+    // What is inside a pack. Cycles through the reward types in order rather
+    // than drawing at random, so the card never implies pull odds. Odds are
+    // published on the Club page.
+    var face = $('[data-mff-face]'), nEl = $('[data-mff-face-n]');
+    var mEl = $('[data-mff-face-m]'), rEl = $('[data-mff-face-r]');
+    var nextBtn = $('[data-mff-face-next]');
+    var cards = CONFIG.club.cards, ci = 0;
+
+    function show(i) {
+      var c = cards[i % cards.length];
+      var col = CONFIG.club.rarity[c.r] || '#8B97AB';
+      face.style.setProperty('--rar', col);
+      nEl.textContent = c.n; mEl.textContent = c.m; rEl.textContent = c.r;
+    }
+    function advance() {
+      ci = (ci + 1) % cards.length;
+      if (reduce) { show(ci); return; }
+      face.classList.add('swap');
+      setTimeout(function () { show(ci); face.classList.remove('swap'); }, 170);
+    }
+    nextBtn.addEventListener('click', advance);
+    show(0);
+
+    // How to earn one.
+    var host = $('[data-mff-list]');
+    CONFIG.club.groups.forEach(function (grp) {
+      var h = document.createElement('div');
+      h.className = 'mff-grp'; h.textContent = grp.g;
+      host.appendChild(h);
+      grp.items.forEach(function (item) {
+        var row = document.createElement('div');
+        row.className = 'mff-task';
+        row.innerHTML =
+          '<span class="mff-task__r1"><span class="mff-task__t"></span>' +
+          '<span class="mff-count"></span><span class="mff-task__pts"></span></span>' +
+          '<span class="mff-task__d"></span>';
+        row.querySelector('.mff-task__t').textContent = item.t;
+        var cnt = row.querySelector('.mff-count');
+        cnt.textContent = item.c;
+        if (item.done) { cnt.classList.add('done'); }
+        row.querySelector('.mff-task__pts').textContent = item.pack ? '1 pack' : '+' + fmt(item.pts);
+        row.querySelector('.mff-task__d').textContent = item.d;
+        host.appendChild(row);
+      });
+    });
+  })();
+
+  /* ---------- 4. Refer ----------
+     Behaviour, states and tracking per the handoff, sections 3, 6 and 7. */
+  (function () {
+    var myref = $('[data-mff-myref]'), badge = $('[data-mff-newbadge]');
+    var dash = $('[data-mff-godash]'), club = $('[data-mff-goclub]');
+
+    function track(name) {
+      if (typeof window.mffTrack === 'function') { window.mffTrack(name, { page: location.pathname }); }
+    }
+
+    // Public homepage variant of the handoff card: no member context, so there
+    // is no link to copy and no counts. Both CTAs send people to where the
+    // link actually lives. See the handoff, "If this is the public homepage".
+    dash.setAttribute('href', CONFIG.refer.dashboardUrl);
+    club.setAttribute('href', CONFIG.refer.clubUrl);
+    myref.addEventListener('click', function () {
+      track('referral_card_my_referrals');
+      window.location.href = CONFIG.refer.myReferralsUrl;
+    });
+    dash.addEventListener('click', function () { track('referral_card_dashboard'); });
+    club.addEventListener('click', function () { track('referral_card_club'); });
+
+    // NEW badge retires after CONFIG.refer.badgeViews views. Swap the store for
+    // a server side per user counter if localStorage is not acceptable.
+    try {
+      var seen = Number(localStorage.getItem('mff_refer_views') || 0) + 1;
+      localStorage.setItem('mff_refer_views', String(seen));
+      if (seen > CONFIG.refer.badgeViews) { badge.remove(); }
+    } catch (e) { /* storage blocked, leave the badge */ }
+
+    track('referral_card_view');
+  })();
+
+})();
+</script>
+
+</body>
+</html>
