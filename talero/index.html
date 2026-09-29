@@ -287,13 +287,13 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
 .mff-term__chart svg { width: 100%; height: 100%; min-height: 96px; display: block; }
 .mff-depth { border-left: 1px solid var(--mff-inner-bd); padding: 4px 10px 8px; display: flex; flex-direction: column; justify-content: center; gap: 1px; }
 .mff-depth__h { display: flex; justify-content: space-between; font-size: 8.5px; font-weight: 600; letter-spacing: .7px; text-transform: uppercase; color: var(--mff-dim); padding-bottom: 3px; }
-.mff-dep { position: relative; display: flex; justify-content: space-between; font-size: 10.5px; font-variant-numeric: tabular-nums; padding: 2.5px 4px; border-radius: 3px; overflow: hidden; }
+.mff-dep { position: relative; display: flex; justify-content: space-between; font-size: 10.5px; font-variant-numeric: tabular-nums; padding: 2px 4px; border-radius: 3px; overflow: hidden; }
 .mff-dep i { position: absolute; inset: 0 auto 0 0; opacity: .16; transition: width .5s ease; }
 .mff-dep span { position: relative; }
 .mff-dep.ask span:first-child { color: var(--mff-red); } .mff-dep.ask i { background: var(--mff-red); }
 .mff-dep.bid span:first-child { color: var(--mff-green); } .mff-dep.bid i { background: var(--mff-green); }
 .mff-dep span:last-child { color: var(--mff-muted); }
-.mff-spread { display: flex; justify-content: center; gap: 6px; font-size: 9.5px; color: var(--mff-dim); padding: 4px 0; border-block: 1px solid var(--mff-inner-bd); margin: 3px 0; font-variant-numeric: tabular-nums; }
+.mff-spread { display: flex; justify-content: center; gap: 6px; font-size: 9.5px; color: var(--mff-dim); padding: 3px 0; border-block: 1px solid var(--mff-inner-bd); margin: 2px 0; font-variant-numeric: tabular-nums; }
 
 /* ---------- 3. Club packs ---------- */
 .mff-pack { padding: 12px 14px 13px; border-bottom: 1px solid var(--mff-inner-bd); }
@@ -777,7 +777,7 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
     <article class="mff-card" aria-labelledby="mff-t-h">
       <div class="mff-card__left">
         <div class="mff-eyebrow">
-          <img class="mff-mark" src="https://www.talero.com/footer-logo.png" width="24" height="24" alt="" loading="lazy" decoding="async">
+          <svg class="mff-mark" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="#4FA3FF" stroke-width="1.6"/><path d="M7.5 8.5h9M12 8.5V16" fill="none" stroke="#4FA3FF" stroke-width="1.7" stroke-linecap="round"/></svg>
           <span class="mff-eyebrow__name">Talero</span>
           <span class="mff-chip" style="background:#0048FF;color:#fff">Coming soon</span>
         </div>
@@ -796,7 +796,7 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
     <article class="mff-card" aria-labelledby="mff-p-h">
       <div class="mff-card__left">
         <div class="mff-eyebrow">
-          <img class="mff-mark" src="https://myfundedfutures.com/images/mffu/static/perps-icon.f5f8c4664e9b.png" width="24" height="24" alt="" loading="lazy" decoding="async">
+          <img class="mff-mark" src="https://myfundedfutures.com/images/mffu/static/perps-icon.f5f8c4664e9b.png" width="24" height="24" alt="" decoding="async" fetchpriority="low">
           <span class="mff-eyebrow__name">MyFundedPerps</span>
           <span class="mff-chip" style="background:#4FC28C;color:#04120C">New</span>
         </div>
@@ -1551,7 +1551,7 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
       //               candles:[{o,h,l,c}], book:{asks:[[px,size]], bids:[[px,size]]} }
       subscribe: null,
       refreshMs: 1400,
-      depthLevels: 5,
+      depthLevels: 4,
       candleCount: 26
     },
 
