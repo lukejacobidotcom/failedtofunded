@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trader Royale Registration | MyFundedFutures</title>
+<meta name="description" content="Design preview of the Trader Royale registration flow. Free entry, one $50,000 simulated account, a new rule every trading day.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#080A14">
+<link rel="icon" href="https://myfundedfutures.com/images/mffu/brandicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;600;800&display=swap">
+<style>
+:root{--ground:#080A14;--panel:#14161F;--line:#232936;--line-strong:#2F3646;--text:#EDEFF3;--muted:#B5B8BE;--dim:#6C727F;--gold:#D8AE5E;--gold-light:#EBC886;--ok:#7FE3B0;--hud:#FF6B2C;--info:#26C6F9}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ground);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--gold)}a:hover{color:var(--gold-light)}
+h1,h2{font-family:'Archivo Black',Impact,sans-serif;font-weight:400;letter-spacing:-.045em;line-height:.93;margin:0}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0}
+:focus-visible{outline:2px solid var(--info);outline-offset:3px}
+.preview{background:repeating-linear-gradient(135deg,rgba(216,174,94,.16) 0 10px,transparent 10px 20px);border-bottom:1px solid var(--line);padding:7px 20px;font-size:10px;font-weight:800;letter-spacing:.26em;color:var(--gold);text-align:center}
+.wrap{max-width:640px;margin:0 auto;padding:0 20px 56px}
+.head{padding:22px 0 16px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.24em;color:var(--muted)}
+.eyebrow span{color:var(--gold)}
+.mark{font-family:'Archivo Black',Impact,sans-serif;font-size:23px;letter-spacing:-.035em;margin-top:6px}
+.mark i{color:var(--dim);font-style:normal}
+.bars{display:flex;gap:8px;align-items:center;padding:16px 0}
+.bar{flex:1;height:4px;background:var(--line)}
+.bar.on{background:var(--gold)}
+.stepno{font-size:11px;font-weight:800;letter-spacing:.18em;color:var(--muted);white-space:nowrap}
+.panel{display:none;padding-top:22px}
+.panel.on{display:block}
+h1{font-size:clamp(34px,9vw,44px)}
+.lede{margin:14px 0 0;font-size:15px;color:var(--muted)}
+.facts{display:flex;gap:10px;margin-top:20px}
+.fact{flex:1;padding:12px 14px;background:var(--panel);border:1px solid var(--line)}
+.fact b{display:block;font-size:10px;font-weight:800;letter-spacing:.2em;color:var(--muted)}
+.fact span{display:block;font-size:13px;font-weight:600;margin-top:4px}
+.btn{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:56px;padding:16px 22px;margin-top:14px;font-size:13px;font-weight:800;letter-spacing:.16em;text-decoration:none;text-align:left}
+.btn-gold{background:var(--gold);color:var(--ground)}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-out{background:var(--panel);border:1px solid var(--line-strong);color:var(--text);box-shadow:inset 3px 0 0 var(--hud)}
+.btn-ghost{background:var(--panel);border:1px solid var(--line-strong);color:var(--text)}
+.or{display:flex;align-items:center;gap:12px;margin:18px 0 4px}
+.or i{flex:1;height:1px;background:var(--line);font-style:normal}
+.or span{font-size:10px;font-weight:800;letter-spacing:.2em;color:var(--dim)}
+label.f{display:block;font-size:10px;font-weight:800;letter-spacing:.2em;color:var(--muted);margin:16px 0 6px}
+input[type=text],input[type=email]{width:100%;min-height:48px;padding:12px 14px;background:var(--panel);border:1px solid var(--line-strong);color:var(--text);font-size:14px}
+.optin{display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-size:12px;color:var(--muted)}
+.optin input{width:18px;height:18px;margin-top:2px;accent-color:var(--gold)}
+.prog{display:flex;align-items:center;gap:12px;margin:18px 0}
+.prog b{font-size:11px;font-weight:800;letter-spacing:.18em;color:var(--ok);white-space:nowrap}
+.prog i{flex:1;height:6px;background:var(--line);font-style:normal}
+.prog i em{display:block;height:6px;width:33%;background:var(--ok)}
+.task{display:flex;align-items:center;gap:14px;padding:16px 18px;margin-bottom:10px;background:var(--panel);border:1px solid var(--line-strong)}
+.task.done{box-shadow:inset 3px 0 0 var(--ok)}
+.num{width:30px;height:30px;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;border:1px solid var(--line-strong);color:var(--dim)}
+.num.done{background:var(--ok);color:var(--ground);border-color:var(--ok);font-size:16px}
+.task div{flex:1;min-width:0}
+.task b{display:block;font-size:15px;font-weight:800}
+.task small{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.mini{min-height:44px;padding:11px 16px;background:var(--gold);color:var(--ground);font-size:11px;font-weight:800;letter-spacing:.18em;flex:none}
+.state{font-size:11px;font-weight:800;letter-spacing:.18em;color:var(--ok);flex:none}
+.chip{display:inline-flex;padding:7px 12px;background:var(--hud);color:var(--ground);font-size:10px;font-weight:800;letter-spacing:.2em}
+.note{padding:13px 16px;margin-top:16px;background:var(--panel);border-left:3px solid var(--info);font-size:11px;color:var(--muted)}
+.dash{padding:14px 18px;margin-top:16px;background:var(--panel);border:1px dashed var(--line-strong);font-size:12px;color:var(--muted)}
+.dash b{color:var(--gold)}
+.card{display:flex;gap:16px;align-items:center;padding:16px;margin-top:20px;background:var(--panel);border:1px solid var(--line-strong)}
+.card img{width:190px;height:107px;object-fit:cover;flex:none}
+.card b{display:block;font-size:10px;font-weight:800;letter-spacing:.2em;color:var(--gold)}
+.card strong{display:block;font-size:14px;margin-top:6px;line-height:1.3}
+.card small{display:block;font-size:11px;color:var(--muted);margin-top:6px}
+.skip{display:block;text-align:center;padding:14px 0 0;font-size:12px;color:var(--dim);text-decoration:none}
+.won{font-size:clamp(42px,12vw,52px)}
+.duo{display:flex;gap:10px;margin-top:20px}
+.duo div{flex:1;padding:14px 16px;background:var(--panel);border:1px solid var(--line-strong)}
+.duo div.hi{box-shadow:inset 3px 0 0 var(--ok)}
+.duo b{display:block;font-size:10px;font-weight:800;letter-spacing:.2em;color:var(--muted)}
+.duo div.hi b{color:var(--ok)}
+.duo span{display:block;font-size:18px;font-weight:800;margin-top:5px}
+.when{margin-top:20px}
+.when h2{font-size:10px;font-weight:800;letter-spacing:.24em;color:var(--muted);font-family:Inter,sans-serif;letter-spacing:.24em}
+.row{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);font-size:13px}
+.row b{width:120px;flex:none;font-size:12px;font-weight:800;color:var(--gold)}
+.legal{margin:26px 0 0;font-size:10px;line-height:1.7;color:var(--dim)}
+@media(max-width:560px){.facts{flex-wrap:wrap}.fact{min-width:calc(50% - 5px)}.card img{width:120px;height:80px}.duo{flex-wrap:wrap}.row b{width:96px}}
+</style>
+</head>
+<body>
+
+<div class="preview">DESIGN PREVIEW &middot; NOT A LIVE REGISTRATION</div>
+
+<div class="wrap">
+
+  <header class="head">
+    <div class="eyebrow">MYFUNDEDFUTURES <span>// SEASON 01</span></div>
+    <div class="mark">TRADER ROYALE <i>//</i></div>
+  </header>
+
+  <div class="bars">
+    <i class="bar on" id="b1"></i><i class="bar" id="b2"></i><i class="bar" id="b3"></i><i class="bar" id="b4"></i>
+    <span class="stepno" id="stepno">STEP 1 OF 4</span>
+  </div>
+
+  <section class="panel on" id="p1" aria-label="Step 1, account">
+    <h1>ENTER THE<br>ROYALE.</h1>
+    <p class="lede">Free entry. One $50,000 simulated account. A new rule every trading day for 25 days, then the top 100 go head to head.</p>
+    <div class="facts">
+      <div class="fact"><b>FREE</b><span>To enter</span></div>
+      <div class="fact"><b>$5,000</b><span>Won every day</span></div>
+      <div class="fact"><b>PORSCHE</b><span>For the champion</span></div>
+    </div>
+    <button class="btn btn-gold" data-go="2">LOG IN WITH MYFUNDEDFUTURES <span aria-hidden="true">&rarr;</span></button>
+    <div class="or"><i></i><span>OR CREATE AN ACCOUNT</span><i></i></div>
+    <label class="f" for="email">EMAIL</label>
+    <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
+    <label class="f" for="country">COUNTRY</label>
+    <input id="country" type="text" autocomplete="country-name" placeholder="United States">
+    <div class="optin"><input id="optin" type="checkbox"><label for="optin">Send me competition updates and offers. Not required to enter.</label></div>
+    <button class="btn btn-out" data-go="2">CREATE ACCOUNT AND ENTER <span aria-hidden="true">&rarr;</span></button>
+  </section>
+
+  <section class="panel" id="p2" aria-label="Step 2, complete your entry">
+    <h1>COMPLETE<br>YOUR ENTRY.</h1>
+    <p class="lede">Three steps. All three are required before your account is issued.</p>
+    <div class="prog"><b>1 OF 3 DONE</b><i><em></em></i></div>
+    <div class="task done"><span class="num done">&#10003;</span><div><b>Follow us on X</b><small>@MyFundedFutures</small></div><span class="state">FOLLOWING</span></div>
+    <div class="task"><span class="num">2</span><div><b>Subscribe on YouTube</b><small>MyFundedFutures TV</small></div><button class="mini">SUBSCRIBE</button></div>
+    <div class="task"><span class="num">3</span><div><b>Check My Funded Club</b><small>See the packs waiting in your account</small></div><button class="mini">OPEN CLUB</button></div>
+    <div class="dash"><b>NEW HERE?</b> You have 2 packs waiting. Existing customers have 1 free pack.</div>
+    <button class="btn btn-ghost" data-go="3">FINISH THE THREE STEPS <span aria-hidden="true">&rarr;</span></button>
+  </section>
+
+  <section class="panel" id="p3" aria-label="Step 3, share">
+    <span class="chip">STRONGLY RECOMMENDED</span>
+    <h1 style="margin-top:14px">TAKE THE<br>$100 BOOST.</h1>
+    <p class="lede">Post that you are competing and we add <b style="color:var(--text)">$100 to your competition score</b> before day one. Takes one tap.</p>
+    <div class="card">
+      <img src="porsche.webp" width="190" height="107" alt="Preview of the share card showing the Porsche">
+      <div><b>YOUR CARD IS READY</b><strong>Your username is competing for a Porsche</strong><small>Generated with your username and referral link</small></div>
+    </div>
+    <button class="btn btn-gold">SHARE ON X <span aria-hidden="true">&#8599;</span></button>
+    <button class="btn btn-ghost">SHARE ON INSTAGRAM <span aria-hidden="true">&#8599;</span></button>
+    <button class="btn btn-ghost">SHARE ON FACEBOOK <span aria-hidden="true">&#8599;</span></button>
+    <p class="note">The boost applies to your competition score only. It does not change your odds in the daily $5,000 draw.</p>
+    <button class="btn btn-out" data-go="4">DONE, TAKE ME IN <span aria-hidden="true">&rarr;</span></button>
+    <a class="skip" href="#" data-go="4">Skip for now</a>
+  </section>
+
+  <section class="panel" id="p4" aria-label="Confirmed">
+    <h1 class="won">YOU'RE IN.</h1>
+    <div class="duo">
+      <div><b>OPERATOR</b><span>Your username</span></div>
+      <div class="hi"><b>BOOST APPLIED</b><span>+$100.00</span></div>
+    </div>
+    <div class="dash" style="border-style:solid"><b>2 packs claimed.</b> New trader bonus, waiting in My Funded Club.</div>
+    <div class="when">
+      <h2>WHAT HAPPENS NEXT</h2>
+      <div class="row"><b>SUN 25 OCT</b><span>First rule drops at 5:00 p.m. ET</span></div>
+      <div class="row"><b>MON 26 OCT</b><span>Your $50,000 account is live at 8:00 a.m. ET</span></div>
+      <div class="row"><b>MON 26 OCT</b><span>First $5,000 draw at noon ET. Every active trader is in it</span></div>
+      <div class="row"><b>MON 30 NOV</b><span>Cut day. Top 100 go to the bracket</span></div>
+    </div>
+    <div class="dash"><b>YOUR REFERRAL LINK</b><br>Generated after registration</div>
+    <button class="btn btn-gold" data-go="1">START AGAIN <span aria-hidden="true">&rarr;</span></button>
+  </section>
+
+  <p class="legal">Design preview. No registration is captured and none is confirmed. Free to enter, no purchase necessary. Simulated trading, no real money is traded. Prize values, dates and eligibility are draft and subject to the Official Rules and identity verification.</p>
+
+</div>
+
+<script>
+(function(){
+  var total = 4;
+  function show(n){
+    for (var i = 1; i <= total; i++){
+      document.getElementById('p' + i).classList.toggle('on', i === n);
+      document.getElementById('b' + i).classList.toggle('on', i <= n);
+    }
+    document.getElementById('stepno').textContent = n === total ? 'CONFIRMED' : 'STEP ' + n + ' OF ' + total;
+    window.scrollTo(0, 0);
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-go]');
+    if (!t) return;
+    e.preventDefault();
+    show(parseInt(t.getAttribute('data-go'), 10));
+  });
+})();
+</script>
+
+</body>
+</html>
