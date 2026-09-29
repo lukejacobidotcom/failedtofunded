@@ -465,14 +465,13 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
 .lede{margin-top:12px;color:var(--fg-2);max-width:66ch;font-size:15.5px;line-height:1.6;font-weight:300}
 .page{padding:44px 0 80px}
 .states{display:grid;gap:18px;margin-top:40px}
-.state{border:1px solid var(--line-2);border-radius:16px;background:var(--ink-2);padding:22px 24px;
-  display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:start}
+.state.tl-on{align-items:start}
 .k{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--talero-hi)}
 .k b{display:block;font-family:var(--f-mffu);font-size:16px;font-weight:600;letter-spacing:-.3px;
   text-transform:none;color:var(--fg);margin-top:7px}
 .k small{display:block;font-family:var(--f-mffu);font-size:12.5px;line-height:1.55;font-weight:300;
   letter-spacing:normal;text-transform:none;color:var(--fg-3);margin-top:8px}
-.demo{padding:22px;background:linear-gradient(160deg,#CFE2F5 0%,#E8F1FA 48%,#F7FAFD 100%);
+.demo.tl-on{padding:22px;background:linear-gradient(160deg,#CFE2F5 0%,#E8F1FA 48%,#F7FAFD 100%);
   border:1px solid var(--line);border-radius:12px}
 .spec{margin-top:44px;border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .spec h2{padding:20px 24px;border-bottom:1px solid var(--line);background:var(--ink-2)}
@@ -548,32 +547,6 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
 }
 @media (max-width:560px){.dd .rw{right:16px;bottom:16px}.dd .rw-lt small{display:none}.dd .tiles{grid-template-columns:1fr}.dd .packs .pack.center{width:118px;height:164px;font-size:13px}.dd .packs .pack.side{width:82px;height:118px;font-size:9px}.dd .linkrow{flex-wrap:wrap}.dd .linkrow .field{flex-basis:100%}.dd .toast{bottom:90px}.dd .stats-title h1{font-size:22px}
 }
-</style>
-<style>
-  .rx{background:#04070D;border-top:1px solid #222A3B;padding:52px 0 80px;
-    font-family:'Lexend',system-ui,-apple-system,sans-serif;color:#EEF1F7}
-  .rx-w{width:100%;max-width:1060px;margin-inline:auto;padding-inline:24px}
-  .rx h2{font-size:30px;font-weight:600;letter-spacing:-.9px;line-height:1.12;margin:0}
-  .rx .lede{margin-top:12px;color:#B9C0CE;max-width:66ch;font-size:15px;line-height:1.6;font-weight:300}
-  .rx-grid{display:grid;gap:12px;margin-top:30px}
-  .rx-c{border:1px solid #202A3B;border-radius:14px;background:#080D16;padding:18px 20px;
-    display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
-  .rx-s{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:9.5px;font-weight:500;letter-spacing:.1em;
-    text-transform:uppercase;padding:4px 8px;border-radius:5px;white-space:nowrap;margin-top:2px}
-  .rx-s.b{background:rgba(255,107,107,.14);color:#FFB4B4;border:1px solid rgba(255,107,107,.42)}
-  .rx-s.h{background:rgba(226,184,98,.14);color:#F1E6CF;border:1px solid rgba(226,184,98,.42)}
-  .rx-s.m{background:rgba(79,163,255,.13);color:#8FC2FF;border:1px solid rgba(79,163,255,.42)}
-  .rx-s.d{background:rgba(79,194,140,.14);color:#9BE8CE;border:1px solid rgba(79,194,140,.45)}
-  .rx-c h3{margin:0;font-size:16px;font-weight:600;letter-spacing:-.3px}
-  .rx-c p{margin:8px 0 0;font-size:13.5px;line-height:1.6;color:#B9C0CE;font-weight:300}
-  .rx-c p.f{color:#9BE8CE;margin-top:9px}
-  .rx-c p.f b{color:#BFF3DF;font-weight:600}
-  .rx code{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px;color:#F1E6CF;
-    background:rgba(226,184,98,.10);padding:1px 5px;border-radius:4px}
-  .rx-note{margin-top:26px;border:1px solid rgba(226,184,98,.38);background:rgba(226,184,98,.09);
-    border-radius:12px;padding:13px 16px;color:#F1E6CF;font-size:12.5px;line-height:1.6}
-  .rx-note b{font-weight:600}
-  @media (max-width:820px){ .rx-c{grid-template-columns:1fr} .rx h2{font-size:24px} }
 </style>
 <style>
   /* table of contents, sticky */
@@ -1448,7 +1421,7 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
   </div>
   <div class="states">
 
-    <div class="state">
+    <div class="state tl-on">
       <div class="k">Change 1<b>Move the ladder up</b>
         <small>Join the waitlist, Wait for your invitation, Open your account, Start trading. All four steps are already written and already on the page, sitting under the form where nobody deciding whether to hand over an email will see them. Move the block above the form, or beside it on desktop.</small>
       </div>
@@ -1462,11 +1435,11 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
       </div>
     </div>
 
-    <div class="state">
+    <div class="state tl-on">
       <div class="k">Change 2 and 3<b>The form</b>
         <small>Trading Experience goes. In its place, the one question that decides invite order, plus the platform question that decides what to build first. Submit it and you land on Change 4.</small>
       </div>
-      <div class="demo">
+      <div class="demo tl-on">
         <div class="tl" data-tl style="max-width:430px;margin-inline:auto">
           <div class="tl-card" data-tl-card></div>
         </div>
