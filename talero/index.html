@@ -376,6 +376,8 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
 .mff-depth{min-width:0;min-height:0}
 .mff-term__tabs{flex:none}
 .mff-term__top,.mff-term__meta{flex:none}
+.mff-card__right .mff-rs{height:100%;align-content:start;overflow-y:auto}
+.mff-card__right .mff-rs__grid{grid-template-columns:minmax(0,1fr)}
 /* ---------- responsive ---------- */
 @media (max-width: 1080px) {
   .mff-rail { --mff-card-w: 88%; --mff-gutter: 24px; }
@@ -794,16 +796,21 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
       </div>
     </article>
     <!-- 2. REFER. Component per Refer_a_Friend_Homepage_Card_Handoff_2026-09-28.md -->
-    <article class="mff-card mff-card--wide" aria-labelledby="mff-r-h" data-mff-refcard>
+    <article class="mff-card" aria-labelledby="mff-r-h" data-mff-refcard>
       <div class="mff-card__left">
         <div class="mff-eyebrow">
           <svg class="mff-mark mff-mark--club" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="2.5" y="6" width="19" height="13" rx="2.5" fill="none" stroke="#D8AE5E" stroke-width="1.6"/><path d="M6 6V4.6A1.6 1.6 0 0 1 7.6 3h8.8A1.6 1.6 0 0 1 18 4.6V6" fill="none" stroke="#D8AE5E" stroke-width="1.6" opacity=".55"/><path d="M12 9.6l1.25 2.6 2.75.4-2 2 .48 2.8L12 16.1l-2.48 1.3.48-2.8-2-2 2.75-.4z" fill="#D8AE5E"/></svg>
           <span class="mff-eyebrow__name">MyFundedClub</span>
+          <span class="mff-chip" style="background:#D8AE5E;color:#1A1204">2,000 pts</span>
         </div>
         <h3 class="mff-h" id="mff-r-h">Share your link. You both get a pack.</h3>
-        <p class="mff-p">The same module that sits above Account Data on your dashboard, at homepage width.</p>
-
-        <div class="mff-rs" style="margin-top:16px">
+        <p class="mff-p">You get 2,000 points when your friend makes their first purchase. That is a pack. Your friend gets 2,000 points and a Welcome Pack to open on day one.</p>
+        <div class="mff-grow"></div>
+        <p class="mff-fine">Referral points are for traders new to MyFundedFutures, on a first purchase, and are reversed on refund or chargeback. They do not stack with affiliate attribution. Club terms are linked from the refer page.</p>
+        <a class="mff-btn mff-btn--gold" href="/club/refer">My Referrals</a>
+      </div>
+      <div class="mff-card__right">
+        <div class="mff-rs">
           <div class="mff-rs__h">
             <span class="mff-rs__ic" aria-hidden="true">&#9670;</span>
             <span class="mff-rs__t">Refer a friend</span>
@@ -827,9 +834,6 @@ h2{font-size:21px;font-weight:600;letter-spacing:-.5px;margin:0}
           </div>
           <span class="mff-rs__foot">Your friend gets <b>2,000 pts</b> + a Welcome Pack on their first eval.</span>
         </div>
-
-        <div class="mff-grow"></div>
-        <p class="mff-fine">Referral points are for traders new to MyFundedFutures, on a first purchase, and are reversed on refund or chargeback. Referral points do not stack with affiliate attribution. Club terms are linked from the refer page.</p>
       </div>
     </article>
     <!-- 3. PERPS -->
