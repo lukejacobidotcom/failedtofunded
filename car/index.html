@@ -784,7 +784,7 @@ html.rm .page-glow { display: none; }
 .ign-car { position: absolute; left: 50%; top: calc(var(--hdr, 64px) + .6vh); transform: translateX(-50%); z-index: 7; margin: 0; padding-left: .34em; font-family: Oxanium, 'Chakra Petch', sans-serif; font-weight: 800; font-size: clamp(22px, 3.6vw, 58px); letter-spacing: .34em; text-transform: uppercase; white-space: nowrap; line-height: 1; background: linear-gradient(180deg, #fff3d6 0%, #e2b56a 55%, #b98a3a 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #f3d698; filter: drop-shadow(0 0 18px #d8ae5e66); opacity: 0; pointer-events: none; transition: opacity 1.2s var(--ease); }
 html.intro-on .ign-car { opacity: 1; }
 html.intro-reveal .ign-car, html.ign-lit .ign-car { opacity: 0; transition-duration: .6s; }   /* the title leaves as the key turns, before the words land */
-html.cab3d .ign-kicker-sub, html.cab3d .ign-prize, html.cab3d .ign-entry { display: none; }   /* the HUD is the logo and the competition name only (the prize lines live in the slogan and on the page) */
+html.cab3d .ign-kicker-sub, html.cab3d .ign-prize, html.cab3d .ign-entry, html.cab3d .ign-join { display: none !important; }   /* the idle Join link crowded the logo once its copy grew; the cue is the call to action */   /* the HUD is the logo and the competition name only (the prize lines live in the slogan and on the page) */
 html.cab3d .ign-kicker { font-size: clamp(26px, 2.6vw, 40px); }
 html.cab3d #ign.entering:not(.cabin) .cab { filter: brightness(1.5) contrast(1.08) saturate(1.1); }   /* the walk-up is lit so the car reads */
 @media (max-width: 700px) { .ign-car { font-size: clamp(18px, 6vw, 28px); letter-spacing: .22em; padding-left: .22em; top: calc(var(--hdr, 56px) + 10px); } }
@@ -1148,13 +1148,6 @@ html.snap *, html.snap *::before, html.snap *::after { transition: none !importa
 </style>
 <link rel="preload" href="assets/models/cockpit/scene.gltf" as="fetch" crossorigin>
 <link rel="preload" href="assets/models/cockpit/scene.bin" as="fetch" crossorigin>
-<link rel="preload" href="assets/models/cockpit/textures/car_porsche_carrera_911Default1_baseColor.png" as="fetch" crossorigin fetchpriority="low">
-<link rel="preload" href="assets/models/cockpit/textures/car_porsche_carrera_911Default1_metallicRoughness.png" as="fetch" crossorigin fetchpriority="low">
-<link rel="preload" href="assets/models/cockpit/textures/under_baseColor.png" as="fetch" crossorigin fetchpriority="low">
-<link rel="preload" href="assets/models/cockpit/textures/under_metallicRoughness.png" as="fetch" crossorigin fetchpriority="low">
-<link rel="preload" href="assets/models/cockpit/textures/under_normal.png" as="fetch" crossorigin fetchpriority="low">
-<link rel="preload" href="assets/models/cockpit/textures/calipers_normal.png" as="fetch" crossorigin fetchpriority="low">
-<link rel="preload" href="assets/models/cockpit/textures/tyre_normal.png" as="fetch" crossorigin fetchpriority="low">
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script type="module" src="intro3d/scene.js?v=1791558968"></script>
