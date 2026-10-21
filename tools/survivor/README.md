@@ -6,7 +6,7 @@ This static frontend is isolated from the existing homepage, tracking scripts, c
 
 ## Rebuild
 
-From this directory, run `npm ci` and `npm run build`. Generated pages and hashed assets in `../../survivor` are committed because the Render static service has no build command. Only commit the source, lockfile, and generated public assets, never local runtime credentials.
+From this directory, run `npm ci` and `npm run build`. Generated `../../survivor.html`, pages, and hashed assets in `../../survivor` are committed because the Render static service has no build command. Both clean paths and trailing-slash paths are generated for Render. Only commit the source, lockfile, and generated public assets, never local runtime credentials.
 
 The initial frontend source was copied from the Vest Slippage Sites project using `node sync-from-sites.mjs ABSOLUTE_SITES_CHECKOUT`. That command verifies `.openai/hosting.json` matches `appgprj_6ad7e6b8b5b08191a1983856c0529f7a`. When updating the collection's shared wording, sync the revised source before rebuilding.
 

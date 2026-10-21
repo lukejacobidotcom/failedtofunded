@@ -21,5 +21,7 @@ for(const page of ['home','privacy','manage']){
   const description='Share your experience with slippage on Vest Markets. Help the Failed to Funded initiative gather reports, document the impact, and seek answers.';
   const html='<!doctype html>\n<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><title>'+title+'</title><meta name="description" content="'+description+'"><meta name="robots" content="'+(page==='manage'?'noindex,nofollow':'index,follow')+'"><link rel="canonical" href="'+canonical+'"><meta property="og:title" content="'+title+'"><meta property="og:description" content="'+description+'"><meta property="og:url" content="'+canonical+'"><meta property="og:type" content="website"><link rel="icon" href="/survivor/favicon.svg"><link rel="stylesheet" href="/survivor/assets/'+css+'"><script type="module" src="/survivor/assets/'+js+'"></script></head><body data-page="'+page+'"><noscript><p style="padding:16px;text-align:center;background:#ffe9c9">Please enable JavaScript to submit or manage a report securely.</p></noscript><div id="root">'+render(page)+'</div></body></html>\n';
   await writeFile(path.join(folder,'index.html'),html);
+  // Render serves /path from /path.html and /path/ from /path/index.html.
+  await writeFile(folder+'.html',html);
 }
 console.log(JSON.stringify({pages:3,js,css,output:out}));
